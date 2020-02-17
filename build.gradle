@@ -17,6 +17,7 @@ subprojects {
     
     apply plugin: 'idea'
     apply plugin: 'kotlin'
+    apply plugin: 'jacoco'
 
     ext {
         ratpackVersion = '1.7.6'
@@ -35,7 +36,24 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        testLogging.showStandardStreams = true
+        testLogging.exceptionFormat = 'full'
+        testLogging.events 'passed', 'skipped', 'failed'
     }
+
+    jacoco {
+        toolVersion = "0.8.5"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+        }
+        sourceSets rootProject.subprojects*.sourceSets*.main as SourceSet[]
+    }
+
+    test.finalizedBy jacocoTestReport
 
     compileKotlin {
         kotlinOptions.jvmTarget = '1.8'

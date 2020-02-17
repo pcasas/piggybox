@@ -1,0 +1,21 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.ratpack:ratpack-gradle:$ratpackVersion"
+    }
+}
+
+apply plugin: 'io.ratpack.ratpack-java'
+
+mainClassName = ''
+
+dependencies {
+    api project(':schemas')
+    api project(':command-service')
+    implementation "io.ratpack:ratpack-guice:$ratpackVersion"
+    implementation "org.apache.kafka:kafka-clients:$kafkaClientsVersion"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
+    compile "io.confluent:kafka-avro-serializer:$kafkaAvroSerializer"
+}
