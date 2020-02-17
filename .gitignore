@@ -1,3 +1,6 @@
 .gradle/**
 .idea/**
 **/build/**
+**/out/**
+**/.kotlintest/**
+.DS_Store

@@ -1,0 +1,8 @@
+@namespace("parts.code.piggybox.schemas")
+protocol PiggyBox {
+
+  record AddFundsRequested {
+    string customerId;
+    decimal(20,2) amount;
+  }
+}

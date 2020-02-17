@@ -1,0 +1,6 @@
+kafka:
+  bootstrapServersConfig: 'localhost:9092'
+  schemaRegistryUrlConfig: 'http://localhost:8081'
+
+  topics:
+    fundsAuthorization: 'funds-authorization-v1'

@@ -5,6 +5,10 @@ plugins {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
+        maven {
+            url "http://packages.confluent.io/maven/"
+        }
     }
 }
 
@@ -13,9 +17,24 @@ subprojects {
     
     apply plugin: 'idea'
     apply plugin: 'kotlin'
+
+    ext {
+        ratpackVersion = '1.7.6'
+        kafkaClientsVersion = '2.4.0'
+        jacksonVersion = '2.10.2'
+        avroVersion = '1.9.1'
+        kafkaAvroSerializer = '5.4.0'
+    }
     
     dependencies {
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        implementation 'ch.qos.logback:logback-classic:1.2.3'
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.5.1'
+        testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     compileKotlin {
