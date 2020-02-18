@@ -5,6 +5,8 @@ import com.google.inject.Provides
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
+import java.util.Properties
+import javax.inject.Singleton
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -12,8 +14,6 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import parts.code.piggybox.command.application.CommandServiceApplication
 import parts.code.piggybox.command.application.handlers.AddFundsHandler
-import java.util.*
-import javax.inject.Singleton
 
 class ApplicationModule : AbstractModule() {
 
@@ -35,5 +35,4 @@ class ApplicationModule : AbstractModule() {
 
         return KafkaProducer(properties)
     }
-
 }

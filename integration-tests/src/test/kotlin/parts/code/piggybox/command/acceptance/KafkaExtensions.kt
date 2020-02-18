@@ -1,12 +1,12 @@
 package parts.code.piggybox.command.acceptance
 
+import java.time.Duration
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import java.time.Duration
 
 fun <K, V> KafkaConsumer<K, V>.lastRecord(key: String): ConsumerRecord<K, V> =
     this.lastRecord(key, Duration.ofSeconds(5).toMillis())

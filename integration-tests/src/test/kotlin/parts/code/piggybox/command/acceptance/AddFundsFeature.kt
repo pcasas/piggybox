@@ -3,6 +3,10 @@ package parts.code.piggybox.command.acceptance
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.kotlintest.shouldBe
+import java.math.BigDecimal
+import java.time.Duration
+import java.util.Properties
+import java.util.UUID
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -15,9 +19,6 @@ import org.junit.jupiter.api.TestInstance
 import parts.code.piggybox.command.application.CommandServiceApplication
 import parts.code.piggybox.schemas.AddFundsRequested
 import ratpack.test.MainClassApplicationUnderTest
-import java.math.BigDecimal
-import java.time.Duration
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AddFundsFeature {
