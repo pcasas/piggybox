@@ -1,5 +1,7 @@
 package parts.code.piggybox.command.application.handlers
 
+import java.math.BigDecimal
+import javax.inject.Inject
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -8,8 +10,6 @@ import parts.code.piggybox.command.application.config.KafkaConfig
 import parts.code.piggybox.schemas.AddFundsRequested
 import ratpack.handling.Context
 import ratpack.handling.Handler
-import java.math.BigDecimal
-import javax.inject.Inject
 
 class AddFundsHandler @Inject constructor(
     private val config: KafkaConfig,
