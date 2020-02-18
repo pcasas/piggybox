@@ -1,3 +1,4 @@
+![Build](https://github.com/pcasas/piggybox/workflows/Build/badge.svg)
 [![codecov](https://codecov.io/gh/pcasas/piggybox/branch/master/graph/badge.svg)](https://codecov.io/gh/pcasas/piggybox)
 
 # Piggy Box
