@@ -1,7 +1,9 @@
 @namespace("parts.code.piggybox.schemas")
 protocol PiggyBox {
 
-  record AddFundsRequested {
+  record AddFundsCommand {
+    string id;
+    timestamp_ms occurredOn;
     string customerId;
     decimal(20,2) amount;
   }

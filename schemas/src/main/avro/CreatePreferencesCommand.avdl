@@ -1,0 +1,10 @@
+@namespace("parts.code.piggybox.schemas")
+protocol PiggyBox {
+
+  record CreatePreferencesCommand {
+    string id;
+    timestamp_ms occurredOn;
+    string customerId;
+    string currency;
+  }
+}

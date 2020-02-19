@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import parts.code.piggybox.command.application.config.ApplicationModule
 import parts.code.piggybox.command.application.config.KafkaConfig
 import parts.code.piggybox.command.application.handlers.AddFundsHandler
+import parts.code.piggybox.command.application.handlers.CreatePreferencesHandler
 import ratpack.guice.Guice
 import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
@@ -28,10 +29,11 @@ object CommandServiceApplication {
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
                 .handlers { chain ->
-                    chain
-                        .prefix("add-funds") {
-                            it.post(AddFundsHandler::class.java)
-                        }
+                    chain.prefix("api") {
+                        it
+                            .post("balance.addFunds", AddFundsHandler::class.java)
+                            .post("preferences.create", CreatePreferencesHandler::class.java)
+                    }
                 }
         }
     }

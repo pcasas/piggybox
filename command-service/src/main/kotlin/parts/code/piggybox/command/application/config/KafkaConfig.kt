@@ -7,6 +7,6 @@ data class KafkaConfig(
 ) {
 
     data class Topics(
-        val fundsAuthorization: String
+        val preferencesAuthorization: String
     )
 }
