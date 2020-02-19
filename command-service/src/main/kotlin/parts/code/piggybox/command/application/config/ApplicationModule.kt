@@ -14,11 +14,13 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import parts.code.piggybox.command.application.CommandServiceApplication
 import parts.code.piggybox.command.application.handlers.AddFundsHandler
+import parts.code.piggybox.command.application.handlers.CreatePreferencesHandler
 
 class ApplicationModule : AbstractModule() {
 
     override fun configure() {
         bind(AddFundsHandler::class.java)
+        bind(CreatePreferencesHandler::class.java)
     }
 
     @Provides

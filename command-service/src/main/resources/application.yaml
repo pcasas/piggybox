@@ -3,4 +3,4 @@ kafka:
   schemaRegistryUrlConfig: 'http://localhost:8081'
 
   topics:
-    fundsAuthorization: 'funds-authorization-v1'
+    preferencesAuthorization: 'preferences-authorization'

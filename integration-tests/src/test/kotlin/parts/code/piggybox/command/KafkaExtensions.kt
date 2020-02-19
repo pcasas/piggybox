@@ -1,4 +1,4 @@
-package parts.code.piggybox.command.acceptance
+package parts.code.piggybox.command
 
 import java.time.Duration
 import kotlinx.coroutines.TimeoutCancellationException

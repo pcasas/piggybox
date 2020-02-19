@@ -2,7 +2,6 @@ package parts.code.piggybox.command.acceptance
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
-import java.math.BigDecimal
 import java.time.Duration
 import java.util.UUID
 import org.junit.jupiter.api.AfterAll
@@ -12,14 +11,14 @@ import org.junit.jupiter.api.TestInstance
 import parts.code.piggybox.command.TestKafkaConsumer
 import parts.code.piggybox.command.application.CommandServiceApplication
 import parts.code.piggybox.command.lastRecord
-import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.schemas.CreatePreferencesCommand
 import ratpack.test.MainClassApplicationUnderTest
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AddFundsFeature {
+class CreatePreferencesFeature {
 
     private val aut = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
-    private val consumer = TestKafkaConsumer.of(AddFundsFeature::class.simpleName)
+    private val consumer = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
 
     @BeforeAll
     fun setUp() {
@@ -34,21 +33,21 @@ class AddFundsFeature {
     }
 
     @Test
-    fun `should add funds to a customer`() {
+    fun `should create preferences`() {
         val customerId = UUID.randomUUID().toString()
 
         val response = aut.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId": "$customerId", "amount": 1.00}""")
-        }.post("/api/balance.addFunds")
+            }.body.text("""{"customerId": "$customerId", "currency": "EUR"}""")
+        }.post("/api/preferences.create")
         response.status.code shouldBe 202
 
-        val event = consumer.lastRecord(customerId).value() as AddFundsCommand
+        val event = consumer.lastRecord(customerId).value() as CreatePreferencesCommand
 
         UUID.fromString(event.id)
         event.occurredOn shouldNotBe null
         event.customerId shouldBe customerId
-        event.amount shouldBe BigDecimal.ONE.setScale(2)
+        event.currency shouldBe "EUR"
     }
 }
