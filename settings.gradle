@@ -2,8 +2,8 @@ rootProject.name = 'piggybox'
 
 include ':balance-service',
         ':command-service',
-        ':funds-service',
         ':integration-tests',
-        ':notification-service',
+        ':preferences-service',
         ':query-service',
-        ':schemas'
+        ':schemas',
+        ':statistics-service'
