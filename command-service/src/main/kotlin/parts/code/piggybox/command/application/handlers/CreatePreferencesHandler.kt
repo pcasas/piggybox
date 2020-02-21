@@ -27,7 +27,7 @@ class CreatePreferencesHandler @Inject constructor(
             val record =
                 ProducerRecord(config.topics.preferencesAuthorization, event.customerId, event as SpecificRecord)
             producer.send(record).get()
-            logger.info("Event sent to ${config.topics.preferencesAuthorization} = $record")
+            logger.info("Event sent to ${config.topics.preferencesAuthorization}: $record")
             ctx.response.status(Status.ACCEPTED)
             ctx.render("")
         }

@@ -1,17 +1,15 @@
-package parts.code.piggybox.command.application
+package parts.code.piggybox.preferences.application
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import parts.code.piggybox.command.application.config.ApplicationModule
-import parts.code.piggybox.command.application.config.KafkaConfig
-import parts.code.piggybox.command.application.handlers.AddFundsHandler
-import parts.code.piggybox.command.application.handlers.CreatePreferencesHandler
-import parts.code.piggybox.command.application.services.CreateTopicsService
+import parts.code.piggybox.preferences.application.config.KafkaConfig
+import parts.code.piggybox.preferences.application.services.CreateTopicsService
+import parts.code.piggybox.preferences.application.streams.PreferencesStream
 import ratpack.guice.Guice
 import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
 
-object CommandServiceApplication {
+object PreferencesServiceApplication {
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -27,16 +25,9 @@ object CommandServiceApplication {
                 .registry(Guice.registry { bindings ->
                     bindings
                         .bind(CreateTopicsService::class.java)
-                        .module(ApplicationModule::class.java)
+                        .bind(PreferencesStream::class.java)
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
-                .handlers { chain ->
-                    chain.prefix("api") {
-                        it
-                            .post("balance.addFunds", AddFundsHandler::class.java)
-                            .post("preferences.create", CreatePreferencesHandler::class.java)
-                    }
-                }
         }
     }
 }
