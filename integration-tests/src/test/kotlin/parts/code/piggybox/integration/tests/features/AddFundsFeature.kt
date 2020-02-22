@@ -1,4 +1,4 @@
-package parts.code.piggybox.command.acceptance
+package parts.code.piggybox.integration.tests.features
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
@@ -9,9 +9,9 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import parts.code.piggybox.command.TestKafkaConsumer
 import parts.code.piggybox.command.application.CommandServiceApplication
-import parts.code.piggybox.command.lastRecord
+import parts.code.piggybox.integration.tests.TestKafkaConsumer
+import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.schemas.AddFundsCommand
 import ratpack.test.MainClassApplicationUnderTest
 
