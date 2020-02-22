@@ -1,4 +1,4 @@
-package parts.code.piggybox.command.acceptance
+package parts.code.piggybox.integration.tests.features
 
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
@@ -11,9 +11,9 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import parts.code.piggybox.command.TestKafkaConsumer
 import parts.code.piggybox.command.application.CommandServiceApplication
-import parts.code.piggybox.command.lastRecord
+import parts.code.piggybox.integration.tests.TestKafkaConsumer
+import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.preferences.application.PreferencesServiceApplication
 import parts.code.piggybox.schemas.CreatePreferencesCommand
 import parts.code.piggybox.schemas.PreferencesCreated
@@ -25,8 +25,10 @@ class CreatePreferencesFeature {
     private val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
     private val preferencesService =
         object : MainClassApplicationUnderTest(PreferencesServiceApplication::class.java) {}
-    private val consumerPreferencesAuthorization = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
-    private val consumerPreferences = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
+    private val consumerPreferencesAuthorization =
+        TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
+    private val consumerPreferences =
+        TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
 
     @BeforeAll
     fun setUp() {

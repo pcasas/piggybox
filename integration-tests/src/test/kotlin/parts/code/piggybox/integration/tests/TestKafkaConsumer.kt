@@ -1,4 +1,4 @@
-package parts.code.piggybox.command
+package parts.code.piggybox.integration.tests
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig

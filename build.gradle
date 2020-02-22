@@ -18,7 +18,6 @@ subprojects {
     
     apply plugin: 'idea'
     apply plugin: 'kotlin'
-    apply plugin: 'jacoco'
     apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
     ext {
@@ -42,20 +41,6 @@ subprojects {
         testLogging.exceptionFormat = 'full'
         testLogging.events 'passed', 'skipped', 'failed'
     }
-
-    jacoco {
-        toolVersion = "0.8.5"
-    }
-
-    jacocoTestReport {
-        reports {
-            xml.enabled true
-            csv.enabled false
-        }
-        sourceSets rootProject.subprojects*.sourceSets*.main as SourceSet[]
-    }
-
-    test.finalizedBy jacocoTestReport
 
     compileKotlin {
         kotlinOptions.jvmTarget = '1.8'
