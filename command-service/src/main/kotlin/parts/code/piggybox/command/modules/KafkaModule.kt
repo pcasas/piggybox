@@ -1,4 +1,4 @@
-package parts.code.piggybox.command.application.config
+package parts.code.piggybox.command.modules
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
@@ -12,15 +12,12 @@ import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
-import parts.code.piggybox.command.application.CommandServiceApplication
-import parts.code.piggybox.command.application.handlers.AddFundsHandler
-import parts.code.piggybox.command.application.handlers.CreatePreferencesHandler
+import parts.code.piggybox.command.CommandServiceApplication
+import parts.code.piggybox.command.config.KafkaConfig
 
-class ApplicationModule : AbstractModule() {
+class KafkaModule : AbstractModule() {
 
     override fun configure() {
-        bind(AddFundsHandler::class.java)
-        bind(CreatePreferencesHandler::class.java)
     }
 
     @Provides

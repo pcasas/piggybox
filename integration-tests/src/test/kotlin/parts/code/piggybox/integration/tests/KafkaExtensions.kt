@@ -19,7 +19,7 @@ fun <K, V> KafkaConsumer<K, V>.lastRecord(key: String, timeoutMillis: Long): Con
         runBlocking {
             withTimeout(timeoutMillis) {
                 while (true) {
-                    delay(50L)
+                    delay(50)
                     val events = consumer.poll(Duration.ZERO).filter { it.key() == key }.toList()
 
                     if (events.isNotEmpty()) {

@@ -1,0 +1,6 @@
+kafka:
+  bootstrapServersConfig: 'localhost:9092'
+
+  topics:
+    preferencesAuthorization: 'preferences-authorization'
+    preferences: 'preferences'

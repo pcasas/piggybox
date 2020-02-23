@@ -1,12 +1,11 @@
-package parts.code.piggybox.command.application
+package parts.code.piggybox.command
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import parts.code.piggybox.command.application.config.ApplicationModule
-import parts.code.piggybox.command.application.config.KafkaConfig
-import parts.code.piggybox.command.application.handlers.AddFundsHandler
-import parts.code.piggybox.command.application.handlers.CreatePreferencesHandler
-import parts.code.piggybox.command.application.services.CreateTopicsService
+import parts.code.piggybox.command.api.APIEndpoints
+import parts.code.piggybox.command.config.KafkaConfig
+import parts.code.piggybox.command.modules.APIModule
+import parts.code.piggybox.command.modules.KafkaModule
 import ratpack.guice.Guice
 import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
@@ -22,21 +21,16 @@ object CommandServiceApplication {
                         .baseDir(BaseDir.find())
                         .yaml("application.yaml")
                         .require("/kafka", KafkaConfig::class.java)
+                        .port(5051)
                         .jacksonModules(KotlinModule())
                 }
                 .registry(Guice.registry { bindings ->
                     bindings
-                        .bind(CreateTopicsService::class.java)
-                        .module(ApplicationModule::class.java)
+                        .module(APIModule::class.java)
+                        .module(KafkaModule::class.java)
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
-                .handlers { chain ->
-                    chain.prefix("api") {
-                        it
-                            .post("balance.addFunds", AddFundsHandler::class.java)
-                            .post("preferences.create", CreatePreferencesHandler::class.java)
-                    }
-                }
+                .handlers { chain -> chain.prefix("api", APIEndpoints::class.java) }
         }
     }
 }

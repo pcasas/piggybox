@@ -1,4 +1,4 @@
-package parts.code.piggybox.preferences.application.streams
+package parts.code.piggybox.preferences.streams
 
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
@@ -12,8 +12,8 @@ import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.kstream.TransformerSupplier
-import parts.code.piggybox.preferences.application.PreferencesServiceApplication
-import parts.code.piggybox.preferences.application.config.KafkaConfig
+import parts.code.piggybox.preferences.PreferencesServiceApplication
+import parts.code.piggybox.preferences.config.KafkaConfig
 import ratpack.service.Service
 import ratpack.service.StartEvent
 import ratpack.service.StopEvent

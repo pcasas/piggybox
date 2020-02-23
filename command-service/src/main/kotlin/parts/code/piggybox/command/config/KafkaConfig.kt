@@ -1,4 +1,4 @@
-package parts.code.piggybox.preferences.application.config
+package parts.code.piggybox.command.config
 
 data class KafkaConfig(
     val bootstrapServersConfig: String,
@@ -7,7 +7,6 @@ data class KafkaConfig(
 ) {
 
     data class Topics(
-        val preferencesAuthorization: String,
-        val preferences: String
+        val preferencesAuthorization: String
     )
 }
