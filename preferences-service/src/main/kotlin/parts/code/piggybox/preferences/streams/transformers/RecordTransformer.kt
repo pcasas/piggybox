@@ -1,12 +1,12 @@
-package parts.code.piggybox.preferences.streams
+package parts.code.piggybox.preferences.streams.transformers
 
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.kstream.Transformer
 import org.apache.kafka.streams.processor.ProcessorContext
 import org.slf4j.LoggerFactory
-import parts.code.piggybox.schemas.CreatePreferencesCommand
-import parts.code.piggybox.schemas.PreferencesCreated
+import parts.code.piggybox.schemas.commands.CreatePreferencesCommand
+import parts.code.piggybox.schemas.events.PreferencesCreated
 
 class RecordTransformer : Transformer<String, SpecificRecord, KeyValue<String, SpecificRecord>?> {
 

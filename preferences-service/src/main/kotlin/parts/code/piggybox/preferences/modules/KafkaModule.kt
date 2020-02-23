@@ -1,10 +1,12 @@
-package parts.code.piggybox.preferences.streams
+package parts.code.piggybox.preferences.modules
 
+import com.google.inject.AbstractModule
+import com.google.inject.Provides
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import io.confluent.kafka.serializers.subject.TopicRecordNameStrategy
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import java.util.Properties
-import javax.inject.Inject
+import javax.inject.Singleton
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.Serdes
@@ -14,17 +16,16 @@ import org.apache.kafka.streams.StreamsConfig
 import org.apache.kafka.streams.kstream.TransformerSupplier
 import parts.code.piggybox.preferences.PreferencesServiceApplication
 import parts.code.piggybox.preferences.config.KafkaConfig
-import ratpack.service.Service
-import ratpack.service.StartEvent
-import ratpack.service.StopEvent
+import parts.code.piggybox.preferences.streams.transformers.RecordTransformer
 
-class PreferencesStream @Inject constructor(
-    private val config: KafkaConfig
-) : Service {
+class KafkaModule : AbstractModule() {
 
-    private val streams = init()
+    override fun configure() {
+    }
 
-    private fun init(): KafkaStreams {
+    @Provides
+    @Singleton
+    fun provideKafkaStreams(config: KafkaConfig): KafkaStreams {
         val supplier = TransformerSupplier { RecordTransformer() }
 
         val builder = StreamsBuilder()
@@ -46,13 +47,5 @@ class PreferencesStream @Inject constructor(
         }
 
         return KafkaStreams(builder.build(), properties)
-    }
-
-    override fun onStart(event: StartEvent?) {
-        streams.start()
-    }
-
-    override fun onStop(event: StopEvent?) {
-        streams.close()
     }
 }

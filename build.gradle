@@ -22,10 +22,10 @@ subprojects {
 
     ext {
         ratpackVersion = '1.7.6'
-        kafkaClientsVersion = '2.4.0'
+        kafkaVersion = '2.4.0'
         jacksonVersion = '2.10.2'
         avroVersion = '1.9.1'
-        kafkaAvroSerializer = '5.4.0'
+        kafkaConfluentVersion = '5.4.0'
     }
     
     dependencies {

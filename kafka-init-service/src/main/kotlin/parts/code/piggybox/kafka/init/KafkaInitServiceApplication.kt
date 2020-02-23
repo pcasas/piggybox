@@ -20,7 +20,6 @@ object KafkaInitServiceApplication {
                         .baseDir(BaseDir.find())
                         .yaml("application.yaml")
                         .require("/kafka", KafkaConfig::class.java)
-                        .port(5050)
                         .jacksonModules(KotlinModule())
                 }
                 .registry(Guice.registry { bindings ->

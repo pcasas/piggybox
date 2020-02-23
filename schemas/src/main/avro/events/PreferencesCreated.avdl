@@ -1,7 +1,7 @@
-@namespace("parts.code.piggybox.schemas")
+@namespace("parts.code.piggybox.schemas.events")
 protocol PiggyBox {
 
-  record CreatePreferencesCommand {
+  record PreferencesCreated {
     string id;
     timestamp_ms occurredOn;
     string customerId;
