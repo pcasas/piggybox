@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.modules.KafkaModule
-import parts.code.piggybox.preferences.services.PreferencesStreamService
+import parts.code.piggybox.preferences.modules.PreferencesModule
 import ratpack.guice.Guice
 import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
@@ -25,7 +25,7 @@ object PreferencesServiceApplication {
                 .registry(Guice.registry { bindings ->
                     bindings
                         .module(KafkaModule::class.java)
-                        .bind(PreferencesStreamService::class.java)
+                        .module(PreferencesModule::class.java)
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
         }

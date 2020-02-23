@@ -21,12 +21,13 @@ import parts.code.piggybox.preferences.streams.transformers.RecordTransformer
 class KafkaModule : AbstractModule() {
 
     override fun configure() {
+        bind(RecordTransformer::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideKafkaStreams(config: KafkaConfig): KafkaStreams {
-        val supplier = TransformerSupplier { RecordTransformer() }
+    fun provideKafkaStreams(config: KafkaConfig, transformer: RecordTransformer): KafkaStreams {
+        val supplier = TransformerSupplier { transformer }
 
         val builder = StreamsBuilder()
 
