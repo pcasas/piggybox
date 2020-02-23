@@ -25,8 +25,8 @@ object CommandServiceApplication {
                 }
                 .registry(Guice.registry { bindings ->
                     bindings
-                        .module(APIModule::class.java)
                         .module(KafkaModule::class.java)
+                        .module(APIModule::class.java)
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
                 .handlers { chain -> chain.prefix("api", APIEndpoints::class.java) }
