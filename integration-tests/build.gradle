@@ -29,8 +29,8 @@ dependencies {
     api project(':command-service')
     api project(':kafka-init-service')
     api project(':preferences-service')
-    implementation "org.apache.kafka:kafka-clients:$kafkaClientsVersion"
+    implementation "org.apache.kafka:kafka-clients:$kafkaVersion"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
-    compile "io.confluent:kafka-avro-serializer:$kafkaAvroSerializer"
+    compile "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
     compile "io.ratpack:ratpack-test:$ratpackVersion"
 }

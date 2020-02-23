@@ -16,15 +16,17 @@ import parts.code.piggybox.command.CommandServiceApplication
 import parts.code.piggybox.integration.tests.TestKafkaConsumer
 import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
-import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.preferences.PreferencesServiceApplication
+import parts.code.piggybox.schemas.commands.AddFundsCommand
 import ratpack.test.MainClassApplicationUnderTest
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AddFundsFeature {
+private class AddFundsFeature {
 
-    private val kafkaInitService = object : MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java) {}
-    private val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
-    private val consumerPreferencesAuthorization = TestKafkaConsumer.of(AddFundsFeature::class.simpleName)
+    val kafkaInitService = object : MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java) {}
+    val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
+    val preferencesService = object : MainClassApplicationUnderTest(PreferencesServiceApplication::class.java) {}
+    val consumerPreferencesAuthorization = TestKafkaConsumer.of(AddFundsFeature::class.simpleName)
 
     @BeforeAll
     fun setUp() {
@@ -32,7 +34,8 @@ class AddFundsFeature {
             withTimeout(Duration.ofSeconds(30).toMillis()) {
                 while (
                     kafkaInitService.address == null ||
-                    commandService.address == null
+                    commandService.address == null ||
+                    preferencesService.address == null
                 ) {
                     delay(50)
                 }
@@ -60,11 +63,11 @@ class AddFundsFeature {
         }.post("/api/balance.addFunds")
         response.status.code shouldBe 202
 
-        val event = consumerPreferencesAuthorization.lastRecord(customerId).value() as AddFundsCommand
+        val command = consumerPreferencesAuthorization.lastRecord(customerId).value() as AddFundsCommand
 
-        UUID.fromString(event.id)
-        event.occurredOn shouldNotBe null
-        event.customerId shouldBe customerId
-        event.amount shouldBe BigDecimal.ONE.setScale(2)
+        UUID.fromString(command.id)
+        command.occurredOn shouldNotBe null
+        command.customerId shouldBe customerId
+        command.amount shouldBe BigDecimal.ONE.setScale(2)
     }
 }

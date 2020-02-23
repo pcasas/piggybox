@@ -9,7 +9,7 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.command.config.KafkaConfig
-import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.schemas.commands.AddFundsCommand
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status

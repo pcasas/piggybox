@@ -21,7 +21,6 @@ object CommandServiceApplication {
                         .baseDir(BaseDir.find())
                         .yaml("application.yaml")
                         .require("/kafka", KafkaConfig::class.java)
-                        .port(5051)
                         .jacksonModules(KotlinModule())
                 }
                 .registry(Guice.registry { bindings ->

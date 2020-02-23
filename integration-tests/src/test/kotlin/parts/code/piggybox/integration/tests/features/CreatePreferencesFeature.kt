@@ -16,19 +16,17 @@ import parts.code.piggybox.integration.tests.TestKafkaConsumer
 import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
 import parts.code.piggybox.preferences.PreferencesServiceApplication
-import parts.code.piggybox.schemas.CreatePreferencesCommand
-import parts.code.piggybox.schemas.PreferencesCreated
+import parts.code.piggybox.schemas.events.PreferencesCreated
 import ratpack.test.MainClassApplicationUnderTest
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CreatePreferencesFeature {
+private class CreatePreferencesFeature {
 
-    private val kafkaInitService = object : MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java) {}
-    private val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
-    private val preferencesService =
-        object : MainClassApplicationUnderTest(PreferencesServiceApplication::class.java) {}
-    private val consumerPreferencesAuthorization = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
-    private val consumerPreferences = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
+    val kafkaInitService = object : MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java) {}
+    val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
+    val preferencesService = object : MainClassApplicationUnderTest(PreferencesServiceApplication::class.java) {}
+    val consumerPreferencesAuthorization = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
+    val consumerPreferences = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
 
     @BeforeAll
     fun setUp() {
@@ -68,13 +66,6 @@ class CreatePreferencesFeature {
             }.body.text("""{"customerId": "$customerId", "currency": "EUR"}""")
         }.post("/api/preferences.create")
         response.status.code shouldBe 202
-
-        val command = consumerPreferencesAuthorization.lastRecord(customerId).value() as CreatePreferencesCommand
-
-        UUID.fromString(command.id)
-        command.occurredOn shouldNotBe null
-        command.customerId shouldBe customerId
-        command.currency shouldBe "EUR"
 
         val event = consumerPreferences.lastRecord(customerId).value() as PreferencesCreated
 
