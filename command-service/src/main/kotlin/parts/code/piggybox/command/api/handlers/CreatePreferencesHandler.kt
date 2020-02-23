@@ -1,6 +1,5 @@
-package parts.code.piggybox.command.application.handlers
+package parts.code.piggybox.command.api.handlers
 
-import java.math.BigDecimal
 import java.time.Instant
 import java.util.UUID
 import javax.inject.Inject
@@ -8,22 +7,22 @@ import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
-import parts.code.piggybox.command.application.config.KafkaConfig
-import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.command.config.KafkaConfig
+import parts.code.piggybox.schemas.CreatePreferencesCommand
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status
 
-class AddFundsHandler @Inject constructor(
+class CreatePreferencesHandler @Inject constructor(
     private val config: KafkaConfig,
     private val producer: KafkaProducer<String, SpecificRecord>
 ) : Handler {
 
-    private val logger = LoggerFactory.getLogger(AddFundsHandler::class.java)
+    private val logger = LoggerFactory.getLogger(CreatePreferencesHandler::class.java)
 
     override fun handle(ctx: Context) {
-        ctx.parse(AddFundsPayload::class.java).then {
-            val event = AddFundsCommand(UUID.randomUUID().toString(), Instant.now(), it.customerId, it.amount)
+        ctx.parse(CreatePreferencesPayload::class.java).then {
+            val event = CreatePreferencesCommand(UUID.randomUUID().toString(), Instant.now(), it.customerId, it.currency)
 
             val record =
                 ProducerRecord(config.topics.preferencesAuthorization, event.customerId, event as SpecificRecord)
@@ -34,5 +33,5 @@ class AddFundsHandler @Inject constructor(
         }
     }
 
-    private data class AddFundsPayload(val customerId: String, val amount: BigDecimal)
+    private data class CreatePreferencesPayload(val customerId: String, val currency: String)
 }

@@ -11,10 +11,11 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import parts.code.piggybox.command.application.CommandServiceApplication
+import parts.code.piggybox.command.CommandServiceApplication
 import parts.code.piggybox.integration.tests.TestKafkaConsumer
 import parts.code.piggybox.integration.tests.lastRecord
-import parts.code.piggybox.preferences.application.PreferencesServiceApplication
+import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
+import parts.code.piggybox.preferences.PreferencesServiceApplication
 import parts.code.piggybox.schemas.CreatePreferencesCommand
 import parts.code.piggybox.schemas.PreferencesCreated
 import ratpack.test.MainClassApplicationUnderTest
@@ -22,20 +23,23 @@ import ratpack.test.MainClassApplicationUnderTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CreatePreferencesFeature {
 
+    private val kafkaInitService = object : MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java) {}
     private val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
     private val preferencesService =
         object : MainClassApplicationUnderTest(PreferencesServiceApplication::class.java) {}
-    private val consumerPreferencesAuthorization =
-        TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
-    private val consumerPreferences =
-        TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
+    private val consumerPreferencesAuthorization = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
+    private val consumerPreferences = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
 
     @BeforeAll
     fun setUp() {
         runBlocking {
             withTimeout(Duration.ofSeconds(30).toMillis()) {
-                while (commandService.address == null || preferencesService.address == null) {
-                    delay(50L)
+                while (
+                    kafkaInitService.address == null ||
+                    commandService.address == null ||
+                    preferencesService.address == null
+                ) {
+                    delay(50)
                 }
             }
         }

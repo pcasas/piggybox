@@ -9,7 +9,7 @@ buildscript {
 
 apply plugin: 'io.ratpack.ratpack-java'
 
-mainClassName = 'parts.code.piggybox.command.application.CommandServiceApplication'
+mainClassName = 'parts.code.piggybox.command.CommandServiceApplication'
 
 dependencies {
     api project(':schemas')

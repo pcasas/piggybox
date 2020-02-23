@@ -1,4 +1,4 @@
-package parts.code.piggybox.preferences.application.streams
+package parts.code.piggybox.preferences.streams
 
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
