@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.61'
     id 'org.jlleitschuh.gradle.ktlint' version '9.2.1'
+    id 'jacoco'
 }
 
 allprojects {
@@ -15,10 +16,11 @@ allprojects {
 
 subprojects {
     group = 'parts.code'
-    
+
     apply plugin: 'idea'
     apply plugin: 'kotlin'
     apply plugin: 'org.jlleitschuh.gradle.ktlint'
+    apply plugin: 'jacoco'
 
     ext {
         ratpackVersion = '1.7.6'
@@ -27,7 +29,7 @@ subprojects {
         avroVersion = '1.9.1'
         kafkaConfluentVersion = '5.4.0'
     }
-    
+
     dependencies {
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         implementation 'ch.qos.logback:logback-classic:1.2.3'
@@ -43,6 +45,19 @@ subprojects {
         testLogging.events 'passed', 'skipped', 'failed'
     }
 
+    jacoco {
+        toolVersion = '0.8.5'
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+        }
+    }
+
+    test.finalizedBy jacocoTestReport
+
     compileKotlin {
         kotlinOptions.jvmTarget = '1.8'
     }
@@ -50,4 +65,12 @@ subprojects {
     compileTestKotlin {
         kotlinOptions.jvmTarget = '1.8'
     }
+}
+
+task jacocoMerge(type: JacocoMerge) {
+    subprojects.each { executionData it.tasks.withType(Test) }
+    doFirst {
+        executionData = files(executionData.findAll { it.exists() })
+    }
+    destinationFile file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
 }
