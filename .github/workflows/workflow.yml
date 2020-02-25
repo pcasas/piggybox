@@ -34,9 +34,12 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Merge JaCoCo reports
+        run: ./gradlew jacocoRootReport
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./build/reports/jacoco/jacocoRootReport/jacocoRootReport.xml
           flags: tests
           name: piggybox
