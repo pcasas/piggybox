@@ -9,32 +9,63 @@ import java.util.Properties
 import javax.inject.Singleton
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.StreamsConfig
+import org.apache.kafka.streams.kstream.Predicate
 import org.apache.kafka.streams.kstream.TransformerSupplier
+import org.apache.kafka.streams.processor.ProcessorSupplier
+import org.apache.kafka.streams.state.KeyValueStore
+import org.apache.kafka.streams.state.StoreBuilder
+import org.apache.kafka.streams.state.Stores
 import parts.code.piggybox.preferences.PreferencesServiceApplication
 import parts.code.piggybox.preferences.config.KafkaConfig
-import parts.code.piggybox.preferences.streams.transformers.RecordTransformer
+import parts.code.piggybox.preferences.streams.suppliers.RecordProcessor
+import parts.code.piggybox.preferences.streams.suppliers.RecordTransformer
+import parts.code.piggybox.schemas.events.PreferencesCreated
+import parts.code.piggybox.schemas.events.PreferencesDenied
 
 class KafkaModule : AbstractModule() {
 
     override fun configure() {
         bind(RecordTransformer::class.java)
+        bind(RecordProcessor::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideKafkaStreams(config: KafkaConfig, transformer: RecordTransformer): KafkaStreams {
-        val supplier = TransformerSupplier { transformer }
-
+    fun provideKafkaStreams(
+        config: KafkaConfig,
+        transformer: RecordTransformer,
+        processor: RecordProcessor
+    ): KafkaStreams {
         val builder = StreamsBuilder()
 
-        builder
+        val keyValueStoreBuilder: StoreBuilder<out KeyValueStore<String, out Any>> =
+            Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore(config.stateStores.preferences),
+                Serdes.String(),
+                null as? Serde<*>
+            )
+
+        builder.addStateStore(keyValueStoreBuilder)
+
+        val (preferences, preferencesAuthorization) = builder
             .stream<String, SpecificRecord>(config.topics.preferencesAuthorization)
-            .transform(supplier)
-            .to(config.topics.preferences)
+            .transform(TransformerSupplier { transformer }, config.stateStores.preferences)
+            .branch(
+                Predicate { _, v -> v is PreferencesCreated },
+                Predicate { _, v -> v is PreferencesDenied }
+            )
+
+        preferences.to(config.topics.preferences)
+        preferencesAuthorization.to(config.topics.preferencesAuthorization)
+
+        builder
+            .stream<String, SpecificRecord>(config.topics.preferences)
+            .process(ProcessorSupplier { processor }, config.stateStores.preferences)
 
         val properties = Properties().apply {
             put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, config.bootstrapServersConfig)

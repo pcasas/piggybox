@@ -67,21 +67,22 @@ subprojects {
     }
 }
 
-def coverageProjects = [
-        project(":command-service"),
-        project(":integration-tests"),
-        project(":kafka-init-service"),
-        project(":preferences-service")
-]
-
 task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
-    additionalSourceDirs.from = coverageProjects.sourceSets.main.allSource.srcDirs
-    sourceDirectories.from = coverageProjects.sourceSets.main.allSource.srcDirs
-    classDirectories.from = coverageProjects.sourceSets.main.output
-    executionData.from = coverageProjects.jacocoTestReport.executionData.findAll { it.first().exists() }
-
     reports {
         html.enabled = true
         xml.enabled = true
+        csv.enabled = false
     }
+
+    def projects = [
+            project(":command-service"),
+            project(":integration-tests"),
+            project(":kafka-init-service"),
+            project(":preferences-service")
+    ]
+
+    additionalSourceDirs.from = projects.sourceSets.main.allSource.srcDirs
+    sourceDirectories.from = projects.sourceSets.main.allSource.srcDirs
+    classDirectories.from = projects.sourceSets.main.output
+    executionData.from = projects.jacocoTestReport.executionData.findAll { it.first().exists() }
 }

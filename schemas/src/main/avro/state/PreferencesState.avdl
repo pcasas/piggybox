@@ -1,0 +1,8 @@
+@namespace("parts.code.piggybox.schemas.state")
+protocol PiggyBox {
+
+  record PreferencesState {
+    string customerId;
+    string currency;
+  }
+}
