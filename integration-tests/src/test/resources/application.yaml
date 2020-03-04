@@ -5,3 +5,6 @@ kafka:
   topics:
     preferencesAuthorization: 'preferences-authorization'
     preferences: 'preferences'
+
+  stateStores:
+    preferences: 'preferences-state'
