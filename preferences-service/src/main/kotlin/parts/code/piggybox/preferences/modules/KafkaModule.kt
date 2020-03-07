@@ -20,14 +20,19 @@ import org.apache.kafka.streams.processor.ProcessorSupplier
 import org.apache.kafka.streams.state.KeyValueStore
 import org.apache.kafka.streams.state.StoreBuilder
 import org.apache.kafka.streams.state.Stores
+import org.slf4j.LoggerFactory
 import parts.code.piggybox.preferences.PreferencesServiceApplication
 import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.streams.suppliers.RecordProcessor
 import parts.code.piggybox.preferences.streams.suppliers.RecordTransformer
+import parts.code.piggybox.schemas.commands.AddFundsCommand
+import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.PreferencesCreated
 import parts.code.piggybox.schemas.events.PreferencesDenied
 
 class KafkaModule : AbstractModule() {
+
+    private val logger = LoggerFactory.getLogger(KafkaModule::class.java)
 
     override fun configure() {
         bind(RecordTransformer::class.java)
@@ -52,16 +57,32 @@ class KafkaModule : AbstractModule() {
 
         builder.addStateStore(keyValueStoreBuilder)
 
-        val (preferences, preferencesAuthorization) = builder
+        val (preferences, preferencesAuthorization, balanceAuthorization) = builder
             .stream<String, SpecificRecord>(config.topics.preferencesAuthorization)
             .transform(TransformerSupplier { transformer }, config.stateStores.preferences)
             .branch(
                 Predicate { _, v -> v is PreferencesCreated },
-                Predicate { _, v -> v is PreferencesDenied }
+                Predicate { _, v -> v is PreferencesDenied || v is AddFundsDenied },
+                Predicate { _, v -> v is AddFundsCommand }
             )
 
-        preferences.to(config.topics.preferences)
-        preferencesAuthorization.to(config.topics.preferencesAuthorization)
+        preferences
+            .peek { _, record ->
+                logger.info("Sent ${record.schema.name} to topic: ${config.topics.preferences}\n\trecord: $record")
+            }
+            .to(config.topics.preferences)
+
+        preferencesAuthorization
+            .peek { _, record ->
+                logger.info("Sent ${record.schema.name} to topic: ${config.topics.preferencesAuthorization}\n\trecord: $record")
+            }
+            .to(config.topics.preferencesAuthorization)
+
+        balanceAuthorization
+            .peek { _, record ->
+                logger.info("Sent ${record.schema.name} to topic: ${config.topics.balanceAuthorization}\n\trecord: $record")
+            }
+            .to(config.topics.balanceAuthorization)
 
         builder
             .stream<String, SpecificRecord>(config.topics.preferences)

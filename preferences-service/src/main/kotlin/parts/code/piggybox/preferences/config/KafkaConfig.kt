@@ -9,7 +9,8 @@ data class KafkaConfig(
 
     data class Topics(
         val preferencesAuthorization: String,
-        val preferences: String
+        val preferences: String,
+        val balanceAuthorization: String
     )
 
     data class StateStores(

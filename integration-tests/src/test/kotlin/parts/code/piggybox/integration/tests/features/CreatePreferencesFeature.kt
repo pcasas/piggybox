@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import parts.code.piggybox.command.CommandServiceApplication
 import parts.code.piggybox.integration.tests.TestKafkaConsumer
+import parts.code.piggybox.integration.tests.Topics
 import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
 import parts.code.piggybox.preferences.PreferencesServiceApplication
@@ -26,8 +27,6 @@ private class CreatePreferencesFeature {
     val kafkaInitService = object : MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java) {}
     val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
     val preferencesService = object : MainClassApplicationUnderTest(PreferencesServiceApplication::class.java) {}
-    val consumerPreferencesAuthorization = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
-    val consumerPreferences = TestKafkaConsumer.of(CreatePreferencesFeature::class.simpleName)
 
     @BeforeAll
     fun setUp() {
@@ -42,31 +41,26 @@ private class CreatePreferencesFeature {
                 }
             }
         }
-
-        consumerPreferencesAuthorization.subscribe(listOf("preferences-authorization"))
-        consumerPreferences.subscribe(listOf("preferences"))
-        consumerPreferencesAuthorization.poll(Duration.ofMillis(1)).count()
-        consumerPreferences.poll(Duration.ofMillis(1)).count()
     }
 
     @AfterAll
     fun tearDown() {
-        consumerPreferencesAuthorization.close()
-        consumerPreferences.close()
+        kafkaInitService.close()
         commandService.close()
         preferencesService.close()
     }
 
     @Test
     fun `should create preferences`() {
+        val consumerPreferences = TestKafkaConsumer.of(Topics.preferences)
+
         val customerId = UUID.randomUUID().toString()
 
-        val response = commandService.httpClient.requestSpec { request ->
+        commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
             }.body.text("""{"customerId": "$customerId", "currency": "EUR"}""")
-        }.post("/api/preferences.create")
-        response.status.code shouldBe 202
+        }.post("/api/preferences.create").status.code shouldBe 202
 
         val event = consumerPreferences.lastRecord(customerId).value() as PreferencesCreated
 
@@ -77,7 +71,10 @@ private class CreatePreferencesFeature {
     }
 
     @Test
-    fun `should deny preferences if preferences already exist`() {
+    fun `should deny create preferences if preferences already exist`() {
+        val consumerPreferencesAuthorization = TestKafkaConsumer.of(Topics.preferencesAuthorization)
+        val consumerPreferences = TestKafkaConsumer.of(Topics.preferences)
+
         val customerId = UUID.randomUUID().toString()
 
         commandService.httpClient.requestSpec { request ->
