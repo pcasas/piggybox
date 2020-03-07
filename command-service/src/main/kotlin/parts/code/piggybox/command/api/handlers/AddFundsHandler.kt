@@ -23,16 +23,20 @@ class AddFundsHandler @Inject constructor(
 
     override fun handle(ctx: Context) {
         ctx.parse(AddFundsPayload::class.java).then {
-            val event = AddFundsCommand(UUID.randomUUID().toString(), Instant.now(), it.customerId, it.amount)
+            val command =
+                AddFundsCommand(UUID.randomUUID().toString(), Instant.now(), it.customerId, it.amount, it.currency)
 
             val record =
-                ProducerRecord(config.topics.preferencesAuthorization, event.customerId, event as SpecificRecord)
+                ProducerRecord(config.topics.preferencesAuthorization, command.customerId, command as SpecificRecord)
             producer.send(record).get()
-            logger.info("Event sent to ${config.topics.preferencesAuthorization}: $record")
+
+            logger.info("Sent ${command.schema.name} to topic: ${config.topics.preferencesAuthorization}" +
+                    "\n\trecord: $command")
+
             ctx.response.status(Status.ACCEPTED)
             ctx.render("")
         }
     }
 
-    private data class AddFundsPayload(val customerId: String, val amount: BigDecimal)
+    private data class AddFundsPayload(val customerId: String, val amount: BigDecimal, val currency: String)
 }

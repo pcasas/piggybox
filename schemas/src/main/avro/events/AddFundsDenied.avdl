@@ -1,7 +1,7 @@
-@namespace("parts.code.piggybox.schemas.commands")
+@namespace("parts.code.piggybox.schemas.events")
 protocol PiggyBox {
 
-  record AddFundsCommand {
+  record AddFundsDenied {
     string id;
     timestamp_ms occurredOn;
     string customerId;

@@ -20,7 +20,8 @@ class CreateTopicsService @Inject constructor(
         kafkaAdminClientService.createTopics(
             listOf(
                 config.topics.preferencesAuthorization,
-                config.topics.preferences
+                config.topics.preferences,
+                config.topics.balanceAuthorization
             ), KafkaAdminClient.create(properties)
         )
     }

@@ -4,3 +4,4 @@ kafka:
   topics:
     preferencesAuthorization: 'preferences-authorization'
     preferences: 'preferences'
+    balanceAuthorization: 'balance-authorization'

@@ -22,14 +22,12 @@ class RecordProcessor @Inject constructor(
         state = context.getStateStore(config.stateStores.preferences) as KeyValueStore<String, PreferencesState>
     }
 
-    override fun process(key: String?, record: SpecificRecord?) {
-        logger.info("Processing record...")
-
+    override fun process(key: String, record: SpecificRecord) {
         when (record) {
             is PreferencesCreated -> state.put(record.customerId, PreferencesState(record.customerId, record.currency))
         }
 
-        logger.info("Record $record processed")
+        logger.info("Processed ${record.schema.name}\n\trecord: $record")
     }
 
     override fun close() {}
