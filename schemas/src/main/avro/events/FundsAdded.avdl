@@ -1,0 +1,11 @@
+@namespace("parts.code.piggybox.schemas.events")
+protocol PiggyBox {
+
+  record FundsAdded {
+    string id;
+    timestamp_ms occurredOn;
+    string customerId;
+    decimal(4,2) amount;
+    string currency;
+  }
+}

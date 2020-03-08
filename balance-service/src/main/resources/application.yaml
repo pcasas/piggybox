@@ -1,8 +1,10 @@
 kafka:
   bootstrapServersConfig: 'localhost:9092'
+  schemaRegistryUrlConfig: 'http://localhost:8081'
 
   topics:
-    preferencesAuthorization: 'preferences-authorization'
-    preferences: 'preferences'
     balanceAuthorization: 'balance-authorization'
     balance: 'balance'
+
+  stateStores:
+    balance: 'balanceState'

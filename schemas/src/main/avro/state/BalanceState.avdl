@@ -1,0 +1,9 @@
+@namespace("parts.code.piggybox.schemas.state")
+protocol PiggyBox {
+
+  record BalanceState {
+    string customerId;
+    decimal(4,2) amount;
+    string currency;
+  }
+}
