@@ -17,7 +17,8 @@ jacocoTestReport {
             project(":balance-service"),
             project(":command-service"),
             project(":kafka-init-service"),
-            project(":preferences-service")
+            project(":preferences-service"),
+            project(":query-service")
     ]
 
     sourceDirectories.from = projects.sourceSets.main.allSource.srcDirs
@@ -32,6 +33,7 @@ dependencies {
     api project(':command-service')
     api project(':kafka-init-service')
     api project(':preferences-service')
+    api project(':query-service')
     implementation "org.apache.kafka:kafka-clients:$kafkaVersion"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
     compile "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"

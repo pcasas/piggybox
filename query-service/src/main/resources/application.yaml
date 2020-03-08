@@ -3,8 +3,7 @@ kafka:
   schemaRegistryUrlConfig: 'http://localhost:8081'
 
   topics:
-    balanceAuthorization: 'balance-authorization'
     balance: 'balance'
 
   stateStores:
-    balance: 'balance-state'
+    balanceReadModel: 'balance-read-model-state'

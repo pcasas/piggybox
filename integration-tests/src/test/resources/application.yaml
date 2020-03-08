@@ -11,3 +11,4 @@ kafka:
   stateStores:
     preferences: 'preferences-state'
     balance: 'balance-state'
+    balanceReadModel: 'balance-read-model-state'

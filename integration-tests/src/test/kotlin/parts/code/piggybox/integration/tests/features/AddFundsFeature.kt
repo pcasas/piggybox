@@ -19,6 +19,7 @@ import parts.code.piggybox.integration.tests.Topics
 import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
 import parts.code.piggybox.preferences.PreferencesServiceApplication
+import parts.code.piggybox.query.QueryServiceApplication
 import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.FundsAdded
 import parts.code.piggybox.schemas.events.PreferencesCreated
@@ -31,6 +32,7 @@ private class AddFundsFeature {
     val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
     val preferencesService = object : MainClassApplicationUnderTest(PreferencesServiceApplication::class.java) {}
     val balanceService = object : MainClassApplicationUnderTest(BalanceServiceApplication::class.java) {}
+    val queryService = object : MainClassApplicationUnderTest(QueryServiceApplication::class.java) {}
 
     @BeforeAll
     fun setUp() {
@@ -40,7 +42,8 @@ private class AddFundsFeature {
                     kafkaInitService.address == null ||
                     commandService.address == null ||
                     preferencesService.address == null ||
-                    balanceService.address == null
+                    balanceService.address == null ||
+                    queryService.address == null
                 ) {
                     delay(50)
                 }
@@ -54,6 +57,7 @@ private class AddFundsFeature {
         commandService.close()
         preferencesService.close()
         balanceService.close()
+        queryService.close()
     }
 
     @Test
@@ -77,13 +81,16 @@ private class AddFundsFeature {
             }.body.text("""{"customerId": "$customerId", "amount": 1.00, "currency": "EUR"}""")
         }.post("/api/balance.addFunds").status.code shouldBe 202
 
-        val event = consumerBalance.lastRecord(customerId).value() as FundsAdded
+        consumerBalance.lastRecord(customerId).value() as FundsAdded
 
-        UUID.fromString(event.id)
-        event.occurredOn shouldNotBe null
-        event.customerId shouldBe customerId
-        event.amount shouldBe BigDecimal.ONE.setScale(2)
-        event.currency shouldBe "EUR"
+        val response = queryService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set("Content-Type", "application/json")
+            }.body.text("""{"customerId": "$customerId"}""")
+        }.get("/api/customers.getBalance")
+
+        response.status.code shouldBe 200
+        response.body.text shouldBe """{"amount":1.00,"currency":"EUR"}"""
     }
 
     @Test
