@@ -1,0 +1,22 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.ratpack:ratpack-gradle:$ratpackVersion"
+    }
+}
+
+apply plugin: 'io.ratpack.ratpack-java'
+
+mainClassName = 'parts.code.piggybox.query.QueryServiceApplication'
+
+dependencies {
+    api project(':schemas')
+    implementation "io.ratpack:ratpack-guice:$ratpackVersion"
+    implementation "org.apache.kafka:kafka-clients:$kafkaVersion"
+    implementation "org.apache.kafka:kafka-streams:$kafkaVersion"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
+    compile "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
+    compile "io.confluent:kafka-streams-avro-serde:$kafkaConfluentVersion"
+}

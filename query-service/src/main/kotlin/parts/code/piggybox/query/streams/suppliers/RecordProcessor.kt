@@ -1,4 +1,4 @@
-package parts.code.piggybox.balance.streams.suppliers
+package parts.code.piggybox.query.streams.suppliers
 
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -7,7 +7,7 @@ import org.apache.kafka.streams.processor.Processor
 import org.apache.kafka.streams.processor.ProcessorContext
 import org.apache.kafka.streams.state.KeyValueStore
 import org.slf4j.LoggerFactory
-import parts.code.piggybox.balance.config.KafkaConfig
+import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.schemas.events.FundsAdded
 import parts.code.piggybox.schemas.state.BalanceState
 
@@ -20,7 +20,7 @@ class RecordProcessor @Inject constructor(
 
     override fun init(context: ProcessorContext) {
         @Suppress("UNCHECKED_CAST")
-        state = context.getStateStore(config.stateStores.balance) as KeyValueStore<String, BalanceState>
+        state = context.getStateStore(config.stateStores.balanceReadModel) as KeyValueStore<String, BalanceState>
     }
 
     override fun process(key: String, record: SpecificRecord) {

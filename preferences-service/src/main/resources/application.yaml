@@ -8,4 +8,4 @@ kafka:
     balanceAuthorization: 'balance-authorization'
 
   stateStores:
-    preferences: 'preferencesState'
+    preferences: 'preferences-state'
