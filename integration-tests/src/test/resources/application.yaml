@@ -6,6 +6,8 @@ kafka:
     preferencesAuthorization: 'preferences-authorization'
     preferences: 'preferences'
     balanceAuthorization: 'balance-authorization'
+    balance: 'balance'
 
   stateStores:
     preferences: 'preferences-state'
+    balance: 'balance-state'

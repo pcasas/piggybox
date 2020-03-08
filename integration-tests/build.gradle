@@ -14,6 +14,7 @@ jacocoTestReport {
     }
 
     def projects = [
+            project(":balance-service"),
             project(":command-service"),
             project(":kafka-init-service"),
             project(":preferences-service")
@@ -27,6 +28,7 @@ test.finalizedBy jacocoTestReport
 
 dependencies {
     api project(':schemas')
+    api project(':balance-service')
     api project(':command-service')
     api project(':kafka-init-service')
     api project(':preferences-service')
