@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import parts.code.piggybox.balance.config.KafkaConfig
 import parts.code.piggybox.balance.services.BalanceService
 import parts.code.piggybox.schemas.commands.AddFundsCommand
+import parts.code.piggybox.schemas.commands.BuyGameCommand
 import parts.code.piggybox.schemas.state.BalanceState
 
 class RecordTransformer @Inject constructor(
@@ -36,6 +37,16 @@ class RecordTransformer @Inject constructor(
                     balanceService.denyAddFunds(record)
                 } else {
                     balanceService.addFunds(record)
+                }
+            }
+            is BuyGameCommand -> {
+                val balanceState = state.get(record.customerId)
+                val newBalance = (balanceState?.amount ?: BigDecimal.ZERO) - record.amount
+
+                if (newBalance < BigDecimal.ZERO) {
+                    balanceService.denyBuyGame(record)
+                } else {
+                    balanceService.buyGame(record)
                 }
             }
             else -> null

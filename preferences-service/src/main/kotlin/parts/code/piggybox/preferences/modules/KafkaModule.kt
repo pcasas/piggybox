@@ -26,6 +26,8 @@ import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.streams.suppliers.RecordProcessor
 import parts.code.piggybox.preferences.streams.suppliers.RecordTransformer
 import parts.code.piggybox.schemas.commands.AddFundsCommand
+import parts.code.piggybox.schemas.commands.BuyGameCommand
+import parts.code.piggybox.schemas.commands.BuyGameDenied
 import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.PreferencesCreated
 import parts.code.piggybox.schemas.events.PreferencesDenied
@@ -62,8 +64,8 @@ class KafkaModule : AbstractModule() {
             .transform(TransformerSupplier { transformer }, config.stateStores.preferences)
             .branch(
                 Predicate { _, v -> v is PreferencesCreated },
-                Predicate { _, v -> v is PreferencesDenied || v is AddFundsDenied },
-                Predicate { _, v -> v is AddFundsCommand }
+                Predicate { _, v -> v is PreferencesDenied || v is AddFundsDenied || v is BuyGameDenied },
+                Predicate { _, v -> v is AddFundsCommand || v is BuyGameCommand }
             )
 
         preferences

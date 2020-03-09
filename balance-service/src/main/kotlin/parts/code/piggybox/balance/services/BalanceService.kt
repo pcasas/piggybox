@@ -5,6 +5,9 @@ import java.util.UUID
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
 import parts.code.piggybox.schemas.commands.AddFundsCommand
+import parts.code.piggybox.schemas.commands.BuyGameCommand
+import parts.code.piggybox.schemas.commands.BuyGameDenied
+import parts.code.piggybox.schemas.commands.GameBought
 import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.FundsAdded
 
@@ -27,6 +30,32 @@ class BalanceService {
             UUID.randomUUID().toString(),
             Instant.now(),
             command.customerId,
+            command.amount,
+            command.currency
+        )
+
+        return KeyValue(command.customerId, event)
+    }
+
+    fun buyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord>? {
+        val event = GameBought(
+            UUID.randomUUID().toString(),
+            Instant.now(),
+            command.customerId,
+            command.gameId,
+            command.amount,
+            command.currency
+        )
+
+        return KeyValue(command.customerId, event)
+    }
+
+    fun denyBuyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord>? {
+        val event = BuyGameDenied(
+            UUID.randomUUID().toString(),
+            Instant.now(),
+            command.customerId,
+            command.gameId,
             command.amount,
             command.currency
         )

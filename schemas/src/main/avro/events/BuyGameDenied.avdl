@@ -1,0 +1,12 @@
+@namespace("parts.code.piggybox.schemas.commands")
+protocol PiggyBox {
+
+  record BuyGameDenied {
+    string id;
+    timestamp_ms occurredOn;
+    string customerId;
+    string gameId;
+    decimal(4,2) amount;
+    string currency;
+  }
+}

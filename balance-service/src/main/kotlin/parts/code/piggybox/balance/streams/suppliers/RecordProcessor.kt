@@ -8,6 +8,7 @@ import org.apache.kafka.streams.processor.ProcessorContext
 import org.apache.kafka.streams.state.KeyValueStore
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.balance.config.KafkaConfig
+import parts.code.piggybox.schemas.commands.GameBought
 import parts.code.piggybox.schemas.events.FundsAdded
 import parts.code.piggybox.schemas.state.BalanceState
 
@@ -28,6 +29,12 @@ class RecordProcessor @Inject constructor(
             is FundsAdded -> {
                 val balanceState = state.get(record.customerId)
                 val newBalance = (balanceState?.amount ?: BigDecimal.ZERO) + record.amount
+
+                state.put(record.customerId, BalanceState(record.customerId, newBalance, record.currency))
+            }
+            is GameBought -> {
+                val balanceState = state.get(record.customerId)
+                val newBalance = (balanceState?.amount ?: BigDecimal.ZERO) - record.amount
 
                 state.put(record.customerId, BalanceState(record.customerId, newBalance, record.currency))
             }
