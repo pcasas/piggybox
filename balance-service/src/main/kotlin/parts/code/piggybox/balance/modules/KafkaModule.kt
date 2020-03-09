@@ -25,6 +25,8 @@ import parts.code.piggybox.balance.BalanceServiceApplication
 import parts.code.piggybox.balance.config.KafkaConfig
 import parts.code.piggybox.balance.streams.suppliers.RecordProcessor
 import parts.code.piggybox.balance.streams.suppliers.RecordTransformer
+import parts.code.piggybox.schemas.commands.BuyGameDenied
+import parts.code.piggybox.schemas.commands.GameBought
 import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.FundsAdded
 
@@ -59,8 +61,8 @@ class KafkaModule : AbstractModule() {
             .stream<String, SpecificRecord>(config.topics.balanceAuthorization)
             .transform(TransformerSupplier { transformer }, config.stateStores.balance)
             .branch(
-                Predicate { _, v -> v is FundsAdded },
-                Predicate { _, v -> v is AddFundsDenied }
+                Predicate { _, v -> v is FundsAdded || v is GameBought },
+                Predicate { _, v -> v is AddFundsDenied || v is BuyGameDenied }
             )
 
         balance

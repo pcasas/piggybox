@@ -59,7 +59,7 @@ private class CreatePreferencesFeature {
         commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId": "$customerId", "currency": "EUR"}""")
+            }.body.text("""{"customerId":"$customerId","currency":"EUR"}""")
         }.post("/api/preferences.create").status.code shouldBe 202
 
         val event = consumerPreferences.lastRecord(customerId).value() as PreferencesCreated
@@ -80,7 +80,7 @@ private class CreatePreferencesFeature {
         commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId": "$customerId", "currency": "EUR"}""")
+            }.body.text("""{"customerId":"$customerId","currency":"EUR"}""")
         }.post("/api/preferences.create").status.code shouldBe 202
 
         val preferencesCreated = consumerPreferences.lastRecord(customerId).value() as PreferencesCreated
@@ -93,7 +93,7 @@ private class CreatePreferencesFeature {
         commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId": "$customerId", "currency": "USD"}""")
+            }.body.text("""{"customerId":"$customerId","currency":"USD"}""")
         }.post("/api/preferences.create").status.code shouldBe 202
 
         val preferencesDenied = consumerPreferencesAuthorization.lastRecord(customerId).value() as PreferencesDenied
