@@ -1,28 +1,41 @@
-![Build](https://github.com/pcasas/piggybox/workflows/Build/badge.svg)
+![Build](https://github.com/casasprunes/piggybox/workflows/Build/badge.svg)
 [![codecov](https://codecov.io/gh/casasprunes/piggybox/branch/master/graph/badge.svg)](https://codecov.io/gh/casasprunes/piggybox)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/casasprunes/piggybox/blob/master/LICENSE)
 
-# Piggy Box
-It's a tutorial project to show how [Microservices Architecture Pattern](http://martinfowler.com/microservices/) can be implemented using Ratpack, Kafka and Docker.   
-Piggy Box is the Backend of an online wallet [Bounded Context](https://martinfowler.com/bliki/BoundedContext.html) of a digital distribution platform for PC gaming. 
+# What is Piggybox?
+Piggybox is a tutorial project to show how to create [Microservices](http://martinfowler.com/microservices/) using Ratpack, Kafka and Docker.   
+Piggybox implements the Backend of an Online Wallet [Bounded Context](https://martinfowler.com/bliki/BoundedContext.html). 
+If you are familiar with video game platforms like [Steam](https://store.steampowered.com/) you'll know they have an Online Wallet where you can add funds and later buy games with those funds. Those are the type of functionalities that are implemented in this project.
 
-## Service Architecture
+## Microservice Architecture
 Piggy Box is divided into 5 microservices, grouped together in a Monorepo but independently deployable. 
 
-<img width="880" alt="Kafka Microservices" src="/diagrams/kafka-microservices.png">
+<img width="880" alt="Kafka Microservices Architecture" src="/diagrams/kafka-microservices-architecture.png">
 
 #### Command Service
-Using Command Query Responsibility Segregation (CQRS) this service is the way in for commands into our Bounded Context. Uses a Web API which is a collection of HTTP RPC-style methods. For every API call sends commands to different Kafka topics.
+The Command Service exposes a Web API that accepts requests over HTTP. The requests take the form of commands that can cause changes on the State Stores owned by our microservices.
 
-HTTP Method	| Method URL | Description
+<img width="880" alt="CQRS Architecture Kafka Command Service" src="/diagrams/cqrs-architecture-kafka-command-service.png">
+
+The Web API is a collection of HTTP RPC style methods with URLs in the form `/api/METHOD_FAMILY.method`.   
+For every API call the Command Service sends a command to the Kafka Cluster.
+
+Method | URL | Description
 ------------- | ------------------------- | ------------- |
-POST | /api/preferences.create | Create new preferences
+POST | /api/preferences.create | Create preferences for a customer with the currency to be used for all transactions
 POST | /api/balance.addFunds | Add funds to the customer's balance
 POST | /api/balance.buyGame | Buy a game for a customer
 
 #### Query Service
-Using Command Query Responsibility Segregation (CQRS) this service is the way in for queries into our Bounded Context. Uses a Web API which is a collection of HTTP RPC-style methods. Queries a Read Model which is a Kafka Streams State Store.
+The Query Service waits for Domain Events to happen and updates the Read Model accordingly. Additionally, exposes a Web API that allows HTTP clients to read the resulting Read Model that was generated from the processed events.
+For the Read Model it uses a Kafka Streams State Store. 
 
-HTTP Method	| Method URL | Description
+<img width="880" alt="CQRS Architecture Kafka Query Service" src="/diagrams/cqrs-architecture-kafka-query-service.png">
+
+The Web API is a collection of HTTP RPC style methods with URLs in the form `/api/METHOD_FAMILY.method`.   
+For every API call the Query Service queries the Read Model, which is a persistent key-value store, and returns a JSON response.
+
+Method | URL | Description
 ------------- | ------------------------- | ------------- |
 GET | /api/customers.getBalance | Get the current customer's balance
 
