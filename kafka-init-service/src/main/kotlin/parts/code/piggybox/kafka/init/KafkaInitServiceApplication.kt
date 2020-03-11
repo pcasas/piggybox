@@ -15,15 +15,15 @@ object KafkaInitServiceApplication {
     fun main(args: Array<String>) {
         RatpackServer.start { server ->
             server
-                .serverConfig { config ->
-                    config
+                .serverConfig {
+                    it
                         .baseDir(BaseDir.find())
                         .yaml("application.yaml")
                         .require("/kafka", KafkaConfig::class.java)
                         .jacksonModules(KotlinModule())
                 }
-                .registry(Guice.registry { bindings ->
-                    bindings
+                .registry(Guice.registry {
+                    it
                         .bind(KafkaAdminClientService::class.java)
                         .bind(CreateTopicsService::class.java)
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
