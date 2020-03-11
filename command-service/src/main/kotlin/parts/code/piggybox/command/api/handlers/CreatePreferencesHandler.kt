@@ -22,14 +22,17 @@ class CreatePreferencesHandler @Inject constructor(
 
     override fun handle(ctx: Context) {
         ctx.parse(CreatePreferencesPayload::class.java).then {
-            val command = CreatePreferencesCommand(UUID.randomUUID().toString(), Instant.now(), it.customerId, it.currency)
+            val command =
+                CreatePreferencesCommand(UUID.randomUUID().toString(), Instant.now(), it.customerId, it.currency)
 
             val record =
                 ProducerRecord(config.topics.preferencesAuthorization, command.customerId, command as SpecificRecord)
             producer.send(record).get()
 
-            logger.info("Sent ${command.schema.name} to topic: ${config.topics.preferencesAuthorization}" +
-                    "\n\trecord: $command")
+            logger.info(
+                "Sent ${command.schema.name} to topic: ${config.topics.preferencesAuthorization}" +
+                        "\n\trecord: $command"
+            )
 
             ctx.response.status(Status.ACCEPTED)
             ctx.render("")

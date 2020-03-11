@@ -1,13 +1,13 @@
 package parts.code.piggybox.query.modules
 
 import com.google.inject.AbstractModule
-import parts.code.piggybox.query.api.APIEndpoints
+import parts.code.piggybox.query.api.WebAPIEndpoints
 import parts.code.piggybox.query.api.handlers.CustomersGetBalanceHandler
 
-class APIModule : AbstractModule() {
+class WebAPIModule : AbstractModule() {
 
     override fun configure() {
-        bind(APIEndpoints::class.java)
+        bind(WebAPIEndpoints::class.java)
         bind(CustomersGetBalanceHandler::class.java)
     }
 }

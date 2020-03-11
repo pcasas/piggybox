@@ -16,8 +16,7 @@ import parts.code.piggybox.command.config.KafkaConfig
 
 class KafkaModule : AbstractModule() {
 
-    override fun configure() {
-    }
+    override fun configure() {}
 
     @Provides
     @Singleton
