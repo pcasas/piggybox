@@ -23,6 +23,7 @@ For every API call the Command Service sends a command to the Kafka Cluster.
 Method | URL | Description
 ------------- | ------------------------- | ------------- |
 POST | /api/preferences.create | Create preferences for a customer with the currency to be used for all transactions
+POST | /api/preferences.changeCountry | Change the customer's country from preferences
 POST | /api/balance.addFunds | Add funds to the customer's balance
 POST | /api/balance.buyGame | Buy a game for a customer
 

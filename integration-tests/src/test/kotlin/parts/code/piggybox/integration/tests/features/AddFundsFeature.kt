@@ -70,10 +70,10 @@ private class AddFundsFeature {
         commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId":"$customerId","currency":"EUR"}""")
+            }.body.text("""{"customerId":"$customerId","currency":"EUR","country":"ES"}""")
         }.post("/api/preferences.create").status.code shouldBe 202
 
-        consumerPreferences.lastRecord(customerId).value() as PreferencesCreated
+        consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
 
         commandService.httpClient.requestSpec { request ->
             request.headers {
@@ -81,7 +81,7 @@ private class AddFundsFeature {
             }.body.text("""{"customerId":"$customerId","amount": 1.00,"currency":"EUR"}""")
         }.post("/api/balance.addFunds").status.code shouldBe 202
 
-        consumerBalance.lastRecord(customerId).value() as FundsAdded
+        consumerBalance.lastRecord(customerId, FundsAdded::class.java).value() as FundsAdded
 
         val response = queryService.httpClient.requestSpec { request ->
             request.headers {
@@ -106,7 +106,7 @@ private class AddFundsFeature {
         }.post("/api/balance.addFunds")
         response.status.code shouldBe 202
 
-        val event = consumerPreferencesAuthorization.lastRecord(customerId).value() as AddFundsDenied
+        val event = consumerPreferencesAuthorization.lastRecord(customerId, AddFundsDenied::class.java).value() as AddFundsDenied
 
         UUID.fromString(event.id)
         event.occurredOn shouldNotBe null
@@ -125,10 +125,10 @@ private class AddFundsFeature {
         commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId":"$customerId","currency":"GBP"}""")
+            }.body.text("""{"customerId":"$customerId","currency":"GBP","country":"UK"}""")
         }.post("/api/preferences.create").status.code shouldBe 202
 
-        consumerPreferences.lastRecord(customerId).value() as PreferencesCreated
+        consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
 
         commandService.httpClient.requestSpec { request ->
             request.headers {
@@ -136,7 +136,7 @@ private class AddFundsFeature {
             }.body.text("""{"customerId":"$customerId","amount":1.00,"currency":"EUR"}""")
         }.post("/api/balance.addFunds").status.code shouldBe 202
 
-        val event = consumerPreferencesAuthorization.lastRecord(customerId).value() as AddFundsDenied
+        val event = consumerPreferencesAuthorization.lastRecord(customerId, AddFundsDenied::class.java).value() as AddFundsDenied
 
         UUID.fromString(event.id)
         event.occurredOn shouldNotBe null
@@ -156,10 +156,10 @@ private class AddFundsFeature {
         commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId":"$customerId","currency":"EUR"}""")
+            }.body.text("""{"customerId":"$customerId","currency":"EUR","country":"ES"}""")
         }.post("/api/preferences.create").status.code shouldBe 202
 
-        consumerPreferences.lastRecord(customerId).value() as PreferencesCreated
+        consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
 
         commandService.httpClient.requestSpec { request ->
             request.headers {
@@ -167,7 +167,7 @@ private class AddFundsFeature {
             }.body.text("""{"customerId":"$customerId","amount":2000.00,"currency":"EUR"}""")
         }.post("/api/balance.addFunds").status.code shouldBe 202
 
-        consumerBalance.lastRecord(customerId).value() as FundsAdded
+        consumerBalance.lastRecord(customerId, FundsAdded::class.java).value() as FundsAdded
 
         commandService.httpClient.requestSpec { request ->
             request.headers {
@@ -175,7 +175,7 @@ private class AddFundsFeature {
             }.body.text("""{"customerId":"$customerId","amount":1.00,"currency":"EUR"}""")
         }.post("/api/balance.addFunds").status.code shouldBe 202
 
-        val command = consumerBalanceAuthorization.lastRecord(customerId).value() as AddFundsDenied
+        val command = consumerBalanceAuthorization.lastRecord(customerId, AddFundsDenied::class.java).value() as AddFundsDenied
 
         UUID.fromString(command.id)
         command.occurredOn shouldNotBe null

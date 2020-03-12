@@ -7,6 +7,7 @@ import org.apache.kafka.streams.processor.ProcessorContext
 import org.apache.kafka.streams.state.KeyValueStore
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.preferences.config.KafkaConfig
+import parts.code.piggybox.schemas.events.CountryChanged
 import parts.code.piggybox.schemas.events.PreferencesCreated
 import parts.code.piggybox.schemas.state.PreferencesState
 
@@ -24,7 +25,18 @@ class RecordProcessor @Inject constructor(
 
     override fun process(key: String, record: SpecificRecord) {
         when (record) {
-            is PreferencesCreated -> state.put(record.customerId, PreferencesState(record.customerId, record.currency))
+            is PreferencesCreated -> state.put(
+                record.customerId,
+                PreferencesState(record.customerId, record.currency, record.country)
+            )
+            is CountryChanged -> {
+                val preferencesState = state.get(record.customerId)
+
+                state.put(
+                    record.customerId,
+                    PreferencesState(record.customerId, preferencesState.currency, record.country)
+                )
+            }
         }
 
         logger.info("Processed ${record.schema.name}\n\trecord: $record")

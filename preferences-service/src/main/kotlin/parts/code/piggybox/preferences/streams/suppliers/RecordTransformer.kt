@@ -12,6 +12,7 @@ import parts.code.piggybox.preferences.services.BalanceService
 import parts.code.piggybox.preferences.services.PreferencesService
 import parts.code.piggybox.schemas.commands.AddFundsCommand
 import parts.code.piggybox.schemas.commands.BuyGameCommand
+import parts.code.piggybox.schemas.commands.ChangeCountryCommand
 import parts.code.piggybox.schemas.commands.CreatePreferencesCommand
 import parts.code.piggybox.schemas.state.PreferencesState
 
@@ -37,7 +38,16 @@ class RecordTransformer @Inject constructor(
                 if (preferencesState == null) {
                     preferencesService.createPreferences(record)
                 } else {
-                    preferencesService.denyPreferences(record)
+                    preferencesService.denyCreatePreferences(record)
+                }
+            }
+            is ChangeCountryCommand -> {
+                val preferencesState = state.get(record.customerId)
+
+                if (preferencesState != null) {
+                    preferencesService.changeCountry(record)
+                } else {
+                    preferencesService.denyChangeCountry(record)
                 }
             }
             is AddFundsCommand -> {

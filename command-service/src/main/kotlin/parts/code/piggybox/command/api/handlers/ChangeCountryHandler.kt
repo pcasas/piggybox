@@ -8,25 +8,24 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.command.config.KafkaConfig
-import parts.code.piggybox.schemas.commands.CreatePreferencesCommand
+import parts.code.piggybox.schemas.commands.ChangeCountryCommand
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status
 
-class CreatePreferencesHandler @Inject constructor(
+class ChangeCountryHandler @Inject constructor(
     private val config: KafkaConfig,
     private val producer: KafkaProducer<String, SpecificRecord>
 ) : Handler {
 
-    private val logger = LoggerFactory.getLogger(CreatePreferencesHandler::class.java)
+    private val logger = LoggerFactory.getLogger(ChangeCountryHandler::class.java)
 
     override fun handle(ctx: Context) {
-        ctx.parse(CreatePreferencesPayload::class.java).then {
-            val command = CreatePreferencesCommand(
+        ctx.parse(ChangeCountryPayload::class.java).then {
+            val command = ChangeCountryCommand(
                 UUID.randomUUID().toString(),
                 Instant.now(),
                 it.customerId,
-                it.currency,
                 it.country
             )
 
@@ -47,5 +46,5 @@ class CreatePreferencesHandler @Inject constructor(
         }
     }
 
-    private data class CreatePreferencesPayload(val customerId: String, val currency: String, val country: String)
+    private data class ChangeCountryPayload(val customerId: String, val country: String)
 }

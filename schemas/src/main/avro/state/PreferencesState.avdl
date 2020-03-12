@@ -4,5 +4,6 @@ protocol PiggyBox {
   record PreferencesState {
     string customerId;
     string currency;
+    string country;
   }
 }
