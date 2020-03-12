@@ -1,10 +1,10 @@
 @namespace("parts.code.piggybox.schemas.events")
 protocol PiggyBox {
 
-  record PreferencesDenied {
+  record CountryChanged {
     string id;
     timestamp_ms occurredOn;
     string customerId;
-    string currency;
+    string country;
   }
 }

@@ -6,5 +6,6 @@ protocol PiggyBox {
     timestamp_ms occurredOn;
     string customerId;
     string currency;
+    string country;
   }
 }

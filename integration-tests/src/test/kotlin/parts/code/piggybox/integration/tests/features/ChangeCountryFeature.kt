@@ -17,12 +17,13 @@ import parts.code.piggybox.integration.tests.Topics
 import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
 import parts.code.piggybox.preferences.PreferencesServiceApplication
-import parts.code.piggybox.schemas.events.CreatePreferencesDenied
+import parts.code.piggybox.schemas.events.ChangeCountryDenied
+import parts.code.piggybox.schemas.events.CountryChanged
 import parts.code.piggybox.schemas.events.PreferencesCreated
 import ratpack.test.MainClassApplicationUnderTest
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-private class CreatePreferencesFeature {
+private class ChangeCountryFeature {
 
     val kafkaInitService = object : MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java) {}
     val commandService = object : MainClassApplicationUnderTest(CommandServiceApplication::class.java) {}
@@ -51,7 +52,7 @@ private class CreatePreferencesFeature {
     }
 
     @Test
-    fun `should create preferences`() {
+    fun `should change the country`() {
         val consumerPreferences = TestKafkaConsumer.of(Topics.preferences)
 
         val customerId = UUID.randomUUID().toString()
@@ -62,48 +63,39 @@ private class CreatePreferencesFeature {
             }.body.text("""{"customerId":"$customerId","currency":"EUR","country":"ES"}""")
         }.post("/api/preferences.create").status.code shouldBe 202
 
-        val event = consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
+        consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
+
+        commandService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set("Content-Type", "application/json")
+            }.body.text("""{"customerId":"$customerId","country":"UK"}""")
+        }.post("/api/preferences.changeCountry").status.code shouldBe 202
+
+        val event = consumerPreferences.lastRecord(customerId, CountryChanged::class.java).value() as CountryChanged
 
         UUID.fromString(event.id)
         event.occurredOn shouldNotBe null
         event.customerId shouldBe customerId
-        event.currency shouldBe "EUR"
-        event.country shouldBe "ES"
+        event.country shouldBe "UK"
     }
 
     @Test
-    fun `should deny create preferences if preferences already exist`() {
+    fun `should deny change the country if preferences don't exist`() {
         val consumerPreferencesAuthorization = TestKafkaConsumer.of(Topics.preferencesAuthorization)
-        val consumerPreferences = TestKafkaConsumer.of(Topics.preferences)
 
         val customerId = UUID.randomUUID().toString()
 
         commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId":"$customerId","currency":"EUR","country":"ES"}""")
-        }.post("/api/preferences.create").status.code shouldBe 202
+            }.body.text("""{"customerId":"$customerId","country":"ES"}""")
+        }.post("/api/preferences.changeCountry").status.code shouldBe 202
 
-        val preferencesCreated = consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
+        val event = consumerPreferencesAuthorization.lastRecord(customerId, ChangeCountryDenied::class.java).value() as ChangeCountryDenied
 
-        UUID.fromString(preferencesCreated.id)
-        preferencesCreated.occurredOn shouldNotBe null
-        preferencesCreated.customerId shouldBe customerId
-        preferencesCreated.currency shouldBe "EUR"
-        preferencesCreated.country shouldBe "ES"
-
-        commandService.httpClient.requestSpec { request ->
-            request.headers {
-                it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId":"$customerId","currency":"USD","country":"UK"}""")
-        }.post("/api/preferences.create").status.code shouldBe 202
-
-        val preferencesDenied = consumerPreferencesAuthorization.lastRecord(customerId, CreatePreferencesDenied::class.java).value() as CreatePreferencesDenied
-
-        UUID.fromString(preferencesDenied.id)
-        preferencesDenied.occurredOn shouldNotBe null
-        preferencesDenied.customerId shouldBe customerId
-        preferencesDenied.currency shouldBe "USD"
-        preferencesDenied.country shouldBe "UK"
+        UUID.fromString(event.id)
+        event.occurredOn shouldNotBe null
+        event.customerId shouldBe customerId
+        event.country shouldBe "ES"
     }
 }

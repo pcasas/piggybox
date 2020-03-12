@@ -5,13 +5,14 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 
-fun <K, V> KafkaConsumer<K, V>.lastRecord(key: String): ConsumerRecord<K, V> =
-    this.lastRecord(key, Duration.ofSeconds(30).toMillis())
+fun <K, V> KafkaConsumer<K, V>.lastRecord(key: String, clazz: Class<out SpecificRecord>): ConsumerRecord<K, V> =
+    this.lastRecord(key, Duration.ofSeconds(30).toMillis(), clazz)
 
-fun <K, V> KafkaConsumer<K, V>.lastRecord(key: String, timeoutMillis: Long): ConsumerRecord<K, V> {
+fun <K, V> KafkaConsumer<K, V>.lastRecord(key: String, timeoutMillis: Long, clazz: Class<out SpecificRecord>): ConsumerRecord<K, V> {
     val consumer = this
     var event: ConsumerRecord<K, V>? = null
 
@@ -22,7 +23,7 @@ fun <K, V> KafkaConsumer<K, V>.lastRecord(key: String, timeoutMillis: Long): Con
                     delay(50)
                     val events = consumer.poll(Duration.ZERO).filter { it.key() == key }.toList()
 
-                    if (events.isNotEmpty()) {
+                    if (events.isNotEmpty() && clazz.isInstance(events.last().value())) {
                         event = events.last()
                         break
                     }
