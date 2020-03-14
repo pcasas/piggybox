@@ -7,12 +7,15 @@ import java.util.UUID
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.apache.avro.specific.SpecificRecord
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import parts.code.piggybox.command.CommandServiceApplication
 import parts.code.piggybox.integration.tests.TestKafkaConsumer
+import parts.code.piggybox.integration.tests.TestKafkaProducer
 import parts.code.piggybox.integration.tests.Topics
 import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
@@ -20,6 +23,7 @@ import parts.code.piggybox.preferences.PreferencesServiceApplication
 import parts.code.piggybox.schemas.events.ChangeCountryDenied
 import parts.code.piggybox.schemas.events.CountryChanged
 import parts.code.piggybox.schemas.events.PreferencesCreated
+import parts.code.piggybox.schemas.test.UnknownRecord
 import ratpack.test.MainClassApplicationUnderTest
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -54,6 +58,7 @@ private class ChangeCountryFeature {
     @Test
     fun `should change the country`() {
         val consumerPreferences = TestKafkaConsumer.of(Topics.preferences)
+        val producerPreferences = TestKafkaProducer.create()
 
         val customerId = UUID.randomUUID().toString()
 
@@ -64,6 +69,11 @@ private class ChangeCountryFeature {
         }.post("/api/preferences.create").status.code shouldBe 202
 
         consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
+
+        val record = ProducerRecord(Topics.preferences, customerId, UnknownRecord() as SpecificRecord)
+        producerPreferences.send(record).get()
+
+        consumerPreferences.lastRecord(customerId, UnknownRecord::class.java).value() as UnknownRecord
 
         commandService.httpClient.requestSpec { request ->
             request.headers {
