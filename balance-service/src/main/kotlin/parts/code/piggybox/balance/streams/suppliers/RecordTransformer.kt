@@ -13,6 +13,7 @@ import parts.code.piggybox.balance.services.BalanceService
 import parts.code.piggybox.schemas.commands.AddFundsCommand
 import parts.code.piggybox.schemas.commands.BuyGameCommand
 import parts.code.piggybox.schemas.state.BalanceState
+import parts.code.piggybox.schemas.test.UnknownRecord
 
 class RecordTransformer @Inject constructor(
     private val config: KafkaConfig,
@@ -28,7 +29,7 @@ class RecordTransformer @Inject constructor(
     }
 
     override fun transform(key: String, record: SpecificRecord): KeyValue<String, SpecificRecord>? {
-        val result: KeyValue<String, SpecificRecord>? = when (record) {
+        val result: KeyValue<String, SpecificRecord> = when (record) {
             is AddFundsCommand -> {
                 val newBalance = getCurrentBalance(record.customerId) + record.amount
 
@@ -47,16 +48,14 @@ class RecordTransformer @Inject constructor(
                     balanceService.buyGame(record)
                 }
             }
-            else -> null
+            else -> KeyValue("", UnknownRecord())
         }
 
-        if (result != null) {
-            logger.info(
-                "Transformed ${record.schema.name} to ${result.value.schema.name}" +
-                        "\n\trecord to transform: $record" +
-                        "\n\ttransformed to: $result"
-            )
-        }
+        logger.info(
+            "Transformed ${record.schema.name} to ${result.value.schema.name}" +
+                    "\n\trecord to transform: $record" +
+                    "\n\ttransformed to: $result"
+        )
 
         return result
     }

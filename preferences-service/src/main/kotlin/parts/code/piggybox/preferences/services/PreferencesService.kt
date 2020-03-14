@@ -13,7 +13,7 @@ import parts.code.piggybox.schemas.events.PreferencesCreated
 
 class PreferencesService {
 
-    fun createPreferences(command: CreatePreferencesCommand): KeyValue<String, SpecificRecord>? {
+    fun createPreferences(command: CreatePreferencesCommand): KeyValue<String, SpecificRecord> {
         val event = PreferencesCreated(
             UUID.randomUUID().toString(),
             Instant.now(),
@@ -25,7 +25,7 @@ class PreferencesService {
         return KeyValue(command.customerId, event)
     }
 
-    fun denyCreatePreferences(command: CreatePreferencesCommand): KeyValue<String, SpecificRecord>? {
+    fun denyCreatePreferences(command: CreatePreferencesCommand): KeyValue<String, SpecificRecord> {
         val event = CreatePreferencesDenied(
             UUID.randomUUID().toString(),
             Instant.now(),
@@ -37,7 +37,7 @@ class PreferencesService {
         return KeyValue(command.customerId, event)
     }
 
-    fun changeCountry(command: ChangeCountryCommand): KeyValue<String, SpecificRecord>? {
+    fun changeCountry(command: ChangeCountryCommand): KeyValue<String, SpecificRecord> {
         val event = CountryChanged(
             UUID.randomUUID().toString(),
             Instant.now(),
@@ -48,7 +48,7 @@ class PreferencesService {
         return KeyValue(command.customerId, event)
     }
 
-    fun denyChangeCountry(command: ChangeCountryCommand): KeyValue<String, SpecificRecord>? {
+    fun denyChangeCountry(command: ChangeCountryCommand): KeyValue<String, SpecificRecord> {
         val event = ChangeCountryDenied(
             UUID.randomUUID().toString(),
             Instant.now(),
