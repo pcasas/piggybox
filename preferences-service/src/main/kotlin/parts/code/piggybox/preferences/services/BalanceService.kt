@@ -11,7 +11,7 @@ import parts.code.piggybox.schemas.events.AddFundsDenied
 
 class BalanceService {
 
-    fun denyAddFunds(command: AddFundsCommand): KeyValue<String, SpecificRecord>? {
+    fun denyAddFunds(command: AddFundsCommand): KeyValue<String, SpecificRecord> {
         val event = AddFundsDenied(
             UUID.randomUUID().toString(),
             Instant.now(),

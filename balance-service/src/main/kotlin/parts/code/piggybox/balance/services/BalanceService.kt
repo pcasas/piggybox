@@ -13,7 +13,7 @@ import parts.code.piggybox.schemas.events.FundsAdded
 
 class BalanceService {
 
-    fun addFunds(command: AddFundsCommand): KeyValue<String, SpecificRecord>? {
+    fun addFunds(command: AddFundsCommand): KeyValue<String, SpecificRecord> {
         val event = FundsAdded(
             UUID.randomUUID().toString(),
             Instant.now(),
@@ -25,7 +25,7 @@ class BalanceService {
         return KeyValue(command.customerId, event)
     }
 
-    fun denyAddFunds(command: AddFundsCommand): KeyValue<String, SpecificRecord>? {
+    fun denyAddFunds(command: AddFundsCommand): KeyValue<String, SpecificRecord> {
         val event = AddFundsDenied(
             UUID.randomUUID().toString(),
             Instant.now(),
@@ -37,7 +37,7 @@ class BalanceService {
         return KeyValue(command.customerId, event)
     }
 
-    fun buyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord>? {
+    fun buyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord> {
         val event = GameBought(
             UUID.randomUUID().toString(),
             Instant.now(),
@@ -50,7 +50,7 @@ class BalanceService {
         return KeyValue(command.customerId, event)
     }
 
-    fun denyBuyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord>? {
+    fun denyBuyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord> {
         val event = BuyGameDenied(
             UUID.randomUUID().toString(),
             Instant.now(),
