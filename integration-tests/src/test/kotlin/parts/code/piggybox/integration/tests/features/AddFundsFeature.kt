@@ -8,6 +8,8 @@ import java.util.UUID
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import org.apache.avro.specific.SpecificRecord
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.TestInstance
 import parts.code.piggybox.balance.BalanceServiceApplication
 import parts.code.piggybox.command.CommandServiceApplication
 import parts.code.piggybox.integration.tests.TestKafkaConsumer
+import parts.code.piggybox.integration.tests.TestKafkaProducer
 import parts.code.piggybox.integration.tests.Topics
 import parts.code.piggybox.integration.tests.lastRecord
 import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
@@ -23,6 +26,7 @@ import parts.code.piggybox.query.QueryServiceApplication
 import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.FundsAdded
 import parts.code.piggybox.schemas.events.PreferencesCreated
+import parts.code.piggybox.schemas.test.UnknownRecord
 import ratpack.test.MainClassApplicationUnderTest
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -64,6 +68,7 @@ private class AddFundsFeature {
     fun `should add funds to a customer`() {
         val consumerPreferences = TestKafkaConsumer.of(Topics.preferences)
         val consumerBalance = TestKafkaConsumer.of(Topics.balance)
+        val producerPreferences = TestKafkaProducer.create()
 
         val customerId = UUID.randomUUID().toString()
 
@@ -74,6 +79,11 @@ private class AddFundsFeature {
         }.post("/api/preferences.create").status.code shouldBe 202
 
         consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
+
+        val record = ProducerRecord(Topics.balance, customerId, UnknownRecord() as SpecificRecord)
+        producerPreferences.send(record).get()
+
+        consumerBalance.lastRecord(customerId, UnknownRecord::class.java).value() as UnknownRecord
 
         commandService.httpClient.requestSpec { request ->
             request.headers {
