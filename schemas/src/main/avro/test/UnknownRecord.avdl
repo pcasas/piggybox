@@ -1,0 +1,6 @@
+@namespace("parts.code.piggybox.schemas.test")
+protocol PiggyBox {
+
+  record UnknownRecord {
+  }
+}

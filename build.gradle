@@ -75,6 +75,7 @@ task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
     }
 
     def projects = [
+            project(":balance-service"),
             project(":command-service"),
             project(":integration-tests"),
             project(":kafka-init-service"),

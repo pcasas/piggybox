@@ -37,6 +37,7 @@ class RecordProcessor @Inject constructor(
                     PreferencesState(record.customerId, preferencesState.currency, record.country)
                 )
             }
+            else -> Unit
         }
 
         logger.info("Processed ${record.schema.name}\n\trecord: $record")
