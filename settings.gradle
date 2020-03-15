@@ -6,5 +6,4 @@ include ':balance-service',
         ':kafka-init-service',
         ':preferences-service',
         ':query-service',
-        ':schemas',
-        ':statistics-service'
+        ':schemas'
