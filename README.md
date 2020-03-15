@@ -10,7 +10,7 @@ If you are familiar with video game platforms like [Steam](https://store.steampo
 
 ## Microservice Architecture
 
-Piggy Box is divided into 5 microservices, grouped together in a Monorepo but independently deployable. 
+Piggy Box is divided into 4 microservices, grouped together in a Monorepo but independently deployable. 
 
 <img width="880" alt="Kafka Microservices Architecture" src="/diagrams/kafka-microservices-architecture.png">
 
@@ -65,10 +65,6 @@ The balance transactions are stored in the Balance topic which is used as an Eve
 In the following diagram we can see an example of how funds can be added to a customer's balance. First the client calls the `/balance.addFunds` endpoint from the Command Service, then the Command Services publishes a command `AddFundsCommand` to the Preferences Authorization Topic. Then the Preferences Service reads the `AddFundsCommand`, checks the State Store to see if funds are in the same currency than the customer's preferences currency. Then, since the currency is the same, publishes an `AddFundsCommand` event to the Balance Authorization Topic. Then the Balance Service reads the `AddFundsCommand`, checks the State Store to see if the balance will be lower than 2000 after adding the funds. Then, since the balance will be lower than 2000 after adding the funds, publishes a `FundsAdded` event to the Balance Topic.
 
 <img width="880" alt="Kafka Event Store Balance Service" src="/diagrams/kafka-event-store-balance-service.png">
-
-#### Statistics Service
-
-TODO
 
 ## Getting Started
 
