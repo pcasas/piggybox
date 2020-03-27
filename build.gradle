@@ -28,6 +28,8 @@ subprojects {
         jacksonVersion = '2.10.2'
         avroVersion = '1.9.1'
         kafkaConfluentVersion = '5.4.0'
+        jgivenVersion = '0.18.2'
+        skepticalVersion = '0.0.1'
     }
 
     dependencies {

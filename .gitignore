@@ -4,3 +4,4 @@
 **/out/**
 **/.kotlintest/**
 .DS_Store
+**/jgiven-reports/**
