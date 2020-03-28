@@ -24,6 +24,7 @@ class TestKafkaConsumer private constructor(properties: Properties) :
                     put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer::class.java)
                     put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true")
                     put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+                    put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1)
                 })
             consumer.subscribe(listOf(topic))
 

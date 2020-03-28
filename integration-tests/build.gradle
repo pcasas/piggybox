@@ -38,4 +38,6 @@ dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
     compile "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
     compile "io.ratpack:ratpack-test:$ratpackVersion"
+    compile "com.tngtech.jgiven:jgiven-junit5:$jgivenVersion"
+    compile "parts.code:skeptical:$skepticalVersion"
 }
