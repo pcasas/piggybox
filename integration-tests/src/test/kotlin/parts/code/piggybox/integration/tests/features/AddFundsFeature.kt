@@ -1,48 +1,10 @@
 package parts.code.piggybox.integration.tests.features
 
-import com.tngtech.jgiven.junit5.ScenarioTest
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import parts.code.piggybox.balance.BalanceServiceApplication
-import parts.code.piggybox.command.CommandServiceApplication
-import parts.code.piggybox.integration.tests.ApplicationsUnderTest
+import parts.code.piggybox.integration.tests.IntegrationTest
 import parts.code.piggybox.integration.tests.Topics
-import parts.code.piggybox.integration.tests.features.stage.Given
-import parts.code.piggybox.integration.tests.features.stage.Then
-import parts.code.piggybox.integration.tests.features.stage.When
-import parts.code.piggybox.kafka.init.KafkaInitServiceApplication
-import parts.code.piggybox.preferences.PreferencesServiceApplication
-import parts.code.piggybox.query.QueryServiceApplication
-import parts.code.skeptical.AssertConditions
-import ratpack.test.MainClassApplicationUnderTest
 
-private class AddFundsFeature : ScenarioTest<Given, When, Then>() {
-
-    companion object {
-        val applicationsUnderTest = ApplicationsUnderTest(
-            MainClassApplicationUnderTest(KafkaInitServiceApplication::class.java),
-            MainClassApplicationUnderTest(CommandServiceApplication::class.java),
-            MainClassApplicationUnderTest(PreferencesServiceApplication::class.java),
-            MainClassApplicationUnderTest(BalanceServiceApplication::class.java),
-            MainClassApplicationUnderTest(QueryServiceApplication::class.java)
-        )
-
-        @BeforeAll
-        @JvmStatic
-        fun setUp() {
-            AssertConditions(timeout = 30).until {
-                assertTrue(applicationsUnderTest.started())
-            }
-        }
-
-        @AfterAll
-        @JvmStatic
-        fun tearDown() {
-            applicationsUnderTest.close()
-        }
-    }
+private class AddFundsFeature : IntegrationTest() {
 
     @Test
     fun `should add funds to a customer`() {
