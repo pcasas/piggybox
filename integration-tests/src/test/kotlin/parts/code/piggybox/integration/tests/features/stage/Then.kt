@@ -14,6 +14,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 import parts.code.piggybox.integration.tests.TestKafkaConsumer
 import parts.code.piggybox.integration.tests.Topics
+import parts.code.piggybox.schemas.commands.BuyGameDenied
+import parts.code.piggybox.schemas.commands.GameBought
 import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.FundsAdded
 import parts.code.skeptical.AssertConditions
@@ -25,6 +27,9 @@ open class Then : Stage<Then>() {
 
     @ExpectedScenarioState
     lateinit var applicationsUnderTest: ApplicationsUnderTest
+
+    @ExpectedScenarioState
+    lateinit var gameId: String
 
     @As("$ $ worth of funds are added")
     open fun the_funds_are_added(amount: Double, currency: String): Then {
@@ -76,6 +81,48 @@ open class Then : Stage<Then>() {
 
         response.status.code shouldBe 200
         response.body.text shouldBe """{"amount":${amount.toBigDecimal().setScale(2)},"currency":"$currency"}"""
+
+        return self()
+    }
+
+    @As("a game worth $ $ is bought")
+    open fun the_game_is_bought(amount: Double, currency: String): Then {
+        val consumerBalance: KafkaConsumer<String, SpecificRecord> = TestKafkaConsumer.of(Topics.balance)
+
+        AssertConditions(timeout = 30).until {
+            val events = consumerBalance.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
+            events.shouldNotBeEmpty()
+            (events.last().value() is GameBought) shouldBe true
+
+            val event = events.last().value() as GameBought
+            UUID.fromString(event.id)
+            event.occurredOn shouldNotBe null
+            event.customerId shouldBe customerId
+            event.gameId shouldBe gameId
+            event.amount shouldBe amount.toBigDecimal().setScale(2)
+            event.currency shouldBe currency
+        }
+
+        return self()
+    }
+
+    @As("buying a game worth $ $ is denied")
+    open fun buying_a_game_is_denied_by(amount: Double, currency: String, @Hidden topic: String): Then {
+        val consumer = TestKafkaConsumer.of(topic)
+
+        AssertConditions(timeout = 30).until {
+            val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
+            events.shouldNotBeEmpty()
+            (events.last().value() is BuyGameDenied) shouldBe true
+
+            val event = events.last().value() as BuyGameDenied
+            UUID.fromString(event.id)
+            event.occurredOn shouldNotBe null
+            event.customerId shouldBe customerId
+            event.gameId shouldBe gameId
+            event.amount shouldBe amount.toBigDecimal().setScale(2)
+            event.currency shouldBe currency
+        }
 
         return self()
     }

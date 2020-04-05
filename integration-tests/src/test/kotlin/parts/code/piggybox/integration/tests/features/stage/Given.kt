@@ -12,7 +12,6 @@ import java.util.UUID
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.junit.jupiter.api.Assertions.assertEquals
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 import parts.code.piggybox.integration.tests.TestKafkaConsumer
 import parts.code.piggybox.integration.tests.TestKafkaProducer
@@ -40,13 +39,11 @@ open class Given : Stage<Given>() {
 
     @As("customer preferences with currency $ and country $")
     open fun customer_preferences(currency: String, country: String): Given {
-        val code = applicationsUnderTest.commandService.httpClient.requestSpec { request ->
+        applicationsUnderTest.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
             }.body.text("""{"customerId":"$customerId","currency":"$currency","country":"$country"}""")
-        }.post("/api/preferences.create").status.code
-
-        assertEquals(202, code)
+        }.post("/api/preferences.create").status.code shouldBe 202
 
         val consumerPreferences = TestKafkaConsumer.of(Topics.preferences)
         consumerPreferences.lastRecord(customerId, PreferencesCreated::class.java).value() as PreferencesCreated
