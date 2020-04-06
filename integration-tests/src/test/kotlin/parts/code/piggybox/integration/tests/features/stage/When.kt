@@ -53,4 +53,15 @@ open class When : Stage<When>() {
 
         return self()
     }
+
+    @As("creating preferences with currency $ and country $")
+    open fun creating_preferences(currency: String, country: String): When {
+        applicationsUnderTest.commandService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set("Content-Type", "application/json")
+            }.body.text("""{"customerId":"$customerId","currency":"$currency","country":"$country"}""")
+        }.post("/api/preferences.create").status.code shouldBe 202
+
+        return self()
+    }
 }
