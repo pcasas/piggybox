@@ -19,7 +19,9 @@ import parts.code.piggybox.schemas.commands.GameBought
 import parts.code.piggybox.schemas.events.AddFundsDenied
 import parts.code.piggybox.schemas.events.ChangeCountryDenied
 import parts.code.piggybox.schemas.events.CountryChanged
+import parts.code.piggybox.schemas.events.CreatePreferencesDenied
 import parts.code.piggybox.schemas.events.FundsAdded
+import parts.code.piggybox.schemas.events.PreferencesCreated
 import parts.code.skeptical.AssertConditions
 
 open class Then : Stage<Then>() {
@@ -161,6 +163,46 @@ open class Then : Stage<Then>() {
             UUID.fromString(event.id)
             event.occurredOn shouldNotBe null
             event.customerId shouldBe customerId
+            event.country shouldBe country
+        }
+
+        return self()
+    }
+
+    @As("the preferences are created with currency $ and country $")
+    open fun the_preferences_are_created(currency: String, country: String): Then {
+        val consumer = TestKafkaConsumer.of(Topics.preferences)
+
+        AssertConditions(timeout = 30).until {
+            val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
+            events.shouldNotBeEmpty()
+            (events.last().value() is PreferencesCreated) shouldBe true
+
+            val event = events.last().value() as PreferencesCreated
+            UUID.fromString(event.id)
+            event.occurredOn shouldNotBe null
+            event.customerId shouldBe customerId
+            event.currency shouldBe currency
+            event.country shouldBe country
+        }
+
+        return self()
+    }
+
+    @As("create preferences with currency $ and country $ is denied")
+    open fun create_preferences_is_denied(currency: String, country: String): Then {
+        val consumer = TestKafkaConsumer.of(Topics.preferencesAuthorization)
+
+        AssertConditions(timeout = 30).until {
+            val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
+            events.shouldNotBeEmpty()
+            (events.last().value() is CreatePreferencesDenied) shouldBe true
+
+            val event = events.last().value() as CreatePreferencesDenied
+            UUID.fromString(event.id)
+            event.occurredOn shouldNotBe null
+            event.customerId shouldBe customerId
+            event.currency shouldBe currency
             event.country shouldBe country
         }
 
