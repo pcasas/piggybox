@@ -85,8 +85,8 @@ open class Given : Stage<Given>() {
         val producer = TestKafkaProducer.create()
         producer.send(record).get()
 
-        val consumerBalance = TestKafkaConsumer.of(Topics.balance)
-        consumerBalance.lastRecord(customerId, UnknownRecord::class.java).value() as UnknownRecord
+        val consumer = TestKafkaConsumer.of(topic)
+        consumer.lastRecord(customerId, UnknownRecord::class.java).value() as UnknownRecord
 
         return self()
     }

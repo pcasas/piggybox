@@ -17,6 +17,8 @@ import parts.code.piggybox.integration.tests.Topics
 import parts.code.piggybox.schemas.commands.BuyGameDenied
 import parts.code.piggybox.schemas.commands.GameBought
 import parts.code.piggybox.schemas.events.AddFundsDenied
+import parts.code.piggybox.schemas.events.ChangeCountryDenied
+import parts.code.piggybox.schemas.events.CountryChanged
 import parts.code.piggybox.schemas.events.FundsAdded
 import parts.code.skeptical.AssertConditions
 
@@ -122,6 +124,44 @@ open class Then : Stage<Then>() {
             event.gameId shouldBe gameId
             event.amount shouldBe amount.toBigDecimal().setScale(2)
             event.currency shouldBe currency
+        }
+
+        return self()
+    }
+
+    @As("the country is changed to $")
+    open fun the_country_is_changed(country: String): Then {
+        val consumer = TestKafkaConsumer.of(Topics.preferences)
+
+        AssertConditions(timeout = 30).until {
+            val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
+            events.shouldNotBeEmpty()
+            (events.last().value() is CountryChanged) shouldBe true
+
+            val event = events.last().value() as CountryChanged
+            UUID.fromString(event.id)
+            event.occurredOn shouldNotBe null
+            event.customerId shouldBe customerId
+            event.country shouldBe country
+        }
+
+        return self()
+    }
+
+    @As("changing the country to $ is denied")
+    open fun changing_the_country_is_denied(country: String): Then {
+        val consumer = TestKafkaConsumer.of(Topics.preferencesAuthorization)
+
+        AssertConditions(timeout = 30).until {
+            val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
+            events.shouldNotBeEmpty()
+            (events.last().value() is ChangeCountryDenied) shouldBe true
+
+            val event = events.last().value() as ChangeCountryDenied
+            UUID.fromString(event.id)
+            event.occurredOn shouldNotBe null
+            event.customerId shouldBe customerId
+            event.country shouldBe country
         }
 
         return self()

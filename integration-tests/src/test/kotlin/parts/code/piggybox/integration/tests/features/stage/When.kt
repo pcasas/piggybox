@@ -24,7 +24,8 @@ open class When : Stage<When>() {
         applicationsUnderTest.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId":"$customerId","amount":${amount.toBigDecimal().setScale(2)},"currency":"$currency"}""")
+            }
+                .body.text("""{"customerId":"$customerId","amount":${amount.toBigDecimal().setScale(2)},"currency":"$currency"}""")
         }.post("/api/balance.addFunds").status.code shouldBe 202
 
         return self()
@@ -35,8 +36,20 @@ open class When : Stage<When>() {
         applicationsUnderTest.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set("Content-Type", "application/json")
-            }.body.text("""{"customerId":"$customerId","gameId":"$gameId","amount":${amount.toBigDecimal().setScale(2)},"currency":"$currency"}""")
+            }
+                .body.text("""{"customerId":"$customerId","gameId":"$gameId","amount":${amount.toBigDecimal().setScale(2)},"currency":"$currency"}""")
         }.post("/api/balance.buyGame").status.code shouldBe 202
+
+        return self()
+    }
+
+    @As("changing the country to $")
+    open fun changing_the_country(country: String): When {
+        applicationsUnderTest.commandService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set("Content-Type", "application/json")
+            }.body.text("""{"customerId":"$customerId","country":"$country"}""")
+        }.post("/api/preferences.changeCountry").status.code shouldBe 202
 
         return self()
     }
