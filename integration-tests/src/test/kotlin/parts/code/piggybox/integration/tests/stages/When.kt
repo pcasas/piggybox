@@ -1,4 +1,4 @@
-package parts.code.piggybox.integration.tests.features.stage
+package parts.code.piggybox.integration.tests.stages
 
 import com.tngtech.jgiven.Stage
 import com.tngtech.jgiven.annotation.As

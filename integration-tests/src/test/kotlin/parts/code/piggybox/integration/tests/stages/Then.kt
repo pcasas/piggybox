@@ -1,4 +1,4 @@
-package parts.code.piggybox.integration.tests.features.stage
+package parts.code.piggybox.integration.tests.stages
 
 import com.tngtech.jgiven.Stage
 import com.tngtech.jgiven.annotation.As
@@ -12,7 +12,6 @@ import java.util.UUID
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
-import parts.code.piggybox.integration.tests.TestKafkaConsumer
 import parts.code.piggybox.integration.tests.Topics
 import parts.code.piggybox.schemas.commands.BuyGameDenied
 import parts.code.piggybox.schemas.commands.GameBought
@@ -37,7 +36,7 @@ open class Then : Stage<Then>() {
 
     @As("$ $ worth of funds are added")
     open fun the_funds_are_added(amount: Double, currency: String): Then {
-        val consumerBalance: KafkaConsumer<String, SpecificRecord> = TestKafkaConsumer.of(Topics.balance)
+        val consumerBalance: KafkaConsumer<String, SpecificRecord> = applicationsUnderTest.consumer(Topics.balance)
 
         AssertConditions(timeout = 30).until {
             val events = consumerBalance.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
@@ -57,7 +56,7 @@ open class Then : Stage<Then>() {
 
     @As("$ $ worth of funds are denied")
     open fun the_funds_are_denied_by(amount: Double, currency: String, @Hidden topic: String): Then {
-        val consumer = TestKafkaConsumer.of(topic)
+        val consumer = applicationsUnderTest.consumer(topic)
 
         AssertConditions(timeout = 30).until {
             val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
@@ -91,7 +90,7 @@ open class Then : Stage<Then>() {
 
     @As("a game worth $ $ is bought")
     open fun the_game_is_bought(amount: Double, currency: String): Then {
-        val consumerBalance: KafkaConsumer<String, SpecificRecord> = TestKafkaConsumer.of(Topics.balance)
+        val consumerBalance: KafkaConsumer<String, SpecificRecord> = applicationsUnderTest.consumer(Topics.balance)
 
         AssertConditions(timeout = 30).until {
             val events = consumerBalance.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
@@ -112,7 +111,7 @@ open class Then : Stage<Then>() {
 
     @As("buying a game worth $ $ is denied")
     open fun buying_a_game_is_denied_by(amount: Double, currency: String, @Hidden topic: String): Then {
-        val consumer = TestKafkaConsumer.of(topic)
+        val consumer = applicationsUnderTest.consumer(topic)
 
         AssertConditions(timeout = 30).until {
             val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
@@ -133,7 +132,7 @@ open class Then : Stage<Then>() {
 
     @As("the country is changed to $")
     open fun the_country_is_changed(country: String): Then {
-        val consumer = TestKafkaConsumer.of(Topics.preferences)
+        val consumer = applicationsUnderTest.consumer(Topics.preferences)
 
         AssertConditions(timeout = 30).until {
             val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
@@ -152,7 +151,7 @@ open class Then : Stage<Then>() {
 
     @As("changing the country to $ is denied")
     open fun changing_the_country_is_denied(country: String): Then {
-        val consumer = TestKafkaConsumer.of(Topics.preferencesAuthorization)
+        val consumer = applicationsUnderTest.consumer(Topics.preferencesAuthorization)
 
         AssertConditions(timeout = 30).until {
             val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
@@ -171,7 +170,7 @@ open class Then : Stage<Then>() {
 
     @As("the preferences are created with currency $ and country $")
     open fun the_preferences_are_created(currency: String, country: String): Then {
-        val consumer = TestKafkaConsumer.of(Topics.preferences)
+        val consumer = applicationsUnderTest.consumer(Topics.preferences)
 
         AssertConditions(timeout = 30).until {
             val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
@@ -191,7 +190,7 @@ open class Then : Stage<Then>() {
 
     @As("create preferences with currency $ and country $ is denied")
     open fun create_preferences_is_denied(currency: String, country: String): Then {
-        val consumer = TestKafkaConsumer.of(Topics.preferencesAuthorization)
+        val consumer = applicationsUnderTest.consumer(Topics.preferencesAuthorization)
 
         AssertConditions(timeout = 30).until {
             val events = consumer.poll(Duration.ZERO).filter { it.key() == customerId }.toList()
