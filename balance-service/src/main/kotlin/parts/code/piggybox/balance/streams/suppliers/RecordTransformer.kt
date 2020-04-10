@@ -30,25 +30,9 @@ class RecordTransformer @Inject constructor(
 
     override fun transform(key: String, record: SpecificRecord): KeyValue<String, SpecificRecord>? {
         val result: KeyValue<String, SpecificRecord> = when (record) {
-            is AddFundsCommand -> {
-                val newBalance = getCurrentBalance(record.customerId) + record.amount
-
-                if (newBalance > BigDecimal.valueOf(2000)) {
-                    balanceService.denyAddFunds(record)
-                } else {
-                    balanceService.addFunds(record)
-                }
-            }
-            is BuyGameCommand -> {
-                val newBalance = getCurrentBalance(record.customerId) - record.amount
-
-                if (newBalance < BigDecimal.ZERO) {
-                    balanceService.denyBuyGame(record)
-                } else {
-                    balanceService.buyGame(record)
-                }
-            }
-            else -> KeyValue("", UnknownRecord())
+            is AddFundsCommand -> transform(record)
+            is BuyGameCommand -> transform(record)
+            else -> unknown()
         }
 
         logger.info(
@@ -59,6 +43,28 @@ class RecordTransformer @Inject constructor(
 
         return result
     }
+
+    private fun transform(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
+        val newBalance = getCurrentBalance(record.customerId) + record.amount
+
+        return if (newBalance > BigDecimal.valueOf(2000)) {
+            balanceService.denyAddFunds(record)
+        } else {
+            balanceService.addFunds(record)
+        }
+    }
+
+    private fun transform(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
+        val newBalance = getCurrentBalance(record.customerId) - record.amount
+
+        return if (newBalance < BigDecimal.ZERO) {
+            balanceService.denyBuyGame(record)
+        } else {
+            balanceService.buyGame(record)
+        }
+    }
+
+    private fun unknown(): KeyValue<String, SpecificRecord> = KeyValue("", UnknownRecord())
 
     override fun close() {}
 

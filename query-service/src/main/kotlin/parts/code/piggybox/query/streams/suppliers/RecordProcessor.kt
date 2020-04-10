@@ -26,21 +26,25 @@ class RecordProcessor @Inject constructor(
 
     override fun process(key: String, record: SpecificRecord) {
         when (record) {
-            is FundsAdded -> {
-                val balanceState = state.get(record.customerId)
-                val newBalance = (balanceState?.amount ?: BigDecimal.ZERO) + record.amount
-
-                state.put(record.customerId, BalanceState(record.customerId, newBalance, record.currency))
-            }
-            is GameBought -> {
-                val balanceState = state.get(record.customerId)
-                val newBalance = (balanceState?.amount ?: BigDecimal.ZERO) - record.amount
-
-                state.put(record.customerId, BalanceState(record.customerId, newBalance, record.currency))
-            }
+            is FundsAdded -> process(record)
+            is GameBought -> process(record)
         }
 
         logger.info("Processed ${record.schema.name}\n\trecord: $record")
+    }
+
+    private fun process(record: FundsAdded) {
+        val balanceState = state.get(record.customerId)
+        val newBalance = (balanceState?.amount ?: BigDecimal.ZERO) + record.amount
+
+        state.put(record.customerId, BalanceState(record.customerId, newBalance, record.currency))
+    }
+
+    private fun process(record: GameBought) {
+        val balanceState = state.get(record.customerId)
+        val newBalance = (balanceState?.amount ?: BigDecimal.ZERO) - record.amount
+
+        state.put(record.customerId, BalanceState(record.customerId, newBalance, record.currency))
     }
 
     override fun close() {}

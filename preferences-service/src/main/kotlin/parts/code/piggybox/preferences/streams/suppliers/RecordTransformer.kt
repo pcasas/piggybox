@@ -32,44 +32,12 @@ class RecordTransformer @Inject constructor(
     }
 
     override fun transform(key: String, record: SpecificRecord): KeyValue<String, SpecificRecord>? {
-        val result: KeyValue<String, SpecificRecord> = when (record) {
-            is CreatePreferencesCommand -> {
-                val preferencesState = state.get(record.customerId)
-
-                if (preferencesState == null) {
-                    preferencesService.createPreferences(record)
-                } else {
-                    preferencesService.denyCreatePreferences(record)
-                }
-            }
-            is ChangeCountryCommand -> {
-                val preferencesState = state.get(record.customerId)
-
-                if (preferencesState != null) {
-                    preferencesService.changeCountry(record)
-                } else {
-                    preferencesService.denyChangeCountry(record)
-                }
-            }
-            is AddFundsCommand -> {
-                val preferencesState = state.get(record.customerId)
-
-                if (preferencesState == null || preferencesState.currency != record.currency) {
-                    balanceService.denyAddFunds(record)
-                } else {
-                    KeyValue(record.customerId, record as SpecificRecord)
-                }
-            }
-            is BuyGameCommand -> {
-                val preferencesState = state.get(record.customerId)
-
-                if (preferencesState == null || preferencesState.currency != record.currency) {
-                    balanceService.denyBuyGame(record)
-                } else {
-                    KeyValue(record.customerId, record as SpecificRecord)
-                }
-            }
-            else -> KeyValue("", UnknownRecord())
+        val result = when (record) {
+            is CreatePreferencesCommand -> transform(record)
+            is ChangeCountryCommand -> transform(record)
+            is AddFundsCommand -> transform(record)
+            is BuyGameCommand -> transform(record)
+            else -> unknown()
         }
 
         logger.info(
@@ -80,6 +48,48 @@ class RecordTransformer @Inject constructor(
 
         return result
     }
+
+    private fun transform(record: CreatePreferencesCommand): KeyValue<String, SpecificRecord> {
+        val preferencesState = state.get(record.customerId)
+
+        return if (preferencesState == null) {
+            preferencesService.createPreferences(record)
+        } else {
+            preferencesService.denyCreatePreferences(record)
+        }
+    }
+
+    private fun transform(record: ChangeCountryCommand): KeyValue<String, SpecificRecord> {
+        val preferencesState = state.get(record.customerId)
+
+        return if (preferencesState != null) {
+            preferencesService.changeCountry(record)
+        } else {
+            preferencesService.denyChangeCountry(record)
+        }
+    }
+
+    private fun transform(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
+        val preferencesState = state.get(record.customerId)
+
+        return if (preferencesState == null || preferencesState.currency != record.currency) {
+            balanceService.denyAddFunds(record)
+        } else {
+            KeyValue(record.customerId, record as SpecificRecord)
+        }
+    }
+
+    private fun transform(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
+        val preferencesState = state.get(record.customerId)
+
+        return if (preferencesState == null || preferencesState.currency != record.currency) {
+            balanceService.denyBuyGame(record)
+        } else {
+            KeyValue(record.customerId, record as SpecificRecord)
+        }
+    }
+
+    private fun unknown(): KeyValue<String, SpecificRecord> = KeyValue("", UnknownRecord())
 
     override fun close() {}
 }
