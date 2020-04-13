@@ -6,7 +6,6 @@ class CreatePreferencesShould extends IntegrationTest {
 
     def "create preferences"() {
         expect:
-
         given().applicationsUnderTest(applicationsUnderTest)
         when().creating_preferences_with_currency_$_and_country_$("EUR", "ES")
         then().the_preferences_are_created_with_currency_$_and_country_$("EUR", "ES")
@@ -14,7 +13,6 @@ class CreatePreferencesShould extends IntegrationTest {
 
     def "deny create preferences if preferences already exist"() {
         expect:
-
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$("EUR", "ES")
         when().creating_preferences_with_currency_$_and_country_$("EUR", "ES")

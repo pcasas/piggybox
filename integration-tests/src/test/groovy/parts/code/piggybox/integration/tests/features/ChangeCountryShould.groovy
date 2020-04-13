@@ -7,7 +7,6 @@ class ChangeCountryShould extends IntegrationTest {
 
     def "change the country"() {
         expect:
-
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$("EUR", "ES")
         when().changing_the_country_to_$("UK")
@@ -16,7 +15,6 @@ class ChangeCountryShould extends IntegrationTest {
 
     def "deny change the country if preferences don't exist"() {
         expect:
-
         given().applicationsUnderTest(applicationsUnderTest)
         when().changing_the_country_to_$("UK")
         then().changing_the_country_to_$_is_denied("UK")
@@ -24,7 +22,6 @@ class ChangeCountryShould extends IntegrationTest {
 
     def "ignore an unknown record"() {
         expect:
-
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$("EUR", "ES")
                .and().an_unknown_record_in_the_topic_$(Topics.preferences)
