@@ -35,9 +35,6 @@ subprojects {
     dependencies {
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         implementation 'ch.qos.logback:logback-classic:1.2.3'
-        testImplementation 'org.junit.jupiter:junit-jupiter:5.5.1'
-        testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
-        testImplementation 'org.mockito:mockito-junit-jupiter:3.3.0'
     }
 
     test {

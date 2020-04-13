@@ -17,4 +17,7 @@ dependencies {
     implementation "org.apache.kafka:kafka-clients:$kafkaVersion"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
     compile "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.5.1'
+    testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.3.2'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.3.0'
 }
