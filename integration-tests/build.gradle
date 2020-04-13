@@ -1,6 +1,9 @@
 plugins {
     id 'jacoco'
+    id 'com.tngtech.jgiven.gradle-plugin' version '1.0.0-RC4'
 }
+
+apply plugin: 'groovy'
 
 jacoco {
     toolVersion = '0.8.5'
@@ -34,10 +37,12 @@ dependencies {
     api project(':kafka-init-service')
     api project(':preferences-service')
     api project(':query-service')
-    implementation "org.apache.kafka:kafka-clients:$kafkaVersion"
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
-    compile "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
-    compile "io.ratpack:ratpack-test:$ratpackVersion"
-    compile "com.tngtech.jgiven:jgiven-junit5:$jgivenVersion"
-    compile "parts.code:skeptical:$skepticalVersion"
+    testImplementation "org.apache.kafka:kafka-clients:$kafkaVersion"
+    testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
+    testImplementation "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
+    testImplementation "io.ratpack:ratpack-test:$ratpackVersion"
+    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
+    testImplementation 'com.tngtech.jgiven:jgiven-spock:1.0.0-RC4'
+    testImplementation("junit:junit:4.13")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
 }

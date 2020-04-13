@@ -25,22 +25,22 @@ class RecordProcessor @Inject constructor(
 
     override fun process(key: String, record: SpecificRecord) {
         when (record) {
-            is PreferencesCreated -> process(record)
-            is CountryChanged -> process(record)
+            is PreferencesCreated -> preferencesCreated(record)
+            is CountryChanged -> countryChanged(record)
             else -> Unit
         }
 
         logger.info("Processed ${record.schema.name}\n\trecord: $record")
     }
 
-    private fun process(record: PreferencesCreated) {
+    private fun preferencesCreated(record: PreferencesCreated) {
         state.put(
             record.customerId,
             PreferencesState(record.customerId, record.currency, record.country)
         )
     }
 
-    private fun process(record: CountryChanged) {
+    private fun countryChanged(record: CountryChanged) {
         val preferencesState = state.get(record.customerId)
 
         state.put(

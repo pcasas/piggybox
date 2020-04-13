@@ -30,8 +30,8 @@ class RecordTransformer @Inject constructor(
 
     override fun transform(key: String, record: SpecificRecord): KeyValue<String, SpecificRecord>? {
         val result: KeyValue<String, SpecificRecord> = when (record) {
-            is AddFundsCommand -> transform(record)
-            is BuyGameCommand -> transform(record)
+            is AddFundsCommand -> addFunds(record)
+            is BuyGameCommand -> buyGame(record)
             else -> unknown()
         }
 
@@ -44,7 +44,7 @@ class RecordTransformer @Inject constructor(
         return result
     }
 
-    private fun transform(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
+    private fun addFunds(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
         val newBalance = getCurrentBalance(record.customerId) + record.amount
 
         return if (newBalance > BigDecimal.valueOf(2000)) {
@@ -54,7 +54,7 @@ class RecordTransformer @Inject constructor(
         }
     }
 
-    private fun transform(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
+    private fun buyGame(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
         val newBalance = getCurrentBalance(record.customerId) - record.amount
 
         return if (newBalance < BigDecimal.ZERO) {

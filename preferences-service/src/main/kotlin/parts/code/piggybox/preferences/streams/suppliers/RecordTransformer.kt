@@ -33,10 +33,10 @@ class RecordTransformer @Inject constructor(
 
     override fun transform(key: String, record: SpecificRecord): KeyValue<String, SpecificRecord>? {
         val result = when (record) {
-            is CreatePreferencesCommand -> transform(record)
-            is ChangeCountryCommand -> transform(record)
-            is AddFundsCommand -> transform(record)
-            is BuyGameCommand -> transform(record)
+            is CreatePreferencesCommand -> createPreferences(record)
+            is ChangeCountryCommand -> changeCountry(record)
+            is AddFundsCommand -> addFunds(record)
+            is BuyGameCommand -> buyGame(record)
             else -> unknown()
         }
 
@@ -49,7 +49,7 @@ class RecordTransformer @Inject constructor(
         return result
     }
 
-    private fun transform(record: CreatePreferencesCommand): KeyValue<String, SpecificRecord> {
+    private fun createPreferences(record: CreatePreferencesCommand): KeyValue<String, SpecificRecord> {
         val preferencesState = state.get(record.customerId)
 
         return if (preferencesState == null) {
@@ -59,7 +59,7 @@ class RecordTransformer @Inject constructor(
         }
     }
 
-    private fun transform(record: ChangeCountryCommand): KeyValue<String, SpecificRecord> {
+    private fun changeCountry(record: ChangeCountryCommand): KeyValue<String, SpecificRecord> {
         val preferencesState = state.get(record.customerId)
 
         return if (preferencesState != null) {
@@ -69,7 +69,7 @@ class RecordTransformer @Inject constructor(
         }
     }
 
-    private fun transform(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
+    private fun addFunds(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
         val preferencesState = state.get(record.customerId)
 
         return if (preferencesState == null || preferencesState.currency != record.currency) {
@@ -79,7 +79,7 @@ class RecordTransformer @Inject constructor(
         }
     }
 
-    private fun transform(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
+    private fun buyGame(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
         val preferencesState = state.get(record.customerId)
 
         return if (preferencesState == null || preferencesState.currency != record.currency) {
