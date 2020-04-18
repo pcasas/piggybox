@@ -8,9 +8,9 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 import parts.code.piggybox.integration.tests.KafkaTestUtils
 import parts.code.piggybox.integration.tests.Topics
-import parts.code.piggybox.schemas.events.FundsAdded
-import parts.code.piggybox.schemas.events.PreferencesCreated
-import parts.code.piggybox.schemas.test.UnknownRecord
+import parts.code.piggybox.schemas.FundsAdded
+import parts.code.piggybox.schemas.PreferencesCreated
+import parts.code.piggybox.schemas.UnknownRecord
 import spock.util.concurrent.PollingConditions
 
 import java.time.Duration

@@ -1,4 +1,4 @@
-@namespace("parts.code.piggybox.schemas.commands")
+@namespace("parts.code.piggybox.schemas")
 protocol PiggyBox {
 
   record CreatePreferencesCommand {

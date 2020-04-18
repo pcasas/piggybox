@@ -10,10 +10,10 @@ import org.apache.kafka.streams.state.KeyValueStore
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.balance.config.KafkaConfig
 import parts.code.piggybox.balance.services.BalanceService
-import parts.code.piggybox.schemas.commands.AddFundsCommand
-import parts.code.piggybox.schemas.commands.BuyGameCommand
-import parts.code.piggybox.schemas.state.BalanceState
-import parts.code.piggybox.schemas.test.UnknownRecord
+import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.schemas.BalanceState
+import parts.code.piggybox.schemas.BuyGameCommand
+import parts.code.piggybox.schemas.UnknownRecord
 
 class RecordTransformer @Inject constructor(
     private val config: KafkaConfig,
@@ -72,7 +72,7 @@ class RecordTransformer @Inject constructor(
         val balanceState = state.get(customerId)
 
         return if (balanceState != null) {
-            balanceState.amount
+            balanceState.moneyIDL.amount
         } else {
             BigDecimal.ZERO
         }

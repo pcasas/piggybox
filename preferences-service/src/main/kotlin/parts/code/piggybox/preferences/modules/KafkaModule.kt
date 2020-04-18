@@ -25,14 +25,14 @@ import parts.code.piggybox.preferences.PreferencesServiceApplication
 import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.streams.suppliers.RecordProcessor
 import parts.code.piggybox.preferences.streams.suppliers.RecordTransformer
-import parts.code.piggybox.schemas.commands.AddFundsCommand
-import parts.code.piggybox.schemas.commands.BuyGameCommand
-import parts.code.piggybox.schemas.commands.BuyGameDenied
-import parts.code.piggybox.schemas.events.AddFundsDenied
-import parts.code.piggybox.schemas.events.ChangeCountryDenied
-import parts.code.piggybox.schemas.events.CountryChanged
-import parts.code.piggybox.schemas.events.CreatePreferencesDenied
-import parts.code.piggybox.schemas.events.PreferencesCreated
+import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.schemas.AddFundsDenied
+import parts.code.piggybox.schemas.BuyGameCommand
+import parts.code.piggybox.schemas.BuyGameDenied
+import parts.code.piggybox.schemas.ChangeCountryDenied
+import parts.code.piggybox.schemas.CountryChanged
+import parts.code.piggybox.schemas.CreatePreferencesDenied
+import parts.code.piggybox.schemas.PreferencesCreated
 
 class KafkaModule : AbstractModule() {
 

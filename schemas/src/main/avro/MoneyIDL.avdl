@@ -1,9 +1,8 @@
 @namespace("parts.code.piggybox.schemas")
 protocol PiggyBox {
 
-  record PreferencesState {
-    string customerId;
+  record MoneyIDL {
+    decimal(4,2) amount;
     string currency;
-    string country;
   }
 }

@@ -25,10 +25,10 @@ import parts.code.piggybox.balance.BalanceServiceApplication
 import parts.code.piggybox.balance.config.KafkaConfig
 import parts.code.piggybox.balance.streams.suppliers.RecordProcessor
 import parts.code.piggybox.balance.streams.suppliers.RecordTransformer
-import parts.code.piggybox.schemas.commands.BuyGameDenied
-import parts.code.piggybox.schemas.commands.GameBought
-import parts.code.piggybox.schemas.events.AddFundsDenied
-import parts.code.piggybox.schemas.events.FundsAdded
+import parts.code.piggybox.schemas.AddFundsDenied
+import parts.code.piggybox.schemas.BuyGameDenied
+import parts.code.piggybox.schemas.FundsAdded
+import parts.code.piggybox.schemas.GameBought
 
 class KafkaModule : AbstractModule() {
 

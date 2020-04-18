@@ -4,12 +4,13 @@ import java.time.Instant
 import java.util.UUID
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
-import parts.code.piggybox.schemas.commands.AddFundsCommand
-import parts.code.piggybox.schemas.commands.BuyGameCommand
-import parts.code.piggybox.schemas.commands.BuyGameDenied
-import parts.code.piggybox.schemas.commands.GameBought
-import parts.code.piggybox.schemas.events.AddFundsDenied
-import parts.code.piggybox.schemas.events.FundsAdded
+import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.schemas.AddFundsDenied
+import parts.code.piggybox.schemas.BuyGameCommand
+import parts.code.piggybox.schemas.BuyGameDenied
+import parts.code.piggybox.schemas.FundsAdded
+import parts.code.piggybox.schemas.GameBought
+import parts.code.piggybox.schemas.MoneyIDL
 
 class BalanceService {
 
@@ -18,8 +19,7 @@ class BalanceService {
             UUID.randomUUID().toString(),
             Instant.now(),
             command.customerId,
-            command.amount,
-            command.currency
+            MoneyIDL(command.amount, command.currency)
         )
 
         return KeyValue(command.customerId, event)
@@ -43,8 +43,7 @@ class BalanceService {
             Instant.now(),
             command.customerId,
             command.gameId,
-            command.amount,
-            command.currency
+            MoneyIDL(command.amount, command.currency)
         )
 
         return KeyValue(command.customerId, event)

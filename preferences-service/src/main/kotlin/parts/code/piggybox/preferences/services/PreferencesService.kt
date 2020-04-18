@@ -4,12 +4,12 @@ import java.time.Instant
 import java.util.UUID
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
-import parts.code.piggybox.schemas.commands.ChangeCountryCommand
-import parts.code.piggybox.schemas.commands.CreatePreferencesCommand
-import parts.code.piggybox.schemas.events.ChangeCountryDenied
-import parts.code.piggybox.schemas.events.CountryChanged
-import parts.code.piggybox.schemas.events.CreatePreferencesDenied
-import parts.code.piggybox.schemas.events.PreferencesCreated
+import parts.code.piggybox.schemas.ChangeCountryCommand
+import parts.code.piggybox.schemas.ChangeCountryDenied
+import parts.code.piggybox.schemas.CountryChanged
+import parts.code.piggybox.schemas.CreatePreferencesCommand
+import parts.code.piggybox.schemas.CreatePreferencesDenied
+import parts.code.piggybox.schemas.PreferencesCreated
 
 class PreferencesService {
 
