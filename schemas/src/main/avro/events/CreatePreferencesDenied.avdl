@@ -1,4 +1,4 @@
-@namespace("parts.code.piggybox.schemas.events")
+@namespace("parts.code.piggybox.schemas")
 protocol PiggyBox {
 
   record CreatePreferencesDenied {

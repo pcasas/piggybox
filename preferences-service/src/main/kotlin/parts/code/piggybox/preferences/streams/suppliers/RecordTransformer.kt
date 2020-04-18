@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory
 import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.services.BalanceService
 import parts.code.piggybox.preferences.services.PreferencesService
-import parts.code.piggybox.schemas.commands.AddFundsCommand
-import parts.code.piggybox.schemas.commands.BuyGameCommand
-import parts.code.piggybox.schemas.commands.ChangeCountryCommand
-import parts.code.piggybox.schemas.commands.CreatePreferencesCommand
-import parts.code.piggybox.schemas.state.PreferencesState
-import parts.code.piggybox.schemas.test.UnknownRecord
+import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.schemas.BuyGameCommand
+import parts.code.piggybox.schemas.ChangeCountryCommand
+import parts.code.piggybox.schemas.CreatePreferencesCommand
+import parts.code.piggybox.schemas.PreferencesState
+import parts.code.piggybox.schemas.UnknownRecord
 
 class RecordTransformer @Inject constructor(
     private val config: KafkaConfig,

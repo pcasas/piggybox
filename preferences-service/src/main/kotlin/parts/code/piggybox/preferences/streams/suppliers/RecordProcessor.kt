@@ -7,9 +7,9 @@ import org.apache.kafka.streams.processor.ProcessorContext
 import org.apache.kafka.streams.state.KeyValueStore
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.preferences.config.KafkaConfig
-import parts.code.piggybox.schemas.events.CountryChanged
-import parts.code.piggybox.schemas.events.PreferencesCreated
-import parts.code.piggybox.schemas.state.PreferencesState
+import parts.code.piggybox.schemas.CountryChanged
+import parts.code.piggybox.schemas.PreferencesCreated
+import parts.code.piggybox.schemas.PreferencesState
 
 class RecordProcessor @Inject constructor(
     private val config: KafkaConfig

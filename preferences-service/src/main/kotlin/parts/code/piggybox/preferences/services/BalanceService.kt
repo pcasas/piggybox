@@ -4,10 +4,10 @@ import java.time.Instant
 import java.util.UUID
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
-import parts.code.piggybox.schemas.commands.AddFundsCommand
-import parts.code.piggybox.schemas.commands.BuyGameCommand
-import parts.code.piggybox.schemas.commands.BuyGameDenied
-import parts.code.piggybox.schemas.events.AddFundsDenied
+import parts.code.piggybox.schemas.AddFundsCommand
+import parts.code.piggybox.schemas.AddFundsDenied
+import parts.code.piggybox.schemas.BuyGameCommand
+import parts.code.piggybox.schemas.BuyGameDenied
 
 class BalanceService {
 

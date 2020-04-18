@@ -6,9 +6,7 @@ import com.tngtech.jgiven.annotation.Hidden
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 import parts.code.piggybox.integration.tests.KafkaTestUtils
 import parts.code.piggybox.integration.tests.Topics
-import parts.code.piggybox.schemas.commands.BuyGameDenied
-import parts.code.piggybox.schemas.commands.GameBought
-import parts.code.piggybox.schemas.events.*
+import parts.code.piggybox.schemas.*
 import ratpack.http.MediaType
 import ratpack.http.internal.HttpHeaderConstants
 import spock.util.concurrent.PollingConditions
@@ -35,8 +33,8 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.amount == amount
-            assert event.currency == currency
+            assert event.moneyIDL.amount == amount
+            assert event.moneyIDL.currency == currency
         }
 
         self()
@@ -87,8 +85,8 @@ class Then extends Stage<Then> {
             assert event.occurredOn != null
             assert event.customerId == customerId
             assert event.gameId == gameId
-            assert event.amount == amount
-            assert event.currency == currency
+            assert event.moneyIDL.amount == amount
+            assert event.moneyIDL.currency == currency
         }
 
         self()
