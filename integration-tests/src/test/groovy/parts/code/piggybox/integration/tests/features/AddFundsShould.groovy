@@ -31,7 +31,7 @@ class AddFundsShould extends IntegrationTest {
     }
 
     @Unroll
-    def "not add funds if new balance is greater than 2000"() {
+    def "not add #fundsToAdd funds if new balance is greater than 2000"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$("EUR", "ES")
