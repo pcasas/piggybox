@@ -52,8 +52,8 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.amount == amount
-            assert event.currency == currency
+            assert event.moneyIDL.amount == amount
+            assert event.moneyIDL.currency == currency
         }
 
         self()
@@ -105,8 +105,8 @@ class Then extends Stage<Then> {
             assert event.occurredOn != null
             assert event.customerId == customerId
             assert event.gameId == gameId
-            assert event.amount == amount
-            assert event.currency == currency
+            assert event.moneyIDL.amount == amount
+            assert event.moneyIDL.currency == currency
         }
 
         self()

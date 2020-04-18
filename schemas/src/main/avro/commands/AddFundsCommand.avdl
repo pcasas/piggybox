@@ -1,11 +1,12 @@
 @namespace("parts.code.piggybox.schemas")
 protocol PiggyBox {
 
+  import idl "../MoneyIDL.avdl";
+
   record AddFundsCommand {
     string id;
     timestamp_ms occurredOn;
     string customerId;
-    decimal(4,2) amount;
-    string currency;
+    MoneyIDL moneyIDL;
   }
 }

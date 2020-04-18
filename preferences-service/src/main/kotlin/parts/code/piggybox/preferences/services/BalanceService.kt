@@ -16,8 +16,7 @@ class BalanceService {
             UUID.randomUUID().toString(),
             Instant.now(),
             command.customerId,
-            command.amount,
-            command.currency
+            command.moneyIDL
         )
 
         return KeyValue(command.customerId, event)
@@ -29,8 +28,7 @@ class BalanceService {
             Instant.now(),
             command.customerId,
             command.gameId,
-            command.amount,
-            command.currency
+            command.moneyIDL
         )
 
         return KeyValue(command.customerId, event)

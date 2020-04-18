@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.command.config.KafkaConfig
 import parts.code.piggybox.schemas.BuyGameCommand
+import parts.code.piggybox.schemas.MoneyIDL
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status
@@ -29,8 +30,7 @@ class BuyGameHandler @Inject constructor(
                     Instant.now(),
                     it.customerId,
                     it.gameId,
-                    it.amount,
-                    it.currency
+                    MoneyIDL(it.amount, it.currency)
                 )
 
             val record =

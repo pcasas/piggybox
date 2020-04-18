@@ -10,7 +10,6 @@ import parts.code.piggybox.schemas.BuyGameCommand
 import parts.code.piggybox.schemas.BuyGameDenied
 import parts.code.piggybox.schemas.FundsAdded
 import parts.code.piggybox.schemas.GameBought
-import parts.code.piggybox.schemas.MoneyIDL
 
 class BalanceService {
 
@@ -19,7 +18,7 @@ class BalanceService {
             UUID.randomUUID().toString(),
             Instant.now(),
             command.customerId,
-            MoneyIDL(command.amount, command.currency)
+            command.moneyIDL
         )
 
         return KeyValue(command.customerId, event)
@@ -30,8 +29,7 @@ class BalanceService {
             UUID.randomUUID().toString(),
             Instant.now(),
             command.customerId,
-            command.amount,
-            command.currency
+            command.moneyIDL
         )
 
         return KeyValue(command.customerId, event)
@@ -43,7 +41,7 @@ class BalanceService {
             Instant.now(),
             command.customerId,
             command.gameId,
-            MoneyIDL(command.amount, command.currency)
+            command.moneyIDL
         )
 
         return KeyValue(command.customerId, event)
@@ -55,8 +53,7 @@ class BalanceService {
             Instant.now(),
             command.customerId,
             command.gameId,
-            command.amount,
-            command.currency
+            command.moneyIDL
         )
 
         return KeyValue(command.customerId, event)
