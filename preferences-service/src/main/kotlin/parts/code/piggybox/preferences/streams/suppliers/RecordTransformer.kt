@@ -72,7 +72,7 @@ class RecordTransformer @Inject constructor(
     private fun addFunds(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
         val preferencesState = state.get(record.customerId)
 
-        return if (preferencesState == null || preferencesState.currency != record.currency) {
+        return if (preferencesState == null || preferencesState.currency != record.moneyIDL.currency) {
             balanceService.denyAddFunds(record)
         } else {
             KeyValue(record.customerId, record as SpecificRecord)
@@ -82,7 +82,7 @@ class RecordTransformer @Inject constructor(
     private fun buyGame(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
         val preferencesState = state.get(record.customerId)
 
-        return if (preferencesState == null || preferencesState.currency != record.currency) {
+        return if (preferencesState == null || preferencesState.currency != record.moneyIDL.currency) {
             balanceService.denyBuyGame(record)
         } else {
             KeyValue(record.customerId, record as SpecificRecord)

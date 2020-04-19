@@ -35,7 +35,7 @@ subprojects {
     dependencies {
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         implementation 'ch.qos.logback:logback-classic:1.2.3'
-        compile 'parts.code:money:0.0.2'
+        compile 'parts.code:money:0.0.3'
     }
 
     test {

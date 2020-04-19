@@ -52,12 +52,7 @@ class RecordProcessor @Inject constructor(
 
     private fun currentBalance(customerId: String, currency: Currency): Money {
         val balanceState = state.get(customerId)
-
-        return if (balanceState != null) {
-            balanceState.moneyIDL.toMoney()
-        } else {
-            Money.zero(currency)
-        }
+        return if (balanceState != null) balanceState.moneyIDL.toMoney() else Money.zero(currency)
     }
 
     private fun saveBalance(customerId: String, balance: Money) {
