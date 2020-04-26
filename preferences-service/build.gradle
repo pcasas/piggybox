@@ -17,6 +17,6 @@ dependencies {
     implementation "org.apache.kafka:kafka-clients:$kafkaVersion"
     implementation "org.apache.kafka:kafka-streams:$kafkaVersion"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
-    compile "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
-    compile "io.confluent:kafka-streams-avro-serde:$kafkaConfluentVersion"
+    implementation "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
+    implementation "io.confluent:kafka-streams-avro-serde:$kafkaConfluentVersion"
 }

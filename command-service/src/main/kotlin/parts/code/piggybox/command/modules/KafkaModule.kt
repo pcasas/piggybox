@@ -21,14 +21,15 @@ class KafkaModule : AbstractModule() {
     @Provides
     @Singleton
     fun provideKafkaProducer(kafkaConfig: KafkaConfig): KafkaProducer<String, SpecificRecord> {
-        val properties = Properties().apply {
+        return KafkaProducer(properties(kafkaConfig))
+    }
+
+    private fun properties(kafkaConfig: KafkaConfig) =
+        Properties().apply {
             put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.bootstrapServersConfig)
             put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, kafkaConfig.schemaRegistryUrlConfig)
             put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer::class.java)
             put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer::class.java)
             put("value.subject.name.strategy", TopicRecordNameStrategy::class.java)
         }
-
-        return KafkaProducer(properties)
-    }
 }

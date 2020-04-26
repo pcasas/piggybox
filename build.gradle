@@ -32,10 +32,19 @@ subprojects {
         skepticalVersion = '0.0.1'
     }
 
+    ext.libs = [
+            kafka: [
+                    "org.apache.kafka:kafka-clients:$kafkaVersion",
+                    "org.apache.kafka:kafka-streams:$kafkaVersion",
+                    "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion",
+                    "io.confluent:kafka-streams-avro-serde:$kafkaConfluentVersion"
+            ]
+    ]
+
     dependencies {
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         implementation 'ch.qos.logback:logback-classic:1.2.3'
-        compile 'parts.code:money:1.0.0'
+        implementation 'parts.code:money:1.0.0'
     }
 
     test {
