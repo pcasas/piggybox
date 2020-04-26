@@ -3,6 +3,7 @@ package parts.code.piggybox.integration.tests.stages
 import com.tngtech.jgiven.Stage
 import com.tngtech.jgiven.annotation.ExpectedScenarioState
 import com.tngtech.jgiven.annotation.ProvidedScenarioState
+import parts.code.money.Currency
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 
 import static groovy.json.JsonOutput.toJson
@@ -15,22 +16,22 @@ class When extends Stage<When> {
     @ExpectedScenarioState ApplicationsUnderTest aut
     @ProvidedScenarioState String gameId = UUID.randomUUID().toString()
 
-    When adding_$_$_worth_of_funds(BigDecimal amount, String currency) {
+    When adding_$_$_worth_of_funds(BigDecimal amount, Currency currency) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, amount: amount, currency: currency]))
+            }.body.text(toJson([customerId: customerId, money: [amount: amount, currency: currency.name()]]))
         }
 
         assert httpClient.post("/api/balance.addFunds").status.code == 202
         self()
     }
 
-    When buying_a_game_worth_$_$(BigDecimal amount, String currency) {
+    When buying_a_game_worth_$_$(BigDecimal amount, Currency currency) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, gameId: gameId, amount: amount, currency: currency]))
+            }.body.text(toJson([customerId: customerId, gameId: gameId, money: [amount: amount, currency: currency.name()]]))
         }
 
         assert httpClient.post("/api/balance.buyGame").status.code == 202
@@ -48,11 +49,11 @@ class When extends Stage<When> {
         self()
     }
 
-    When creating_preferences_with_currency_$_and_country_$(String currency, String country) {
+    When creating_preferences_with_currency_$_and_country_$(Currency currency, String country) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, currency: currency, country: country]))
+            }.body.text(toJson([customerId: customerId, currency: currency.name(), country: country]))
         }
 
         assert httpClient.post("/api/preferences.create").status.code == 202

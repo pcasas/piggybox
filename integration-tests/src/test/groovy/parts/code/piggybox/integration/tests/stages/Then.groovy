@@ -3,6 +3,7 @@ package parts.code.piggybox.integration.tests.stages
 import com.tngtech.jgiven.Stage
 import com.tngtech.jgiven.annotation.ExpectedScenarioState
 import com.tngtech.jgiven.annotation.Hidden
+import parts.code.money.Currency
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 import parts.code.piggybox.integration.tests.KafkaTestUtils
 import parts.code.piggybox.integration.tests.Topics
@@ -21,7 +22,7 @@ class Then extends Stage<Then> {
     @ExpectedScenarioState ApplicationsUnderTest aut
     @ExpectedScenarioState String gameId
 
-    Then $_$_worth_of_funds_are_added(BigDecimal amount, String currency) {
+    Then $_$_worth_of_funds_are_added(BigDecimal amount, Currency currency) {
         def consumer = KafkaTestUtils.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
@@ -34,13 +35,13 @@ class Then extends Stage<Then> {
             assert event.occurredOn != null
             assert event.customerId == customerId
             assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency
+            assert event.moneyIDL.currency == currency.name()
         }
 
         self()
     }
 
-    Then $_$_worth_of_funds_are_denied(BigDecimal amount, String currency, @Hidden String topic) {
+    Then $_$_worth_of_funds_are_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
         def consumer = KafkaTestUtils.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
@@ -53,13 +54,13 @@ class Then extends Stage<Then> {
             assert event.occurredOn != null
             assert event.customerId == customerId
             assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency
+            assert event.moneyIDL.currency == currency.name()
         }
 
         self()
     }
 
-    Then the_customer_balance_is_$_$(BigDecimal amount, String currency) {
+    Then the_customer_balance_is_$_$(BigDecimal amount, Currency currency) {
         def httpClient = aut.queryService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -68,11 +69,11 @@ class Then extends Stage<Then> {
 
         def response = httpClient.get("/api/customers.getBalance")
         assert response.status.code == 200
-        assert response.body.text == toJson([amount: amount, currency: currency])
+        assert response.body.text == toJson([money: [amount: amount, currency: currency.name()]])
         self()
     }
 
-    Then a_game_worth_$_$_is_bought(BigDecimal amount, String currency) {
+    Then a_game_worth_$_$_is_bought(BigDecimal amount, Currency currency) {
         def consumer = KafkaTestUtils.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
@@ -86,13 +87,13 @@ class Then extends Stage<Then> {
             assert event.customerId == customerId
             assert event.gameId == gameId
             assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency
+            assert event.moneyIDL.currency == currency.name()
         }
 
         self()
     }
 
-    Then buying_a_game_worth_$_$_is_denied(BigDecimal amount, String currency, @Hidden String topic) {
+    Then buying_a_game_worth_$_$_is_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
         def consumer = KafkaTestUtils.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
@@ -106,7 +107,7 @@ class Then extends Stage<Then> {
             assert event.customerId == customerId
             assert event.gameId == gameId
             assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency
+            assert event.moneyIDL.currency == currency.name()
         }
 
         self()
@@ -148,7 +149,7 @@ class Then extends Stage<Then> {
         self()
     }
 
-    Then the_preferences_are_created_with_currency_$_and_country_$(String currency, String country) {
+    Then the_preferences_are_created_with_currency_$_and_country_$(Currency currency, String country) {
         def consumer = KafkaTestUtils.consumer(Topics.preferences)
 
         new PollingConditions(timeout: 30).eventually {
@@ -160,14 +161,14 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.currency == currency
+            assert event.currency == currency.name()
             assert event.country == country
         }
 
         self()
     }
 
-    Then create_preferences_with_currency_$_and_country_$_is_denied(String currency, String country) {
+    Then create_preferences_with_currency_$_and_country_$_is_denied(Currency currency, String country) {
         def consumer = KafkaTestUtils.consumer(Topics.preferencesAuthorization)
 
         new PollingConditions(timeout: 30).eventually {
@@ -179,7 +180,7 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.currency == currency
+            assert event.currency == currency.name()
             assert event.country == country
         }
 

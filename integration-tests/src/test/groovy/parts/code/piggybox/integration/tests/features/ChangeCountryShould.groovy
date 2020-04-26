@@ -3,12 +3,14 @@ package parts.code.piggybox.integration.tests.features
 import parts.code.piggybox.integration.tests.IntegrationTest
 import parts.code.piggybox.integration.tests.Topics
 
+import static parts.code.money.Currency.EUR
+
 class ChangeCountryShould extends IntegrationTest {
 
     def "change the country"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-               .customer_preferences_with_currency_$_and_country_$("EUR", "ES")
+               .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
         when().changing_the_country_to_$("UK")
         then().the_country_is_changed_to_$("UK")
     }
@@ -23,7 +25,7 @@ class ChangeCountryShould extends IntegrationTest {
     def "ignore an unknown record"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-               .customer_preferences_with_currency_$_and_country_$("EUR", "ES")
+               .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
                .and().an_unknown_record_in_the_topic_$(Topics.preferences)
         when().changing_the_country_to_$("UK")
         then().the_country_is_changed_to_$("UK")

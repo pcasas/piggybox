@@ -1,6 +1,5 @@
 package parts.code.piggybox.command.api.handlers
 
-import java.math.BigDecimal
 import java.time.Instant
 import java.util.UUID
 import javax.inject.Inject
@@ -8,9 +7,10 @@ import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
+import parts.code.money.Money
 import parts.code.piggybox.command.config.KafkaConfig
 import parts.code.piggybox.schemas.BuyGameCommand
-import parts.code.piggybox.schemas.MoneyIDL
+import parts.code.piggybox.schemas.toMoneyIDL
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status
@@ -30,11 +30,10 @@ class BuyGameHandler @Inject constructor(
                     Instant.now(),
                     it.customerId,
                     it.gameId,
-                    MoneyIDL(it.amount, it.currency)
+                    it.money.toMoneyIDL()
                 )
-
             val record =
-                ProducerRecord(config.topics.preferencesAuthorization, command.customerId, command as SpecificRecord)
+                ProducerRecord(config.topics.preferencesAuthorization, it.customerId, command as SpecificRecord)
             producer.send(record).get()
 
             logger.info(
@@ -47,10 +46,5 @@ class BuyGameHandler @Inject constructor(
         }
     }
 
-    private data class BuyGamePayload(
-        val customerId: String,
-        val gameId: String,
-        val amount: BigDecimal,
-        val currency: String
-    )
+    private data class BuyGamePayload(val customerId: String, val gameId: String, val money: Money)
 }

@@ -5,6 +5,7 @@ import com.tngtech.jgiven.annotation.Hidden
 import com.tngtech.jgiven.annotation.ProvidedScenarioState
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.producer.ProducerRecord
+import parts.code.money.Currency
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 import parts.code.piggybox.integration.tests.KafkaTestUtils
 import parts.code.piggybox.integration.tests.Topics
@@ -30,11 +31,11 @@ class Given extends Stage<Given> {
         self()
     }
 
-    Given customer_preferences_with_currency_$_and_country_$(String currency, String country) {
+    Given customer_preferences_with_currency_$_and_country_$(Currency currency, String country) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, currency: currency, country: country]))
+            }.body.text(toJson([customerId: customerId, currency: currency.name(), country: country]))
         }
 
         assert httpClient.post("/api/preferences.create").status.code == 202
@@ -50,11 +51,11 @@ class Given extends Stage<Given> {
         self()
     }
 
-    Given $_$_worth_of_funds(BigDecimal amount, String currency) {
+    Given $_$_worth_of_funds(BigDecimal amount, Currency currency) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, amount: amount, currency: currency]))
+            }.body.text(toJson([customerId: customerId, money: [amount: amount, currency: currency.name()]]))
         }
 
         assert httpClient.post("/api/balance.addFunds").status.code == 202
