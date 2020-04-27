@@ -2,6 +2,7 @@ package parts.code.piggybox.command
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import java.time.Clock
 import parts.code.piggybox.command.api.WebAPIEndpoints
 import parts.code.piggybox.command.config.KafkaConfig
 import parts.code.piggybox.command.modules.KafkaModule
@@ -27,6 +28,7 @@ object CommandServiceApplication {
                     it
                         .module(KafkaModule::class.java)
                         .module(WebAPIModule::class.java)
+                        .bindInstance(Clock::class.java, Clock.systemUTC())
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
                 .handlers {

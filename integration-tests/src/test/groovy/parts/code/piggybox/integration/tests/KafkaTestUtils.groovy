@@ -13,9 +13,13 @@ import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 
+@Singleton
 class KafkaTestUtils {
 
-    static KafkaProducer<String, SpecificRecord> producer() {
+    private Map<String, KafkaConsumer<String, SpecificRecord>> consumers = [:]
+    KafkaProducer<String, SpecificRecord> producer = producer()
+
+    private static KafkaProducer<String, SpecificRecord> producer() {
         def properties = new Properties()
 
         properties.with {
@@ -29,23 +33,25 @@ class KafkaTestUtils {
         new KafkaProducer<String, SpecificRecord>(properties)
     }
 
-    static KafkaConsumer<String, SpecificRecord> consumer(String topic) {
-        def properties = new Properties()
+    KafkaConsumer<String, SpecificRecord> consumer(String topic) {
+        if (!consumers.containsKey(topic)) {
+            def properties = new Properties()
 
-        properties.with {
-            put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
-            put(CommonClientConfigs.GROUP_ID_CONFIG, "${UUID.randomUUID()}".toString())
-            put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081")
-            put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
-            put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class)
-            put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true")
-            put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
-            put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1)
+            properties.with {
+                put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
+                put(CommonClientConfigs.GROUP_ID_CONFIG, "${UUID.randomUUID()}".toString())
+                put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081")
+                put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
+                put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class)
+                put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true")
+                put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+            }
+
+            def consumer = new KafkaConsumer(properties)
+            consumer.subscribe([topic])
+            consumers.put(topic, consumer)
         }
 
-        def consumer = new KafkaConsumer(properties)
-        consumer.subscribe([topic])
-
-        consumer
+        return consumers.get(topic)
     }
 }

@@ -1,6 +1,6 @@
 package parts.code.piggybox.command.api.handlers
 
-import java.time.Instant
+import java.time.Clock
 import java.util.UUID
 import javax.inject.Inject
 import org.apache.avro.specific.SpecificRecord
@@ -14,6 +14,7 @@ import ratpack.handling.Handler
 import ratpack.http.Status
 
 class ChangeCountryHandler @Inject constructor(
+    private val clock: Clock,
     private val config: KafkaConfig,
     private val producer: KafkaProducer<String, SpecificRecord>
 ) : Handler {
@@ -22,23 +23,24 @@ class ChangeCountryHandler @Inject constructor(
 
     override fun handle(ctx: Context) {
         ctx.parse(ChangeCountryPayload::class.java).then {
-            val command = ChangeCountryCommand(
+            val record = ChangeCountryCommand(
                 UUID.randomUUID().toString(),
-                Instant.now(),
+                clock.instant(),
                 it.customerId,
                 it.country
             )
 
-            val record = ProducerRecord(
+            val producerRecord = ProducerRecord(
                 config.topics.preferencesAuthorization,
-                command.customerId,
-                command as SpecificRecord
+                record.customerId,
+                record as SpecificRecord
             )
-            producer.send(record).get()
+
+            producer.send(producerRecord).get()
 
             logger.info(
-                "Sent ${command.schema.name} to topic: ${config.topics.preferencesAuthorization}" +
-                        "\n\trecord: $command"
+                "Sent ${record.schema.name} to topic: ${config.topics.preferencesAuthorization}" +
+                        "\n\trecord: $record"
             )
 
             ctx.response.status(Status.ACCEPTED)

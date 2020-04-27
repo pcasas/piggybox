@@ -2,6 +2,7 @@ package parts.code.piggybox.query
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import java.time.Clock
 import parts.code.piggybox.query.api.WebAPIEndpoints
 import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.query.modules.KafkaModule
@@ -29,6 +30,7 @@ object QueryServiceApplication {
                         .module(KafkaModule::class.java)
                         .module(QueryModule::class.java)
                         .module(WebAPIModule::class.java)
+                        .bindInstance(Clock::class.java, Clock.systemUTC())
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
                 .handlers {
