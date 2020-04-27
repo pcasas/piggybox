@@ -1,6 +1,6 @@
 package parts.code.piggybox.command.api.handlers
 
-import java.time.Instant
+import java.time.Clock
 import java.util.UUID
 import javax.inject.Inject
 import org.apache.avro.specific.SpecificRecord
@@ -16,6 +16,7 @@ import ratpack.handling.Handler
 import ratpack.http.Status
 
 class AddFundsHandler @Inject constructor(
+    private val clock: Clock,
     private val config: KafkaConfig,
     private val producer: KafkaProducer<String, SpecificRecord>
 ) : Handler {
@@ -24,15 +25,24 @@ class AddFundsHandler @Inject constructor(
 
     override fun handle(ctx: Context) {
         ctx.parse(AddFundsPayload::class.java).then {
-            val command =
-                AddFundsCommand(UUID.randomUUID().toString(), Instant.now(), it.customerId, it.money.toMoneyIDL())
-            val record =
-                ProducerRecord(config.topics.preferencesAuthorization, it.customerId, command as SpecificRecord)
-            producer.send(record).get()
+            val record = AddFundsCommand(
+                UUID.randomUUID().toString(),
+                clock.instant(),
+                it.customerId,
+                it.money.toMoneyIDL()
+            )
+
+            val producerRecord = ProducerRecord(
+                config.topics.preferencesAuthorization,
+                it.customerId,
+                record as SpecificRecord
+            )
+
+            producer.send(producerRecord).get()
 
             logger.info(
-                "Sent ${command.schema.name} to topic: ${config.topics.preferencesAuthorization}" +
-                        "\n\trecord: $command"
+                "Sent ${record.schema.name} to topic: ${config.topics.preferencesAuthorization}" +
+                        "\n\trecord: $record"
             )
 
             ctx.response.status(Status.ACCEPTED)

@@ -2,6 +2,7 @@ package parts.code.piggybox.preferences
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import java.time.Clock
 import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.modules.KafkaModule
 import parts.code.piggybox.preferences.modules.PreferencesModule
@@ -26,6 +27,7 @@ object PreferencesServiceApplication {
                     it
                         .module(KafkaModule::class.java)
                         .module(PreferencesModule::class.java)
+                        .bindInstance(Clock::class.java, Clock.systemUTC())
                         .bindInstance(ObjectMapper::class.java, ObjectMapper().registerModule(KotlinModule()))
                 })
         }

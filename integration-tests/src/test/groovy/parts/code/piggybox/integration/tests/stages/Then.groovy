@@ -23,7 +23,7 @@ class Then extends Stage<Then> {
     @ExpectedScenarioState String gameId
 
     Then $_$_worth_of_funds_are_added(BigDecimal amount, Currency currency) {
-        def consumer = KafkaTestUtils.consumer(Topics.balance)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -42,7 +42,7 @@ class Then extends Stage<Then> {
     }
 
     Then $_$_worth_of_funds_are_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
-        def consumer = KafkaTestUtils.consumer(topic)
+        def consumer = KafkaTestUtils.instance.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -74,7 +74,7 @@ class Then extends Stage<Then> {
     }
 
     Then a_game_worth_$_$_is_bought(BigDecimal amount, Currency currency) {
-        def consumer = KafkaTestUtils.consumer(Topics.balance)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -94,7 +94,7 @@ class Then extends Stage<Then> {
     }
 
     Then buying_a_game_worth_$_$_is_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
-        def consumer = KafkaTestUtils.consumer(topic)
+        def consumer = KafkaTestUtils.instance.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -114,7 +114,7 @@ class Then extends Stage<Then> {
     }
 
     Then the_country_is_changed_to_$(String country) {
-        def consumer = KafkaTestUtils.consumer(Topics.preferences)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.preferences)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -132,7 +132,7 @@ class Then extends Stage<Then> {
     }
 
     Then changing_the_country_to_$_is_denied(String country) {
-        def consumer = KafkaTestUtils.consumer(Topics.preferencesAuthorization)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.preferencesAuthorization)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -150,7 +150,7 @@ class Then extends Stage<Then> {
     }
 
     Then the_preferences_are_created_with_currency_$_and_country_$(Currency currency, String country) {
-        def consumer = KafkaTestUtils.consumer(Topics.preferences)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.preferences)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -169,7 +169,7 @@ class Then extends Stage<Then> {
     }
 
     Then create_preferences_with_currency_$_and_country_$_is_denied(Currency currency, String country) {
-        def consumer = KafkaTestUtils.consumer(Topics.preferencesAuthorization)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.preferencesAuthorization)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }

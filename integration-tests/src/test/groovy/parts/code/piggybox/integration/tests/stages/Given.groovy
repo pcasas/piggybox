@@ -39,8 +39,7 @@ class Given extends Stage<Given> {
         }
 
         assert httpClient.post("/api/preferences.create").status.code == 202
-
-        def consumer = KafkaTestUtils.consumer(Topics.preferences)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.preferences)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -60,7 +59,7 @@ class Given extends Stage<Given> {
 
         assert httpClient.post("/api/balance.addFunds").status.code == 202
 
-        def consumer = KafkaTestUtils.consumer(Topics.balance)
+        def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
@@ -75,9 +74,9 @@ class Given extends Stage<Given> {
     Given an_unknown_record_in_the_topic_$(String topic) {
         def record = new ProducerRecord(topic, customerId, new UnknownRecord() as SpecificRecord)
 
-        KafkaTestUtils.producer().send(record).get()
+        KafkaTestUtils.instance.producer.send(record).get()
 
-        def consumer = KafkaTestUtils.consumer(topic)
+        def consumer = KafkaTestUtils.instance.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
             def events = consumer.poll(Duration.ZERO).findResults { it.key() == customerId ? it.value() : null }
