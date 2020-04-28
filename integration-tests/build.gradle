@@ -1,25 +1,13 @@
 plugins {
     id 'jacoco'
-    id 'com.tngtech.jgiven.gradle-plugin' version '1.0.0-RC4'
 }
 
 apply plugin: 'groovy'
 
-jacoco {
-    toolVersion = '0.8.5'
-}
-
 jacocoTestReport {
-    reports {
-        html.enabled = true
-        xml.enabled = true
-        csv.enabled = false
-    }
-
     def projects = [
             project(":balance-service"),
             project(":command-service"),
-            project(":kafka-init-service"),
             project(":preferences-service"),
             project(":query-service")
     ]
@@ -28,21 +16,17 @@ jacocoTestReport {
     classDirectories.from = projects.sourceSets.main.output
 }
 
-test.finalizedBy jacocoTestReport
-
 dependencies {
-    api project(':schemas')
-    api project(':balance-service')
-    api project(':command-service')
-    api project(':kafka-init-service')
-    api project(':preferences-service')
-    api project(':query-service')
-    testImplementation "org.apache.kafka:kafka-clients:$kafkaVersion"
-    testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
-    testImplementation "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
+    testImplementation project(':schemas')
+    testImplementation project(':balance-service')
+    testImplementation project(':command-service')
+    testImplementation project(':kafka-init-service')
+    testImplementation project(':preferences-service')
+    testImplementation project(':query-service')
+    testImplementation libs.jackson
+    testImplementation libs.kafka
     testImplementation "io.ratpack:ratpack-test:$ratpackVersion"
     testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
-    testImplementation 'com.tngtech.jgiven:jgiven-spock:1.0.0-RC4'
-    testImplementation("junit:junit:4.13")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
+    testImplementation 'com.tngtech.jgiven:jgiven-spock:0.18.2'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.5.2'
 }

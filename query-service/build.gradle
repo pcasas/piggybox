@@ -12,8 +12,8 @@ apply plugin: 'io.ratpack.ratpack-java'
 mainClassName = 'parts.code.piggybox.query.QueryServiceApplication'
 
 dependencies {
-    api project(':schemas')
-    implementation "io.ratpack:ratpack-guice:$ratpackVersion"
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
+    implementation project(':schemas')
+    implementation libs.jackson
+    implementation libs.ratpack
     implementation libs.kafka
 }

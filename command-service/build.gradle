@@ -12,9 +12,8 @@ apply plugin: 'io.ratpack.ratpack-java'
 mainClassName = 'parts.code.piggybox.command.CommandServiceApplication'
 
 dependencies {
-    api project(':schemas')
-    implementation "io.ratpack:ratpack-guice:$ratpackVersion"
-    implementation "org.apache.kafka:kafka-clients:$kafkaVersion"
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
-    implementation "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion"
+    implementation project(':schemas')
+    implementation libs.jackson
+    implementation libs.ratpack
+    implementation libs.kafka
 }

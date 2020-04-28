@@ -4,13 +4,32 @@ plugins {
     id 'jacoco'
 }
 
+ext {
+    jacksonVersion = '2.10.2'
+    ratpackVersion = '1.7.6'
+    kafkaVersion = '2.4.0'
+    confluentVersion = '5.4.0'
+    avroVersion = '1.9.1'
+    logbackVersion = '1.2.3'
+    moneyVersion = '1.0.0'
+    jacocoVersion = '0.8.5'
+    jvmVersion = '1.8'
+
+    libs = [
+            jackson: ["com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"],
+            ratpack: ["io.ratpack:ratpack-guice:$ratpackVersion"],
+            kafka  : ["org.apache.kafka:kafka-clients:$kafkaVersion",
+                      "org.apache.kafka:kafka-streams:$kafkaVersion",
+                      "io.confluent:kafka-avro-serializer:$confluentVersion",
+                      "io.confluent:kafka-streams-avro-serde:$confluentVersion"]
+    ]
+}
+
 allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven {
-            url "http://packages.confluent.io/maven/"
-        }
+        maven { url "https://packages.confluent.io/maven/" }
     }
 }
 
@@ -22,29 +41,10 @@ subprojects {
     apply plugin: 'org.jlleitschuh.gradle.ktlint'
     apply plugin: 'jacoco'
 
-    ext {
-        ratpackVersion = '1.7.6'
-        kafkaVersion = '2.4.0'
-        jacksonVersion = '2.10.2'
-        avroVersion = '1.9.1'
-        kafkaConfluentVersion = '5.4.0'
-        jgivenVersion = '0.18.2'
-        skepticalVersion = '0.0.1'
-    }
-
-    ext.libs = [
-            kafka: [
-                    "org.apache.kafka:kafka-clients:$kafkaVersion",
-                    "org.apache.kafka:kafka-streams:$kafkaVersion",
-                    "io.confluent:kafka-avro-serializer:$kafkaConfluentVersion",
-                    "io.confluent:kafka-streams-avro-serde:$kafkaConfluentVersion"
-            ]
-    ]
-
     dependencies {
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        implementation 'ch.qos.logback:logback-classic:1.2.3'
-        implementation 'parts.code:money:1.0.0'
+        implementation "ch.qos.logback:logback-classic:$logbackVersion"
+        implementation "parts.code:money:$moneyVersion"
     }
 
     test {
@@ -55,11 +55,12 @@ subprojects {
     }
 
     jacoco {
-        toolVersion = '0.8.5'
+        toolVersion = jacocoVersion
     }
 
     jacocoTestReport {
         reports {
+            html.enabled true
             xml.enabled true
             csv.enabled false
         }
@@ -67,13 +68,8 @@ subprojects {
 
     test.finalizedBy jacocoTestReport
 
-    compileKotlin {
-        kotlinOptions.jvmTarget = '1.8'
-    }
-
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = '1.8'
-    }
+    compileKotlin { kotlinOptions.jvmTarget = jvmVersion }
+    compileTestKotlin { kotlinOptions.jvmTarget = jvmVersion }
 }
 
 task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
@@ -87,7 +83,6 @@ task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
             project(":balance-service"),
             project(":command-service"),
             project(":integration-tests"),
-            project(":kafka-init-service"),
             project(":preferences-service")
     ]
 
