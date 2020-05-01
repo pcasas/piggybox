@@ -6,7 +6,7 @@ plugins {
 
 ext {
     jacksonVersion = '2.10.2'
-    ratpackVersion = '1.7.6'
+    ratpackVersion = '1.8.0'
     kafkaVersion = '2.4.1'
     confluentVersion = '5.4.1'
     avroVersion = '1.9.2'
