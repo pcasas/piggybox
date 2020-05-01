@@ -9,7 +9,7 @@ ext {
     ratpackVersion = '1.7.6'
     kafkaVersion = '2.4.1'
     confluentVersion = '5.4.1'
-    avroVersion = '1.9.1'
+    avroVersion = '1.9.2'
     logbackVersion = '1.2.3'
     moneyVersion = '1.0.0'
     jacocoVersion = '0.8.5'
