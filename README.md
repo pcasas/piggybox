@@ -6,7 +6,7 @@
 
 Piggybox is a tutorial project to show how to create [Microservices](http://martinfowler.com/microservices/) using Ratpack, Kafka and Docker.   
 Piggybox implements the Backend of an Online Wallet [Bounded Context](https://martinfowler.com/bliki/BoundedContext.html). 
-If you are familiar with video game platforms like [Steam](https://store.steampowered.com/) you'll know they have an Online Wallet where you can add funds and later buy games with those funds. Those are the type of functionalities that are implemented in this project.
+If you are familiar with video game platforms like [Steam](https://store.steampowered.com/) you'll know they have an Online Wallet where you can add funds and later buy games with those funds. Those are the types of functionalities that are implemented in this project.
 
 ## Microservice Architecture
 
