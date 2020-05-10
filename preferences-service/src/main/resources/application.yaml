@@ -1,6 +1,9 @@
+server:
+  port: 5053
+
 kafka:
-  bootstrapServersConfig: 'localhost:9092'
-  schemaRegistryUrlConfig: 'http://localhost:8081'
+  bootstrapServersConfig: 'broker:29092'
+  schemaRegistryUrlConfig: 'http://schema-registry:8081'
 
   topics:
     preferencesAuthorization: 'preferences-authorization'

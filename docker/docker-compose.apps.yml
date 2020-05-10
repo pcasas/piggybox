@@ -1,0 +1,59 @@
+version: "3.7"
+services:
+  scripts:
+    build: scripts
+    hostname: scripts
+    container_name: scripts
+    volumes:
+      - scripts:/scripts
+
+  command-service:
+    build: ../command-service
+    hostname: command-service
+    container_name: command-service
+    depends_on:
+      - broker
+    volumes:
+      - scripts:/scripts
+    ports:
+      - "5051:5051"
+    command: ["./scripts/wait-for-it.sh", "broker:29092", "--", "./opt/command-service/bin/command-service", "-fg"]
+
+  query-service:
+    build: ../query-service
+    hostname: query-service
+    container_name: query-service
+    depends_on:
+      - broker
+    volumes:
+      - scripts:/scripts
+    ports:
+      - "5052:5052"
+    command: ["./scripts/wait-for-it.sh", "broker:29092", "--", "./opt/query-service/bin/query-service", "-fg"]
+
+  preferences-service:
+    build: ../preferences-service
+    hostname: preferences-service
+    container_name: preferences-service
+    depends_on:
+      - broker
+    volumes:
+      - scripts:/scripts
+    ports:
+      - "5053:5053"
+    command: ["./scripts/wait-for-it.sh", "broker:29092", "--", "./opt/preferences-service/bin/preferences-service", "-fg"]
+
+  balance-service:
+    build: ../balance-service
+    hostname: balance-service
+    container_name: balance-service
+    depends_on:
+      - broker
+    volumes:
+      - scripts:/scripts
+    ports:
+      - "5054:5054"
+    command: ["./scripts/wait-for-it.sh", "broker:29092", "--", "./opt/balance-service/bin/balance-service", "-fg"]
+
+volumes:
+  scripts:

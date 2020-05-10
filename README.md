@@ -95,7 +95,7 @@ The recommended IDE for this project is [IntelliJ IDEA](https://www.jetbrains.co
 To run the tests you first need to start the Docker containers for Zookeeper, Kafka and Schema Registry, from the terminal in the root of the project:
 
 ```
-docker-compose up 
+docker-compose -f docker/docker-compose.yml up
 ```
 
 Then you can run the tests with:
@@ -107,7 +107,33 @@ Then you can run the tests with:
 To stop Zookeeper, Kafka and Schema Registry and clean the volumes:
 
 ```
-docker-compose down -v
+docker-compose -f docker/docker-compose.yml down -v
+```
+
+## Running the apps
+
+```
+docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml up -d --build
+```
+
+```
+curl --header "Content-Type: application/json" --request POST --data '{"customerId":"ebbcf888-f83e-4055-9266-61b51dbf765c","currency":"EUR","country":"ES"}' http://localhost:5051/api/preferences.create
+```
+
+## Stopping the apps
+
+```
+docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml down
+docker system prune
+docker volume prune
+```
+
+## Running a bash on a docker container
+
+```
+docker exec -it zookeeper bash
+docker exec -it broker bash
+docker exec -it schema-registry bash
 ```
 
 ## Built With

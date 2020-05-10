@@ -3,7 +3,6 @@ rootProject.name = 'piggybox'
 include ':balance-service',
         ':command-service',
         ':integration-tests',
-        ':kafka-init-service',
         ':preferences-service',
         ':query-service',
         ':schemas'
