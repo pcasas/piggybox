@@ -1,4 +1,4 @@
-version: '2'
+version: "3.7"
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:5.4.0
@@ -40,3 +40,19 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+
+  create-topics:
+    image: confluentinc/cp-kafka:5.4.0
+    hostname: create-topics
+    container_name: create-topics
+    depends_on:
+      - broker
+    command: "
+      bash -c 'cub kafka-ready -b broker:29092 1 20 && \
+      kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic preferences-authorization && \
+      kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic preferences && \
+      kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic balance-authorization && \
+      kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic balance'"
+    environment:
+      KAFKA_BROKER_ID: ignored
+      KAFKA_ZOOKEEPER_CONNECT: ignored
