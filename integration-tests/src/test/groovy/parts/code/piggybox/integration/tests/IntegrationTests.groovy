@@ -29,6 +29,21 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         applicationsUnderTest.close()
     }
 
+    def "create preferences"() {
+        expect:
+        given().applicationsUnderTest(applicationsUnderTest)
+        when().creating_preferences_with_currency_$_and_country_$(EUR, "ES")
+        then().the_preferences_are_created_with_currency_$_and_country_$(EUR, "ES")
+    }
+
+    def "deny create preferences if preferences already exist"() {
+        expect:
+        given().applicationsUnderTest(applicationsUnderTest)
+               .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
+        when().creating_preferences_with_currency_$_and_country_$(EUR, "ES")
+        then().create_preferences_with_currency_$_and_country_$_is_denied(EUR, "ES")
+    }
+
     def "add funds to a customer"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
@@ -134,20 +149,5 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
                .and().an_unknown_record_in_the_topic_$(Topics.preferences)
         when().changing_the_country_to_$("UK")
         then().the_country_is_changed_to_$("UK")
-    }
-
-    def "create preferences"() {
-        expect:
-        given().applicationsUnderTest(applicationsUnderTest)
-        when().creating_preferences_with_currency_$_and_country_$(EUR, "ES")
-        then().the_preferences_are_created_with_currency_$_and_country_$(EUR, "ES")
-    }
-
-    def "deny create preferences if preferences already exist"() {
-        expect:
-        given().applicationsUnderTest(applicationsUnderTest)
-               .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
-        when().creating_preferences_with_currency_$_and_country_$(EUR, "ES")
-        then().create_preferences_with_currency_$_and_country_$_is_denied(EUR, "ES")
     }
 }
