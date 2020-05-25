@@ -120,6 +120,12 @@ docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml up
 curl --header "Content-Type: application/json" --request POST --data '{"customerId":"ebbcf888-f83e-4055-9266-61b51dbf765c","currency":"EUR","country":"ES"}' http://localhost:5051/api/preferences.create
 ```
 
+Allow CORS on chrome for testing
+
+```
+open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+```
+
 ## Stopping the apps
 
 ```

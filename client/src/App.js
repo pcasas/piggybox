@@ -4,6 +4,7 @@ import Account from "./Account";
 import Preferences from "./Preferences";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { v4 as uuidv4 } from "uuid";
 
 const theme = createMuiTheme({
   palette: {
@@ -17,6 +18,10 @@ const theme = createMuiTheme({
 });
 
 function App() {
+  if (localStorage.getItem("customerId") == null) {
+    localStorage.setItem("customerId", uuidv4());
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
