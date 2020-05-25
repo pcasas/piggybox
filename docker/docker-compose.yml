@@ -48,7 +48,7 @@ services:
     depends_on:
       - broker
     command: "
-      bash -c 'cub kafka-ready -b broker:29092 1 20 && \
+      bash -c 'cub kafka-ready -b broker:29092 1 120 && \
       kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic preferences-authorization && \
       kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic preferences && \
       kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic balance-authorization && \

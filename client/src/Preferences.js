@@ -13,6 +13,7 @@ import {
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import { useForm } from "react-hook-form";
 import CustomStyles from "./Styles";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   ...CustomStyles,
@@ -43,7 +44,18 @@ const Preferences = (props) => {
       country: "ES",
     },
   });
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    data.customerId = localStorage.getItem("customerId");
+    console.log(data);
+    axios
+      .post("http://localhost:5051/api/preferences.create", data)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const classes = useStyles();
 
   return (
