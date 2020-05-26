@@ -3,6 +3,7 @@ package parts.code.piggybox.query
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.time.Clock
+import parts.code.piggybox.extensions.yaml
 import parts.code.piggybox.query.api.WebAPIEndpoints
 import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.query.modules.KafkaModule
@@ -21,7 +22,7 @@ object QueryServiceApplication {
                 .serverConfig {
                     it
                         .baseDir(BaseDir.find())
-                        .yaml("application.yaml")
+                        .yaml()
                         .require("/kafka", KafkaConfig::class.java)
                         .jacksonModules(KotlinModule())
                 }

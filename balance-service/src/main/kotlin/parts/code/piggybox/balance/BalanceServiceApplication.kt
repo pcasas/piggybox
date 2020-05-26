@@ -6,6 +6,7 @@ import java.time.Clock
 import parts.code.piggybox.balance.config.KafkaConfig
 import parts.code.piggybox.balance.modules.BalanceModule
 import parts.code.piggybox.balance.modules.KafkaModule
+import parts.code.piggybox.extensions.yaml
 import ratpack.guice.Guice
 import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
@@ -19,7 +20,7 @@ object BalanceServiceApplication {
                 .serverConfig {
                     it
                         .baseDir(BaseDir.find())
-                        .yaml("application.yaml")
+                        .yaml()
                         .require("/kafka", KafkaConfig::class.java)
                         .jacksonModules(KotlinModule())
                 }

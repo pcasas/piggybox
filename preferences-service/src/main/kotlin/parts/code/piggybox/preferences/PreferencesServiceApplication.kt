@@ -3,6 +3,7 @@ package parts.code.piggybox.preferences
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.time.Clock
+import parts.code.piggybox.extensions.yaml
 import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.modules.KafkaModule
 import parts.code.piggybox.preferences.modules.PreferencesModule
@@ -19,7 +20,7 @@ object PreferencesServiceApplication {
                 .serverConfig {
                     it
                         .baseDir(BaseDir.find())
-                        .yaml("application.yaml")
+                        .yaml()
                         .require("/kafka", KafkaConfig::class.java)
                         .jacksonModules(KotlinModule())
                 }

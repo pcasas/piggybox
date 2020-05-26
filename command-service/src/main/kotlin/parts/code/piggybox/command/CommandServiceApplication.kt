@@ -7,6 +7,7 @@ import parts.code.piggybox.command.api.WebAPIEndpoints
 import parts.code.piggybox.command.config.KafkaConfig
 import parts.code.piggybox.command.modules.KafkaModule
 import parts.code.piggybox.command.modules.WebAPIModule
+import parts.code.piggybox.extensions.yaml
 import ratpack.guice.Guice
 import ratpack.server.BaseDir
 import ratpack.server.RatpackServer
@@ -20,7 +21,7 @@ object CommandServiceApplication {
                 .serverConfig {
                     it
                         .baseDir(BaseDir.find())
-                        .yaml("application.yaml")
+                        .yaml()
                         .require("/kafka", KafkaConfig::class.java)
                         .jacksonModules(KotlinModule())
                 }
