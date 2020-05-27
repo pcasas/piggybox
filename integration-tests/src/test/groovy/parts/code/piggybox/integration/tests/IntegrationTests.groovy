@@ -34,6 +34,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         given().applicationsUnderTest(applicationsUnderTest)
         when().creating_preferences_with_currency_$_and_country_$(EUR, "ES")
         then().the_preferences_are_created_with_currency_$_and_country_$(EUR, "ES")
+              .and().the_customer_preferences_are_currency_$_and_country_$(EUR, "ES")
     }
 
     def "deny create preferences if preferences already exist"() {

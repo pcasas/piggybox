@@ -33,16 +33,22 @@ class KafkaModule : AbstractModule() {
         config: KafkaConfig,
         processor: RecordProcessor
     ): KafkaStreams {
-        val builder = StreamsBuilder().addBalanceStateStore(config)
-        addBalanceStream(builder, config, processor)
+        val builder = StreamsBuilder()
+            .addPreferencesStateStore(config)
+            .addBalanceStateStore(config)
+        addStream(builder, config, processor)
 
         return KafkaStreams(builder.build(), properties(config))
     }
 
-    private fun addBalanceStream(builder: StreamsBuilder, config: KafkaConfig, processor: RecordProcessor) {
+    private fun addStream(builder: StreamsBuilder, config: KafkaConfig, processor: RecordProcessor) {
         builder
-            .stream<String, SpecificRecord>(config.topics.balance)
-            .process(ProcessorSupplier { processor }, config.stateStores.balanceReadModel)
+            .stream<String, SpecificRecord>(listOf(config.topics.balance, config.topics.preferences))
+            .process(
+                ProcessorSupplier { processor },
+                config.stateStores.balanceReadModel,
+                config.stateStores.preferencesReadModel
+            )
     }
 
     private fun properties(config: KafkaConfig) =
@@ -57,6 +63,17 @@ class KafkaModule : AbstractModule() {
             put("value.subject.name.strategy", TopicRecordNameStrategy::class.java)
         }
 }
+
+fun StreamsBuilder.addPreferencesStateStore(config: KafkaConfig): StreamsBuilder =
+    addStateStore(
+        Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(config.stateStores.preferencesReadModel),
+            Serdes.String(),
+            SpecificAvroSerde<BalanceState>().apply {
+                configure(mapOf(SCHEMA_REGISTRY_URL_CONFIG to config.schemaRegistryUrlConfig), false)
+            }
+        )
+    )
 
 fun StreamsBuilder.addBalanceStateStore(config: KafkaConfig): StreamsBuilder =
     addStateStore(

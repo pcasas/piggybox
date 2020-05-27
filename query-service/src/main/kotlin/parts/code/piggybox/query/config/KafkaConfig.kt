@@ -8,10 +8,12 @@ data class KafkaConfig(
 ) {
 
     data class Topics(
+        val preferences: String,
         val balance: String
     )
 
     data class StateStores(
+        val preferencesReadModel: String,
         val balanceReadModel: String
     )
 }

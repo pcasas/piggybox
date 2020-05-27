@@ -6,7 +6,9 @@ kafka:
   schemaRegistryUrlConfig: 'http://schema-registry:8081'
 
   topics:
+    preferences: 'preferences'
     balance: 'balance'
 
   stateStores:
+    preferencesReadModel: 'preferences-read-model-state'
     balanceReadModel: 'balance-read-model-state'
