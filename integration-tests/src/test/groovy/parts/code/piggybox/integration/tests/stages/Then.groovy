@@ -168,6 +168,19 @@ class Then extends Stage<Then> {
         self()
     }
 
+    Then the_customer_preferences_are_currency_$_and_country_$(Currency currency, String country) {
+        def httpClient = aut.queryService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            }.body.text(toJson([customerId: customerId]))
+        }
+
+        def response = httpClient.get("/api/customers.getPreferences")
+        assert response.status.code == 200
+        assert response.body.text == toJson([currency: currency.name(), country: country])
+        self()
+    }
+
     Then create_preferences_with_currency_$_and_country_$_is_denied(Currency currency, String country) {
         def consumer = KafkaTestUtils.instance.consumer(Topics.preferencesAuthorization)
 
