@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   TextField,
@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useForm } from "react-hook-form";
+import { RHFInput } from 'react-hook-form-input';
 import CustomStyles from "./Styles";
 import axios from "axios";
 
@@ -36,17 +37,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Preferences = (props) => {
-  const initialPreferencesState = {
-    currency: "USD",
-  };
-  const [preferences, setPreferences] = useState(initialPreferencesState);
 
-  const { register, handleSubmit, errors } = useForm({
-    mode: "onChange",
+  const classes = useStyles();
+
+  const { register, setValue, handleSubmit, reset, errors } = useForm({
     reValidateMode: "onChange",
     defaultValues: {
-      currency: "",
-      country: "",
+      currency: "GBP",
+      country: "UK",
     },
   });
 
@@ -63,18 +61,19 @@ const Preferences = (props) => {
       });
   };
 
-  const classes = useStyles();
-
-  axios
-    .get("http://localhost:5052/api/customers.getPreferences", {
-      params: { customerId: localStorage.getItem("customerId") }
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  useEffect(() => {
+    axios
+      .get("http://localhost:5052/api/customers.getPreferences", {
+        params: { customerId: localStorage.getItem("customerId") }
+      })
+      .then((response) => {
+        reset(response.data)
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [reset]);
 
   return (
     <div>
@@ -96,7 +95,8 @@ const Preferences = (props) => {
       <Container className={classes.formContainer}>
         <CssBaseline />
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
+          <RHFInput
+            as={<TextField />}
             label="Currency"
             fullWidth
             variant="standard"
@@ -104,9 +104,13 @@ const Preferences = (props) => {
             name="currency"
             className={classes.textField}
             error={!!errors.currency}
-            inputRef={register({ required: true, maxLength: 3 })}
+            register={register}
+            setValue={setValue}
+            rules={{ required: true, maxLength: 3 }}
+            mode="onChange"
           />
-          <TextField
+          <RHFInput
+            as={<TextField />}
             label="Country"
             fullWidth
             variant="standard"
@@ -114,7 +118,10 @@ const Preferences = (props) => {
             name="country"
             className={classes.textField}
             error={!!errors.country}
-            inputRef={register({ required: true, maxLength: 2 })}
+            register={register}
+            setValue={setValue}
+            rules={{ required: true, maxLength: 2 }}
+            mode="onChange"
           />
           <Button
             variant="contained"
