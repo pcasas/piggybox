@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM adoptopenjdk/openjdk8:jre8u252-b09-alpine
 MAINTAINER Pau Casas Prunés <admin@code.parts>
 EXPOSE 5052
 COPY build/distributions/query-service.zip /opt/

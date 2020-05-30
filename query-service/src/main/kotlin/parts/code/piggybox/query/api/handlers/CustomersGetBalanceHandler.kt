@@ -18,17 +18,16 @@ class CustomersGetBalanceHandler @Inject constructor(
 ) : Handler {
 
     override fun handle(ctx: Context) {
-        ctx.parse(CustomersGetBalancePayload::class.java).then {
-            val store = streams.store(
-                config.stateStores.balanceReadModel,
-                QueryableStoreTypes.keyValueStore<String, BalanceState>()
-            )
+        val customerId = ctx.request.queryParams["customerId"]
 
-            ctx.response.status(Status.OK)
-            ctx.render(Jackson.json(BalancePayload(store.get(it.customerId).moneyIDL.toMoney())))
-        }
+        val store = streams.store(
+            config.stateStores.balanceReadModel,
+            QueryableStoreTypes.keyValueStore<String, BalanceState>()
+        )
+
+        ctx.response.status(Status.OK)
+        ctx.render(Jackson.json(BalancePayload(store.get(customerId).moneyIDL.toMoney())))
     }
 
-    private data class CustomersGetBalancePayload(val customerId: String)
     private data class BalancePayload(val money: Money)
 }

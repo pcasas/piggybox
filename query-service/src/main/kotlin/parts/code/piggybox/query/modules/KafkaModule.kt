@@ -18,37 +18,38 @@ import org.apache.kafka.streams.processor.ProcessorSupplier
 import org.apache.kafka.streams.state.Stores
 import parts.code.piggybox.query.QueryServiceApplication
 import parts.code.piggybox.query.config.KafkaConfig
-import parts.code.piggybox.query.streams.suppliers.RecordProcessor
+import parts.code.piggybox.query.streams.suppliers.BalanceProcessor
+import parts.code.piggybox.query.streams.suppliers.PreferencesProcessor
 import parts.code.piggybox.schemas.BalanceState
+import parts.code.piggybox.schemas.PreferencesState
 
 class KafkaModule : AbstractModule() {
 
     override fun configure() {
-        bind(RecordProcessor::class.java)
+        bind(PreferencesProcessor::class.java)
+        bind(BalanceProcessor::class.java)
     }
 
     @Provides
     @Singleton
     fun provideKafkaStreams(
         config: KafkaConfig,
-        processor: RecordProcessor
+        preferencesProcessor: PreferencesProcessor,
+        balanceProcessor: BalanceProcessor
     ): KafkaStreams {
         val builder = StreamsBuilder()
+
+        builder
             .addPreferencesStateStore(config)
+            .stream<String, SpecificRecord>(config.topics.preferences)
+            .process(ProcessorSupplier { preferencesProcessor }, config.stateStores.preferencesReadModel)
+
+        builder
             .addBalanceStateStore(config)
-        addStream(builder, config, processor)
+            .stream<String, SpecificRecord>(config.topics.balance)
+            .process(ProcessorSupplier { balanceProcessor }, config.stateStores.balanceReadModel)
 
         return KafkaStreams(builder.build(), properties(config))
-    }
-
-    private fun addStream(builder: StreamsBuilder, config: KafkaConfig, processor: RecordProcessor) {
-        builder
-            .stream<String, SpecificRecord>(listOf(config.topics.balance, config.topics.preferences))
-            .process(
-                ProcessorSupplier { processor },
-                config.stateStores.balanceReadModel,
-                config.stateStores.preferencesReadModel
-            )
     }
 
     private fun properties(config: KafkaConfig) =
@@ -69,7 +70,7 @@ fun StreamsBuilder.addPreferencesStateStore(config: KafkaConfig): StreamsBuilder
         Stores.keyValueStoreBuilder(
             Stores.persistentKeyValueStore(config.stateStores.preferencesReadModel),
             Serdes.String(),
-            SpecificAvroSerde<BalanceState>().apply {
+            SpecificAvroSerde<PreferencesState>().apply {
                 configure(mapOf(SCHEMA_REGISTRY_URL_CONFIG to config.schemaRegistryUrlConfig), false)
             }
         )

@@ -41,12 +41,6 @@ const Account = (props) => {
         </Toolbar>
       </AppBar>
       <List component="nav">
-        <ListItem button>
-          <ListItemIcon>
-            <CreditCardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Payment method" />
-        </ListItem>
         <ListItem
           button
           onClick={() => window.location.replace("/preferences")}

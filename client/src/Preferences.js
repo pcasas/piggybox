@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   TextField,
@@ -10,7 +10,7 @@ import {
   Toolbar,
   IconButton,
 } from "@material-ui/core";
-import ArrowBack from "@material-ui/icons/ArrowBack";
+import CloseIcon from "@material-ui/icons/Close";
 import { useForm } from "react-hook-form";
 import CustomStyles from "./Styles";
 import axios from "axios";
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "white",
     color: "black",
   },
-  arrowBackButton: {
+  closeIconButton: {
     marginRight: theme.spacing(2),
   },
   title: {
@@ -36,14 +36,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Preferences = (props) => {
+  const initialPreferencesState = {
+    currency: "USD",
+  };
+  const [preferences, setPreferences] = useState(initialPreferencesState);
+
   const { register, handleSubmit, errors } = useForm({
     mode: "onChange",
     reValidateMode: "onChange",
     defaultValues: {
-      currency: "EUR",
-      country: "ES",
+      currency: "",
+      country: "",
     },
   });
+
   const onSubmit = (data) => {
     data.customerId = localStorage.getItem("customerId");
     console.log(data);
@@ -56,7 +62,19 @@ const Preferences = (props) => {
         console.log(error);
       });
   };
+
   const classes = useStyles();
+
+  axios
+    .get("http://localhost:5052/api/customers.getPreferences", {
+      params: { customerId: localStorage.getItem("customerId") }
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
   return (
     <div>
@@ -64,11 +82,11 @@ const Preferences = (props) => {
         <Toolbar>
           <IconButton
             edge="start"
-            className={classes.arrowBackButton}
+            className={classes.closeIconButton}
             color="inherit"
             onClick={() => window.location.replace("/account")}
           >
-            <ArrowBack />
+            <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Preferences
