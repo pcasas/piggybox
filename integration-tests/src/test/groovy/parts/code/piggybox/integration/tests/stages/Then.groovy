@@ -64,7 +64,9 @@ class Then extends Stage<Then> {
         def httpClient = aut.queryService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId]))
+            }
+        }.params {
+            it.put("customerId", customerId)
         }
 
         def response = httpClient.get("/api/customers.getBalance")
@@ -172,7 +174,9 @@ class Then extends Stage<Then> {
         def httpClient = aut.queryService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId]))
+            }
+        }.params {
+            it.put("customerId", customerId)
         }
 
         def response = httpClient.get("/api/customers.getPreferences")

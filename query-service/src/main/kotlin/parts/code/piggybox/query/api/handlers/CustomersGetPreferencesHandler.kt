@@ -16,18 +16,17 @@ class CustomersGetPreferencesHandler @Inject constructor(
 ) : Handler {
 
     override fun handle(ctx: Context) {
-        ctx.parse(CustomersGetPreferencesPayload::class.java).then {
-            val store = streams.store(
-                config.stateStores.preferencesReadModel,
-                QueryableStoreTypes.keyValueStore<String, PreferencesState>()
-            )
+        val customerId = ctx.request.queryParams["customerId"]
 
-            ctx.response.status(Status.OK)
-            val preferences = store.get(it.customerId)
-            ctx.render(Jackson.json(PreferencesPayload(preferences.currency, preferences.country)))
-        }
+        val store = streams.store(
+            config.stateStores.preferencesReadModel,
+            QueryableStoreTypes.keyValueStore<String, PreferencesState>()
+        )
+
+        ctx.response.status(Status.OK)
+        val preferences = store.get(customerId)
+        ctx.render(Jackson.json(PreferencesPayload(preferences.currency, preferences.country)))
     }
 
-    private data class CustomersGetPreferencesPayload(val customerId: String)
     private data class PreferencesPayload(val currency: String, val country: String)
 }

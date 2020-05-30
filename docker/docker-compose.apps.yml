@@ -17,43 +17,48 @@ services:
       - scripts:/scripts
     ports:
       - "5051:5051"
-    command: ["./scripts/wait-for-it.sh", "broker:29092", "-t", "120", "--", "./opt/command-service/bin/command-service", "-fg"]
+    command: "
+      bash -c '
+        sleep 30;
+        ./opt/command-service/bin/command-service -fg;
+      '"
 
   query-service:
     build: ../query-service
     hostname: query-service
     container_name: query-service
     depends_on:
-      - broker
+      - command-service
     volumes:
       - scripts:/scripts
     ports:
       - "5052:5052"
-    command: ["./scripts/wait-for-it.sh", "broker:29092", "-t", "120", "--", "./opt/query-service/bin/query-service", "-fg"]
+    command: ["./scripts/wait-for-it.sh", "command-service:5051", "-t", "120", "--", "./opt/query-service/bin/query-service", "-fg"]
+
 
   preferences-service:
     build: ../preferences-service
     hostname: preferences-service
     container_name: preferences-service
     depends_on:
-      - broker
+      - query-service
     volumes:
       - scripts:/scripts
     ports:
       - "5053:5053"
-    command: ["./scripts/wait-for-it.sh", "broker:29092", "-t", "120", "--", "./opt/preferences-service/bin/preferences-service", "-fg"]
+    command: ["./scripts/wait-for-it.sh", "query-service:5052", "-t", "120", "--", "./opt/preferences-service/bin/preferences-service", "-fg"]
 
   balance-service:
     build: ../balance-service
     hostname: balance-service
     container_name: balance-service
     depends_on:
-      - broker
+      - preferences-service
     volumes:
       - scripts:/scripts
     ports:
       - "5054:5054"
-    command: ["./scripts/wait-for-it.sh", "broker:29092", "-t", "120", "--", "./opt/balance-service/bin/balance-service", "-fg"]
+    command: ["./scripts/wait-for-it.sh", "preferences-service:5053", "-t", "120", "--", "./opt/balance-service/bin/balance-service", "-fg"]
 
 volumes:
   scripts:
