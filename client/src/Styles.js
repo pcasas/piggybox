@@ -1,6 +1,5 @@
 const Styles = {
   formButton: {
-    marginTop: "1em",
     width: "100%",
     background: "linear-gradient(45deg, #f7b1a6 30%, #f88c8a 90%)",
     fontSize: "20px",
@@ -18,6 +17,11 @@ const Styles = {
   },
   title: {
     flexGrow: 1,
+  },
+  bottomNavigation: {
+    width: "100%",
+    position: "fixed",
+    bottom: 0,
   },
 };
 
