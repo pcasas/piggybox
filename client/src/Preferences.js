@@ -3,7 +3,6 @@ import {
   Button,
   TextField,
   Container,
-  CssBaseline,
   Typography,
   makeStyles,
   AppBar,
@@ -12,21 +11,14 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useForm } from "react-hook-form";
-import { RHFInput } from 'react-hook-form-input';
+import { RHFInput } from "react-hook-form-input";
 import CustomStyles from "./Styles";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   ...CustomStyles,
-  appBar: {
-    backgroundColor: "white",
-    color: "black",
-  },
   closeIconButton: {
     marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
   },
   formContainer: {
     marginTop: "1em",
@@ -37,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Preferences = (props) => {
-
   const classes = useStyles();
 
   const { register, setValue, handleSubmit, reset, errors } = useForm({
@@ -64,10 +55,10 @@ const Preferences = (props) => {
   useEffect(() => {
     axios
       .get("http://localhost:5052/api/customers.getPreferences", {
-        params: { customerId: localStorage.getItem("customerId") }
+        params: { customerId: localStorage.getItem("customerId") },
       })
       .then((response) => {
-        reset(response.data)
+        reset(response.data);
         console.log(response);
       })
       .catch((error) => {
@@ -76,8 +67,8 @@ const Preferences = (props) => {
   }, [reset]);
 
   return (
-    <div>
-      <AppBar position="static" className={classes.appBar}>
+    <div style={{ backgroundColor: "#ffffff" }}>
+      <AppBar position="static" className={classes.appBar} elevation={0}>
         <Toolbar>
           <IconButton
             edge="start"
@@ -93,7 +84,6 @@ const Preferences = (props) => {
         </Toolbar>
       </AppBar>
       <Container className={classes.formContainer}>
-        <CssBaseline />
         <form onSubmit={handleSubmit(onSubmit)}>
           <RHFInput
             as={<TextField />}
@@ -130,6 +120,7 @@ const Preferences = (props) => {
             disabled={!!errors.currency || !!errors.country}
             className={classes.formButton}
             classes={{ disabled: classes.disabledButton }}
+            disableElevation
           >
             Save
           </Button>
