@@ -113,18 +113,20 @@ const Preferences = (props) => {
             rules={{ required: true, maxLength: 2 }}
             mode="onChange"
           />
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={!!errors.currency || !!errors.country}
-            className={classes.formButton}
-            classes={{ disabled: classes.disabledButton }}
-            disableElevation
-          >
-            Save
-          </Button>
         </form>
+      </Container>
+      <Container style={{ position: "fixed", bottom: "20px" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={!!errors.currency || !!errors.country}
+          className={classes.formButton}
+          classes={{ disabled: classes.disabledButton }}
+          disableElevation
+        >
+          Save
+        </Button>
       </Container>
     </div>
   );
