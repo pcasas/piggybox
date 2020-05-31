@@ -14,8 +14,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import CustomStyles from "./Styles";
 
 const useStyles = makeStyles((theme) => ({
+  ...CustomStyles,
   arrowBackButton: {
     marginRight: theme.spacing(2),
   },
@@ -26,7 +28,7 @@ const Account = (props) => {
 
   return (
     <div>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar} elevation={0}>
         <Toolbar>
           <IconButton
             edge="start"
@@ -36,7 +38,9 @@ const Account = (props) => {
           >
             <ArrowBack />
           </IconButton>
-          <Typography variant="h6">Account</Typography>
+          <Typography variant="h6" className={classes.title}>
+            Account
+          </Typography>
         </Toolbar>
       </AppBar>
       <List component="nav">

@@ -1,5 +1,5 @@
 import React from "react";
-import Balance from "./Balance";
+import Home from "./Home";
 import Account from "./Account";
 import Preferences from "./Preferences";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -9,11 +9,18 @@ import { v4 as uuidv4 } from "uuid";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#E54E90",
+      main: "#f88c8a",
     },
     secondary: {
-      main: "#FFD057",
+      main: "#ffcf3a",
     },
+  },
+  typography: {
+    fontFamily: `"Raleway", "Roboto", "Helvetica", "Arial", sans-serif`,
+    fontSize: 14,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
   },
 });
 
@@ -27,7 +34,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <Balance />
+            <Home />
           </Route>
           <Route exact path="/account">
             <Account />
