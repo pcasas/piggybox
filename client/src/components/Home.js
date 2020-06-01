@@ -1,10 +1,9 @@
 import React from "react";
-import { Button, Container, makeStyles } from "@material-ui/core";
+import { Container, makeStyles } from "@material-ui/core";
 import ArcProgress from "react-arc-progress";
-import CustomStyles from "./Styles";
+import Button from "./shared/CustomButton";
 
 const useStyles = makeStyles((theme) => ({
-  ...CustomStyles,
   piggy: {
     width: 150,
     height: 150,
@@ -72,16 +71,7 @@ const Home = (props) => {
           justifyContent: "center",
         }}
       >
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          className={classes.formButton}
-          disableElevation
-          style={{ width: "300px" }}
-        >
-          Add Funds
-        </Button>
+        <Button style={{ width: "300px" }}>Add Funds</Button>
       </Container>
     </div>
   );

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
-import CustomStyles from "./Styles";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import RestoreIcon from "@material-ui/icons/Restore";
@@ -8,13 +7,12 @@ import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router-dom";
-import TopAppBar from "./TopAppBar";
+import AppBar from "./shared/CustomAppBar";
 import Home from "./Home";
 import History from "./History";
 import { Route } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
-  ...CustomStyles,
   bottomNavigation: {
     width: "100%",
     position: "fixed",
@@ -35,7 +33,7 @@ const Navigation = (props) => {
 
   return (
     <div>
-      <TopAppBar title={titles[value]} />
+      <AppBar title={titles[value]} />
 
       <div>
         <Route exact path="/" component={Home} />
