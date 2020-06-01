@@ -7,7 +7,7 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import Preferences from "./Preferences";
+import Preferences from "../Preferences";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopAppBar = (props) => {
+const CustomAppBar = (props) => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -44,9 +44,9 @@ const TopAppBar = (props) => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Preferences handleClose={handleClose} open={open} />
+      <Preferences onClose={handleClose} open={open} />
     </div>
   );
 };
 
-export default TopAppBar;
+export default CustomAppBar;
