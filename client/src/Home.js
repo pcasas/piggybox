@@ -1,22 +1,7 @@
 import React from "react";
-import {
-  AppBar,
-  Button,
-  Container,
-  Toolbar,
-  IconButton,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
-import PersonIcon from "@material-ui/icons/Person";
+import { Button, Container, makeStyles } from "@material-ui/core";
 import ArcProgress from "react-arc-progress";
 import CustomStyles from "./Styles";
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-import RestoreIcon from "@material-ui/icons/Restore";
-import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
-import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
-import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme) => ({
   ...CustomStyles,
@@ -44,20 +29,6 @@ const Home = (props) => {
 
   return (
     <div>
-      <AppBar position="static" className={classes.appBar} elevation={0}>
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Wallet Balance
-          </Typography>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={() => window.location.replace("/account")}
-          >
-            <PersonIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
       <div style={{ display: "flex", justifyContent: "center", marginTop: 90 }}>
         <img src="./piggy.png" alt="Piggy Bank" className={classes.piggy} />
         <ArcProgress
@@ -66,7 +37,12 @@ const Home = (props) => {
           progress={progress}
           text={text}
           fillColor={{ gradient: ["#ffe25b", "#ffcf3a"] }}
-          textStyle={{ y: 220, size: "40px", color: "#000", font: "Raleway" }}
+          textStyle={{
+            y: 220,
+            size: "40px",
+            color: "#000",
+            font: "Raleway",
+          }}
           customText={[
             {
               text: "USD",
@@ -88,27 +64,25 @@ const Home = (props) => {
           }}
         />
       </div>
-      <Container style={{ position: "fixed", bottom: "80px" }}>
+      <Container
+        style={{
+          position: "fixed",
+          top: "430px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <Button
           variant="contained"
           color="primary"
           type="submit"
           className={classes.formButton}
           disableElevation
+          style={{ width: "300px" }}
         >
           Add Funds
         </Button>
       </Container>
-      <Paper elevation={2} className={classes.bottomNavigation}>
-        <BottomNavigation elevation={5} value={0} showLabels>
-          <BottomNavigationAction
-            label="Wallet"
-            icon={<AccountBalanceWalletIcon />}
-          />
-          <BottomNavigationAction label="History" icon={<RestoreIcon />} />
-          <BottomNavigationAction label="Store" icon={<SportsEsportsIcon />} />
-        </BottomNavigation>
-      </Paper>
     </div>
   );
 };

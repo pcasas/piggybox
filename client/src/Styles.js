@@ -8,20 +8,18 @@ const Styles = {
     borderRadius: 50,
     color: "#fff",
   },
+  textField: {
+    marginBottom: "16px",
+  },
   disabledButton: {
     background: "#e0e0e0",
   },
-  appBar: {
-    backgroundColor: "#fff",
-    color: "black",
+  dialogTitle: {
+    margin: 0,
+    padding: "16px",
   },
-  title: {
-    flexGrow: 1,
-  },
-  bottomNavigation: {
-    width: "100%",
-    position: "fixed",
-    bottom: 0,
+  dialogContent: {
+    padding: "16px",
   },
 };
 
