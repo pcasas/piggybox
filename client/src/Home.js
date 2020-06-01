@@ -20,11 +20,11 @@ import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles((theme) => ({
   ...CustomStyles,
-  piggybank: {
+  piggy: {
     width: 150,
     height: 150,
     position: "absolute",
-    top: 190,
+    top: 200,
   },
   money: {
     position: "absolute",
@@ -59,11 +59,7 @@ const Home = (props) => {
         </Toolbar>
       </AppBar>
       <div style={{ display: "flex", justifyContent: "center", marginTop: 90 }}>
-        <img
-          src="./piggybank.png"
-          alt="Piggy Bank"
-          className={classes.piggybank}
-        />
+        <img src="./piggy.png" alt="Piggy Bank" className={classes.piggy} />
         <ArcProgress
           size={350}
           thickness={10}
