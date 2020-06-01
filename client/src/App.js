@@ -1,10 +1,8 @@
 import React from "react";
-import Home from "./Home";
-import Account from "./Account";
-import Preferences from "./Preferences";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
+import Navigation from "./Navigation";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
@@ -32,17 +30,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route exact path="/account">
-            <Account />
-          </Route>
-          <Route exact path="/preferences">
-            <Preferences />
-          </Route>
-        </Switch>
+        <Navigation />
       </Router>
     </ThemeProvider>
   );
