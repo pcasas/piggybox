@@ -3,7 +3,9 @@ import { makeStyles } from "@material-ui/core";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import RestoreIcon from "@material-ui/icons/Restore";
+import AccountBalanceWalletOutlinedIcon from "@material-ui/icons/AccountBalanceWalletOutlined";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
+import SportsEsportsOutlinedIcon from "@material-ui/icons/SportsEsportsOutlined";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router-dom";
@@ -13,6 +15,9 @@ import History from "./History";
 import { Route } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
+  content: {
+    paddingTop: theme.spacing(7),
+  },
   bottomNavigation: {
     width: "100%",
     position: "fixed",
@@ -35,7 +40,7 @@ const Navigation = (props) => {
     <div>
       <AppBar title={titles[value]} />
 
-      <div>
+      <div className={classes.content}>
         <Route exact path="/" component={Home} />
         <Route path="/wallet" component={Home} />
         <Route path="/history" component={History} />
@@ -46,7 +51,13 @@ const Navigation = (props) => {
           <BottomNavigationAction
             label="Wallet"
             value="wallet"
-            icon={<AccountBalanceWalletIcon />}
+            icon={
+              value === "wallet" ? (
+                <AccountBalanceWalletIcon />
+              ) : (
+                <AccountBalanceWalletOutlinedIcon />
+              )
+            }
           />
           <BottomNavigationAction
             label="History"
@@ -55,8 +66,14 @@ const Navigation = (props) => {
           />
           <BottomNavigationAction
             label="Store"
-            icon={<SportsEsportsIcon />}
             value="store"
+            icon={
+              value === "store" ? (
+                <SportsEsportsIcon />
+              ) : (
+                <SportsEsportsOutlinedIcon />
+              )
+            }
           />
         </BottomNavigation>
       </Paper>

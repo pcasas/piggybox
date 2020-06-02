@@ -1,5 +1,5 @@
 import React from "react";
-import PersonIcon from "@material-ui/icons/Person";
+import PermIdentityOutlinedIcon from "@material-ui/icons/PermIdentityOutlined";
 import {
   AppBar,
   Toolbar,
@@ -34,13 +34,13 @@ const CustomAppBar = (props) => {
 
   return (
     <div>
-      <AppBar position="static" className={classes.appBar} elevation={0}>
+      <AppBar position="fixed" className={classes.appBar} elevation={0}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             {props.title}
           </Typography>
           <IconButton edge="end" color="inherit" onClick={handleClickOpen}>
-            <PersonIcon />
+            <PermIdentityOutlinedIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
