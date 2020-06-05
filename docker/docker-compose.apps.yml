@@ -35,7 +35,6 @@ services:
       - "5052:5052"
     command: ["./scripts/wait-for-it.sh", "command-service:5051", "-t", "120", "--", "./opt/query-service/bin/query-service", "-fg"]
 
-
   preferences-service:
     build: ../preferences-service
     hostname: preferences-service
