@@ -1,9 +1,15 @@
 import React from "react";
 import { Container, makeStyles } from "@material-ui/core";
 import ArcProgress from "react-arc-progress";
-import Button from "./shared/CustomButton";
+import Button from "./shared/Button";
+import ButtonSecondary from "./shared/ButtonSecondary";
 
 const useStyles = makeStyles((theme) => ({
+  gauge: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 90,
+  },
   piggy: {
     width: 150,
     height: 150,
@@ -16,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 50,
     fontFamily: "raleway",
   },
+  buttons: {
+    position: "fixed",
+    top: "430px",
+    display: "flex",
+    justifyContent: "center",
+  },
 }));
 
 const { progress, text } = {
@@ -23,12 +35,12 @@ const { progress, text } = {
   text: "40.97",
 };
 
-const Home = (props) => {
+const Home = () => {
   const classes = useStyles();
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 90 }}>
+      <div className={classes.gauge}>
         <img src="./piggy.png" alt="Piggy Bank" className={classes.piggy} />
         <ArcProgress
           size={350}
@@ -63,15 +75,9 @@ const Home = (props) => {
           }}
         />
       </div>
-      <Container
-        style={{
-          position: "fixed",
-          top: "430px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Button style={{ width: "300px" }}>Add Funds</Button>
+      <Container className={classes.buttons}>
+        <Button style={{ margin: "5px" }}>Add</Button>
+        <ButtonSecondary style={{ margin: "5px" }}>Withdraw</ButtonSecondary>
       </Container>
     </div>
   );

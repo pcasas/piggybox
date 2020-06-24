@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
@@ -26,10 +26,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     backgroundColor: "transparent",
   },
-  select: {
-    textAlign: "center",
-    textDecoration: "none",
-  },
   flag: {
     verticalAlign: "middle",
     marginRight: theme.spacing(1),
@@ -37,35 +33,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CountrySelect = (props) => {
+const CountrySelect = ({ country, setCountry }) => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleChange = (event) => {
-    props.setValue(event.target.value);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel htmlFor="country-select">Country</InputLabel>
+      <InputLabel>Country</InputLabel>
       <Select
         open={open}
-        onClose={handleClose}
-        onOpen={handleOpen}
-        value={props.value}
-        name={props.name}
-        onChange={handleChange}
-        inputProps={{
-          id: "country-select",
-        }}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        value={country}
+        onChange={(event) => setCountry(event.target.value)}
       >
         {countries.map((option, key) => (
           <MenuItem value={option.value} key={key}>

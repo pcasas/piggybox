@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const History = (props) => {
+const History = () => {
   const classes = useStyles();
 
   return (

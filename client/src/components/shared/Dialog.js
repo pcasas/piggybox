@@ -1,6 +1,10 @@
 import React from "react";
-import { Typography, makeStyles, IconButton } from "@material-ui/core";
-import Dialog from "@material-ui/core/Dialog";
+import {
+  Typography,
+  makeStyles,
+  IconButton,
+  Dialog as MUIDialog,
+} from "@material-ui/core";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import CloseIcon from "@material-ui/icons/Close";
@@ -21,28 +25,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomDialog = (props) => {
+const Dialog = ({ onClose, open, title, children }) => {
   const classes = useStyles();
 
   return (
-    <Dialog onClose={props.onClose} open={props.open}>
-      <DialogTitle onClose={props.onClose} className={classes.dialogTitle}>
+    <MUIDialog onClose={onClose} open={open}>
+      <DialogTitle onClose={onClose} className={classes.dialogTitle}>
         <div>
-          <Typography variant="h6">{props.title}</Typography>
+          <Typography variant="h6">{title}</Typography>
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={props.onClose}
+            onClick={onClose}
           >
             <CloseIcon />
           </IconButton>
         </div>
       </DialogTitle>
       <DialogContent dividers className={classes.dialogContent}>
-        {props.children}
+        {children}
       </DialogContent>
-    </Dialog>
+    </MUIDialog>
   );
 };
 
-export default CustomDialog;
+export default Dialog;

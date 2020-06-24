@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import PermIdentityOutlinedIcon from "@material-ui/icons/PermIdentityOutlined";
 import {
-  AppBar,
+  AppBar as MUIAppBar,
   Toolbar,
   IconButton,
   Typography,
@@ -19,34 +19,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomAppBar = (props) => {
+const AppBar = (props) => {
   const classes = useStyles();
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
     <div>
-      <AppBar position="fixed" className={classes.appBar} elevation={0}>
+      <MUIAppBar position="fixed" className={classes.appBar} elevation={0}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             {props.title}
           </Typography>
-          <IconButton edge="end" color="inherit" onClick={handleClickOpen}>
+          <IconButton edge="end" color="inherit" onClick={() => setOpen(true)}>
             <PermIdentityOutlinedIcon />
           </IconButton>
         </Toolbar>
-      </AppBar>
-      <Preferences onClose={handleClose} open={open} />
+      </MUIAppBar>
+      <Preferences onClose={() => setOpen(false)} open={open} />
     </div>
   );
 };
 
-export default CustomAppBar;
+export default AppBar;

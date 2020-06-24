@@ -3,8 +3,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import Avatar from "@material-ui/core/Avatar";
-import SportsEsportsOutlinedIcon from "@material-ui/icons/SportsEsportsOutlined";
-import PaymentOutlinedIcon from "@material-ui/icons/PaymentOutlined";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -12,11 +12,11 @@ const useStyles = makeStyles((theme) => ({
     color: "#000",
     backgroundColor: theme.palette.grey[200],
   },
-  game: {
+  withdrawn: {
     flexGrow: 0,
     padding: "2px 4px",
   },
-  credit: {
+  added: {
     flexGrow: 0,
     backgroundColor: "#FFD8D7",
     color: "#D15855",
@@ -28,24 +28,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const HistoryEntry = (props) => {
+const HistoryEntry = ({ divider, type, description, date, amount }) => {
   const classes = useStyles();
 
   return (
-    <ListItem className={classes.root} divider={props.divider}>
+    <ListItem divider={divider}>
       <ListItemAvatar>
         <Avatar className={classes.avatar}>
-          {props.type === "game" ? (
-            <SportsEsportsOutlinedIcon />
-          ) : (
-            <PaymentOutlinedIcon />
-          )}
+          {type === "withdrawn" ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
         </Avatar>
       </ListItemAvatar>
-      <ListItemText primary={props.description} secondary={props.date} />
+      <ListItemText primary={description} secondary={date} />
       <ListItemText
-        primary={props.amount}
-        className={props.type === "game" ? classes.game : classes.credit}
+        primary={amount}
+        className={type === "withdrawn" ? classes.withdrawn : classes.added}
       />
     </ListItem>
   );
