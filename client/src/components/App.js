@@ -1,8 +1,8 @@
 import React from "react";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { v4 as uuidv4 } from "uuid";
-import Navigation from "./Navigation";
 import { BrowserRouter as Router } from "react-router-dom";
+import Navigation from "./Navigation";
 
 const theme = createMuiTheme({
   palette: {

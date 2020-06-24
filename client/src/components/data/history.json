@@ -1,68 +1,50 @@
 [
   {
-    "description": "Sims 3",
+    "description": "Funds Withdrawn",
     "date": "25 Jan, 2020",
-    "type": "game",
-    "amount": "-$25.76"
+    "type": "withdrawn",
+    "amount": "-$19.03"
   },
   {
-    "description": "Purchased 50,--$",
-    "date": "21 Jan, 2020",
-    "type": "credit",
+    "description": "Funds Withdrawn",
+    "date": "23 Jan, 2020",
+    "type": "withdrawn",
+    "amount": "-$10.00"
+  },
+  {
+    "description": "Funds Withdrawn",
+    "date": "22 Jan, 2020",
+    "type": "withdrawn",
+    "amount": "-$5.00"
+  },
+  {
+    "description": "Funds Added",
+    "date": "17 Jan, 2020",
+    "type": "added",
     "amount": "$50.00"
   },
   {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
+    "description": "Funds Withdrawn",
+    "date": "13 Jan, 2020",
+    "type": "withdrawn",
+    "amount": "-$5.00"
   },
   {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
+    "description": "Funds Withdrawn",
+    "date": "12 Jan, 2020",
+    "type": "withdrawn",
+    "amount": "-$15.00"
   },
   {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
+    "description": "Funds Withdrawn",
+    "date": "5 Jan, 2020",
+    "type": "withdrawn",
+    "amount": "-$5.00"
   },
   {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
-  },
-  {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
-  },
-  {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
-  },
-  {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
-  },
-  {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
-  },
-  {
-    "description": "Tropico 6",
-    "date": "18 Dec, 2019",
-    "type": "game",
-    "amount": "-$45.12"
+    "description": "Funds Added",
+    "date": "1 Jan, 2020",
+    "type": "added",
+    "amount": "$50.00"
   }
 ]

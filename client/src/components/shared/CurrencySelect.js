@@ -24,22 +24,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CurrencySelect = (props) => {
+const CurrencySelect = ({ currency, setCurrency, disabled }) => {
   const classes = useStyles();
-
-  const handleChange = (event) => {
-    props.setValue(event.target.value);
-  };
 
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel htmlFor="currency-select-label">Currency</InputLabel>
+      <InputLabel>Currency</InputLabel>
       <Select
-        labelId="currency-select-label"
-        id="currency-select"
-        value={props.value}
-        onChange={handleChange}
-        disabled={props.disabled}
+        value={currency}
+        onChange={(event) => setCurrency(event.target.value)}
+        disabled={disabled}
       >
         {currencies.map((option, key) => (
           <MenuItem value={option.code} key={key}>

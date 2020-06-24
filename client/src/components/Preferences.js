@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Dialog from "./shared/CustomDialog";
-import Button from "./shared/CustomButton";
+import Dialog from "./shared/Dialog";
+import Button from "./shared/Button";
 import CurrencySelect from "./shared/CurrencySelect";
 import CountrySelect from "./shared/CountrySelect";
 
-const Preferences = (props) => {
-  const [currency, setCurrency] = React.useState("GBP");
-  const [country, setCountry] = React.useState("UK");
-  const [exists, setExists] = React.useState(false);
+const Preferences = ({ open, onClose }) => {
+  const [currency, setCurrency] = useState("GBP");
+  const [country, setCountry] = useState("UK");
+  const [exists, setExists] = useState(false);
 
   useEffect(() => {
-    if (props.open) {
+    if (open) {
       axios
         .get("http://localhost:5052/api/customers.getPreferences", {
           params: { customerId: localStorage.getItem("customerId") },
@@ -27,7 +27,7 @@ const Preferences = (props) => {
           console.log(error);
         });
     }
-  }, [props.open]);
+  }, [open]);
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -43,11 +43,11 @@ const Preferences = (props) => {
         .post("http://localhost:5051/api/preferences.changeCountry", data)
         .then((response) => {
           console.log(response);
-          props.onClose();
+          onClose();
         })
         .catch((error) => {
           console.log(error);
-          props.onClose();
+          onClose();
         });
     } else {
       const data = {
@@ -61,25 +61,24 @@ const Preferences = (props) => {
         .post("http://localhost:5051/api/preferences.create", data)
         .then((response) => {
           console.log(response);
-          props.onClose();
+          onClose();
         })
         .catch((error) => {
           console.log(error);
-          props.onClose();
+          onClose();
         });
     }
   };
 
   return (
-    <Dialog onClose={props.onClose} open={props.open} title="Preferences">
+    <Dialog onClose={onClose} open={open} title="Preferences">
       <form onSubmit={onSubmit}>
         <CurrencySelect
-          name="currency"
-          value={currency}
-          setValue={setCurrency}
+          currency={currency}
+          setCurrency={setCurrency}
           disabled={exists}
         />
-        <CountrySelect name="country" value={country} setValue={setCountry} />
+        <CountrySelect country={country} setCountry={setCountry} />
         <Button>Save</Button>
       </form>
     </Dialog>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, makeStyles } from "@material-ui/core";
+import { Button as MUIButton, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   formButton: {
@@ -16,23 +16,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomButton = (props) => {
+const Button = ({ disabled, style, children }) => {
   const classes = useStyles();
 
   return (
-    <Button
+    <MUIButton
       variant="contained"
-      color="primary"
       type="submit"
-      disabled={props.disabled}
+      disabled={disabled}
       className={classes.formButton}
       classes={{ disabled: classes.disabledButton }}
       disableElevation
-      style={props.style}
+      style={style}
     >
-      {props.children}
-    </Button>
+      {children}
+    </MUIButton>
   );
 };
 
-export default CustomButton;
+export default Button;

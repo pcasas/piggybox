@@ -5,11 +5,9 @@ import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import RestoreIcon from "@material-ui/icons/Restore";
 import AccountBalanceWalletOutlinedIcon from "@material-ui/icons/AccountBalanceWalletOutlined";
 import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWallet";
-import SportsEsportsOutlinedIcon from "@material-ui/icons/SportsEsportsOutlined";
-import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router-dom";
-import AppBar from "./shared/CustomAppBar";
+import AppBar from "./shared/AppBar";
 import Home from "./Home";
 import History from "./History";
 import { Route } from "react-router-dom";
@@ -25,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navigation = (props) => {
+const Navigation = () => {
   const classes = useStyles();
   const history = useHistory();
   const [value, setValue] = useState("wallet");
@@ -63,17 +61,6 @@ const Navigation = (props) => {
             label="History"
             value="history"
             icon={<RestoreIcon />}
-          />
-          <BottomNavigationAction
-            label="Store"
-            value="store"
-            icon={
-              value === "store" ? (
-                <SportsEsportsIcon />
-              ) : (
-                <SportsEsportsOutlinedIcon />
-              )
-            }
           />
         </BottomNavigation>
       </Paper>
