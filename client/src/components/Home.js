@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, makeStyles } from "@material-ui/core";
 import ArcProgress from "react-arc-progress";
 import Button from "./shared/Button";
 import ButtonSecondary from "./shared/ButtonSecondary";
+import AddFunds from "./AddFunds";
 
 const useStyles = makeStyles((theme) => ({
   gauge: {
@@ -35,8 +36,9 @@ const { progress, text } = {
   text: "40.97",
 };
 
-const Home = () => {
+const Home = (props) => {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
 
   return (
     <div>
@@ -76,9 +78,12 @@ const Home = () => {
         />
       </div>
       <Container className={classes.buttons}>
-        <Button style={{ margin: "5px" }}>Add</Button>
+        <Button style={{ margin: "5px" }} onClick={() => setOpen(true)}>
+          Add
+        </Button>
         <ButtonSecondary style={{ margin: "5px" }}>Withdraw</ButtonSecondary>
       </Container>
+      <AddFunds onClose={() => setOpen(false)} open={open} />
     </div>
   );
 };
