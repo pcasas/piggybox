@@ -2,7 +2,6 @@ package parts.code.piggybox.integration.tests.stages
 
 import com.tngtech.jgiven.Stage
 import com.tngtech.jgiven.annotation.ExpectedScenarioState
-import com.tngtech.jgiven.annotation.ProvidedScenarioState
 import parts.code.money.Currency
 import parts.code.piggybox.integration.tests.ApplicationsUnderTest
 
@@ -15,22 +14,22 @@ class When extends Stage<When> {
     @ExpectedScenarioState String customerId
     @ExpectedScenarioState ApplicationsUnderTest aut
 
-    When adding_$_$_worth_of_funds(BigDecimal amount, Currency currency) {
+    When adding_$_worth_of_funds(BigDecimal amount) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, money: [amount: amount, currency: currency.name()]]))
+            }.body.text(toJson([customerId: customerId, amount: amount]))
         }
 
         assert httpClient.post("/api/balance.addFunds").status.code == 202
         self()
     }
 
-    When withdrawing_$_$_worth_of_funds(BigDecimal amount, Currency currency) {
+    When withdrawing_$_worth_of_funds(BigDecimal amount) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, money: [amount: amount, currency: currency.name()]]))
+            }.body.text(toJson([customerId: customerId, amount: amount]))
         }
 
         assert httpClient.post("/api/balance.withdrawFunds").status.code == 202

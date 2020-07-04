@@ -45,7 +45,7 @@ class RecordTransformer @Inject constructor(
     }
 
     private fun addFunds(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
-        val newBalance = currentBalance(record.customerId) + record.moneyIDL.amount
+        val newBalance = currentBalance(record.customerId) + record.amount
 
         return if (newBalance > BigDecimal.valueOf(2000)) {
             balanceService.denyAddFunds(record)
@@ -55,7 +55,7 @@ class RecordTransformer @Inject constructor(
     }
 
     private fun withdrawFunds(record: WithdrawFundsCommand): KeyValue<String, SpecificRecord> {
-        val newBalance = currentBalance(record.customerId) - record.moneyIDL.amount
+        val newBalance = currentBalance(record.customerId) - record.amount
 
         return if (newBalance < BigDecimal.ZERO) {
             balanceService.denyWithdrawFunds(record)
@@ -70,6 +70,6 @@ class RecordTransformer @Inject constructor(
 
     private fun currentBalance(customerId: String): BigDecimal {
         val balanceState = state.get(customerId)
-        return if (balanceState != null) balanceState.moneyIDL.amount else BigDecimal.ZERO
+        return if (balanceState != null) balanceState.amount else BigDecimal.ZERO
     }
 }

@@ -1,5 +1,6 @@
 package parts.code.piggybox.command.api.handlers
 
+import java.math.BigDecimal
 import java.time.Clock
 import java.util.UUID
 import javax.inject.Inject
@@ -7,10 +8,8 @@ import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
-import parts.code.money.Money
 import parts.code.piggybox.command.config.KafkaConfig
 import parts.code.piggybox.schemas.WithdrawFundsCommand
-import parts.code.piggybox.schemas.toMoneyIDL
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status
@@ -29,7 +28,7 @@ class WithdrawFundsHandler @Inject constructor(
                 UUID.randomUUID().toString(),
                 clock.instant(),
                 it.customerId,
-                it.money.toMoneyIDL()
+                it.amount
             )
 
             val producerRecord = ProducerRecord(
@@ -50,5 +49,5 @@ class WithdrawFundsHandler @Inject constructor(
         }
     }
 
-    private data class WithdrawFundsPayload(val customerId: String, val money: Money)
+    private data class WithdrawFundsPayload(val customerId: String, val amount: BigDecimal)
 }
