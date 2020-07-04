@@ -50,11 +50,11 @@ class Given extends Stage<Given> {
         self()
     }
 
-    Given $_$_worth_of_funds(BigDecimal amount, Currency currency) {
+    Given $_worth_of_funds(BigDecimal amount) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, money: [amount: amount, currency: currency.name()]]))
+            }.body.text(toJson([customerId: customerId, amount: amount]))
         }
 
         assert httpClient.post("/api/balance.addFunds").status.code == 202

@@ -19,7 +19,7 @@ class BalanceService @Inject constructor(
             UUID.randomUUID().toString(),
             clock.instant(),
             command.customerId,
-            command.moneyIDL
+            command.amount
         )
 
         return KeyValue(command.customerId, event)
@@ -30,7 +30,7 @@ class BalanceService @Inject constructor(
             UUID.randomUUID().toString(),
             clock.instant(),
             command.customerId,
-            command.moneyIDL
+            command.amount
         )
 
         return KeyValue(command.customerId, event)

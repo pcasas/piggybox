@@ -49,34 +49,26 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
-        when().adding_$_$_worth_of_funds(1.00, EUR)
-        then().$_$_worth_of_funds_are_added(1.00, EUR)
-              .and().the_customer_balance_is_$_$(1.00, EUR)
+        when().adding_$_worth_of_funds(1.00)
+        then().$_worth_of_funds_are_added(1.00)
+              .and().the_customer_balance_is_$(1.00)
     }
 
-    def "not add funds if no preferences exist"() {
+    def "deny add funds if no preferences exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-        when().adding_$_$_worth_of_funds(1.00, EUR)
-        then().adding_$_$_worth_of_funds_is_denied(1.00, EUR, Topics.preferencesAuthorization)
-    }
-
-    def "not add funds if the currency is different than the currency of the preferences"() {
-        expect:
-        given().applicationsUnderTest(applicationsUnderTest)
-               .customer_preferences_with_currency_$_and_country_$(GBP, "UK")
-        when().adding_$_$_worth_of_funds(1.00, EUR)
-        then().adding_$_$_worth_of_funds_is_denied(1.00, EUR, Topics.preferencesAuthorization)
+        when().adding_$_worth_of_funds(1.00)
+        then().adding_$_worth_of_funds_is_denied(1.00, Topics.preferencesAuthorization)
     }
 
     @Unroll
-    def "not add #fundsToAdd funds if new balance is greater than 2000"() {
+    def "deny add #fundsToAdd funds if new balance is greater than 2000"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
-               .and().$_$_worth_of_funds(originalFunds, EUR)
-        when().adding_$_$_worth_of_funds(fundsToAdd, EUR)
-        then().adding_$_$_worth_of_funds_is_denied(fundsToAdd, EUR, Topics.balanceAuthorization)
+               .and().$_worth_of_funds(originalFunds)
+        when().adding_$_worth_of_funds(fundsToAdd)
+        then().adding_$_worth_of_funds_is_denied(fundsToAdd, Topics.balanceAuthorization)
 
         where:
         originalFunds | fundsToAdd
@@ -90,42 +82,34 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
                .and().an_unknown_record_in_the_topic_$(Topics.balance)
-        when().adding_$_$_worth_of_funds(1.00, EUR)
-        then().$_$_worth_of_funds_are_added(1.00, EUR)
-              .and().the_customer_balance_is_$_$(1.00, EUR)
+        when().adding_$_worth_of_funds(1.00)
+        then().$_worth_of_funds_are_added(1.00)
+              .and().the_customer_balance_is_$(1.00)
     }
 
     def "withdraw funds"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
-               .and().$_$_worth_of_funds(100.00, EUR)
-        when().withdrawing_$_$_worth_of_funds(60.00, EUR)
-        then().$_$_worth_of_funds_are_withdrawn(60.00, EUR)
-              .and().the_customer_balance_is_$_$(40.00, EUR)
+               .and().$_worth_of_funds(100.00)
+        when().withdrawing_$_worth_of_funds(60.00)
+        then().$_worth_of_funds_are_withdrawn(60.00)
+              .and().the_customer_balance_is_$(40.00)
     }
 
     def "deny withdraw funds if no preferences exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-        when().withdrawing_$_$_worth_of_funds(60.00, EUR)
-        then().withdrawing_$_$_worth_of_funds_is_denied(60.00, EUR, Topics.preferencesAuthorization)
-    }
-
-    def "deny withdraw funds if the currency of the command is different than the currency of the preferences"() {
-        expect:
-        given().applicationsUnderTest(applicationsUnderTest)
-               .customer_preferences_with_currency_$_and_country_$(GBP, "UK")
-        when().withdrawing_$_$_worth_of_funds(60.00, EUR)
-        then().withdrawing_$_$_worth_of_funds_is_denied(60.00, EUR, Topics.preferencesAuthorization)
+        when().withdrawing_$_worth_of_funds(60.00)
+        then().withdrawing_$_worth_of_funds_is_denied(60.00, Topics.preferencesAuthorization)
     }
 
     def "deny withdraw funds if new balance is lower than 0"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
-        when().withdrawing_$_$_worth_of_funds(1.00, EUR)
-        then().withdrawing_$_$_worth_of_funds_is_denied(1.00, EUR, Topics.balanceAuthorization)
+        when().withdrawing_$_worth_of_funds(1.00)
+        then().withdrawing_$_worth_of_funds_is_denied(1.00, Topics.balanceAuthorization)
     }
 
     def "change the country"() {
@@ -136,7 +120,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         then().the_country_is_changed_to_$("UK")
     }
 
-    def "deny change the country if preferences don't exist"() {
+    def "deny change the country if no preferences exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
         when().changing_the_country_to_$("UK")

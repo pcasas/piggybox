@@ -1,12 +1,11 @@
 package parts.code.piggybox.query.api.handlers
 
+import java.math.BigDecimal
 import javax.inject.Inject
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.QueryableStoreTypes
-import parts.code.money.Money
 import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.schemas.BalanceState
-import parts.code.piggybox.schemas.toMoney
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status
@@ -26,8 +25,8 @@ class CustomersGetBalanceHandler @Inject constructor(
         )
 
         ctx.response.status(Status.OK)
-        ctx.render(Jackson.json(BalancePayload(store.get(customerId).moneyIDL.toMoney())))
+        ctx.render(Jackson.json(BalancePayload(store.get(customerId).amount)))
     }
 
-    private data class BalancePayload(val money: Money)
+    private data class BalancePayload(val amount: BigDecimal)
 }

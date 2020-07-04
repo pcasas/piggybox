@@ -21,7 +21,7 @@ class Then extends Stage<Then> {
     @ExpectedScenarioState String customerId
     @ExpectedScenarioState ApplicationsUnderTest aut
 
-    Then $_$_worth_of_funds_are_added(BigDecimal amount, Currency currency) {
+    Then $_worth_of_funds_are_added(BigDecimal amount) {
         def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
@@ -33,14 +33,13 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency.name()
+            assert event.amount == amount
         }
 
         self()
     }
 
-    Then adding_$_$_worth_of_funds_is_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
+    Then adding_$_worth_of_funds_is_denied(BigDecimal amount, @Hidden String topic) {
         def consumer = KafkaTestUtils.instance.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
@@ -52,14 +51,13 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency.name()
+            assert event.amount == amount
         }
 
         self()
     }
 
-    Then the_customer_balance_is_$_$(BigDecimal amount, Currency currency) {
+    Then the_customer_balance_is_$(BigDecimal amount) {
         def httpClient = aut.queryService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -70,11 +68,11 @@ class Then extends Stage<Then> {
 
         def response = httpClient.get("/api/customers.getBalance")
         assert response.status.code == 200
-        assert response.body.text == toJson([money: [amount: amount, currency: currency.name()]])
+        assert response.body.text == toJson([amount: amount])
         self()
     }
 
-    Then $_$_worth_of_funds_are_withdrawn(BigDecimal amount, Currency currency) {
+    Then $_worth_of_funds_are_withdrawn(BigDecimal amount) {
         def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
@@ -86,14 +84,13 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency.name()
+            assert event.amount == amount
         }
 
         self()
     }
 
-    Then withdrawing_$_$_worth_of_funds_is_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
+    Then withdrawing_$_worth_of_funds_is_denied(BigDecimal amount, @Hidden String topic) {
         def consumer = KafkaTestUtils.instance.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
@@ -105,8 +102,7 @@ class Then extends Stage<Then> {
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.moneyIDL.amount == amount
-            assert event.moneyIDL.currency == currency.name()
+            assert event.amount == amount
         }
 
         self()

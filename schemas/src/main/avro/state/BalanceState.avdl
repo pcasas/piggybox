@@ -1,10 +1,8 @@
 @namespace("parts.code.piggybox.schemas")
 protocol PiggyBox {
 
-  import idl "../MoneyIDL.avdl";
-
   record BalanceState {
     string customerId;
-    MoneyIDL moneyIDL;
+    decimal(4,2) amount;
   }
 }

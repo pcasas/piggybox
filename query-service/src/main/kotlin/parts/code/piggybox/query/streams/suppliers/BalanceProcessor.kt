@@ -1,19 +1,16 @@
 package parts.code.piggybox.query.streams.suppliers
 
+import java.math.BigDecimal
 import javax.inject.Inject
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.processor.Processor
 import org.apache.kafka.streams.processor.ProcessorContext
 import org.apache.kafka.streams.state.KeyValueStore
 import org.slf4j.LoggerFactory
-import parts.code.money.Currency
-import parts.code.money.Money
 import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.schemas.BalanceState
 import parts.code.piggybox.schemas.FundsAdded
 import parts.code.piggybox.schemas.FundsWithdrawn
-import parts.code.piggybox.schemas.toMoney
-import parts.code.piggybox.schemas.toMoneyIDL
 
 class BalanceProcessor @Inject constructor(
     private val config: KafkaConfig
@@ -37,24 +34,22 @@ class BalanceProcessor @Inject constructor(
     }
 
     private fun fundsAdded(record: FundsAdded) {
-        val money = record.moneyIDL.toMoney()
-        val newBalance = currentBalance(record.customerId, money.currency) + money
+        val newBalance = currentBalance(record.customerId) + record.amount
         saveBalance(record.customerId, newBalance)
     }
 
     private fun fundsWithdrawn(record: FundsWithdrawn) {
-        val money = record.moneyIDL.toMoney()
-        val newBalance = currentBalance(record.customerId, money.currency) - money
+        val newBalance = currentBalance(record.customerId) - record.amount
         saveBalance(record.customerId, newBalance)
     }
 
-    private fun currentBalance(customerId: String, currency: Currency): Money {
+    private fun currentBalance(customerId: String): BigDecimal {
         val balanceState = stateStore.get(customerId)
-        return if (balanceState != null) balanceState.moneyIDL.toMoney() else Money.zero(currency)
+        return if (balanceState != null) balanceState.amount else BigDecimal.ZERO
     }
 
-    private fun saveBalance(customerId: String, balance: Money) {
-        stateStore.put(customerId, BalanceState(customerId, balance.toMoneyIDL()))
+    private fun saveBalance(customerId: String, balance: BigDecimal) {
+        stateStore.put(customerId, BalanceState(customerId, balance))
     }
 
     override fun close() {}
