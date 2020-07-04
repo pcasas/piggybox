@@ -28,7 +28,7 @@ Method | URL | Description
 POST | /api/preferences.create | Create preferences for a customer with the currency to be used for all transactions
 POST | /api/preferences.changeCountry | Change the customer's country from preferences
 POST | /api/balance.addFunds | Add funds to the customer's balance
-POST | /api/balance.buyGame | Buy a game for a customer
+POST | /api/balance.withdrawFunds | Withdraw funds from the customer's balance
 
 #### Query Service
 
@@ -59,7 +59,7 @@ As a last step, the Preferences Service reads the `PreferencesCreated` event fro
 
 #### Balance Service
 
-The Balance Service updates the customer's balance based on transactions like `AddFundsCommand` or `BuyGameCommand`. It also performs validations not allowing a balance lower than 0 or higher than 2000. 
+The Balance Service updates the customer's balance based on transactions like `AddFundsCommand` or `WithdrawFundsCommand`. It also performs validations not allowing a balance lower than 0 or higher than 2000. 
 The balance transactions are stored in the Balance topic which is used as an Event Store. The Balance Authorization topic in the other hand is only used to exchange messages between microservices.
 
 In the following diagram we can see an example of how funds can be added to a customer's balance. First the client calls the `/balance.addFunds` endpoint from the Command Service, then the Command Service publishes a command `AddFundsCommand` to the Preferences Authorization Topic. Then the Preferences Service reads the `AddFundsCommand`, checks the State Store to see if funds are in the same currency than the customer's preferences currency. Then, since the currency is the same, publishes an `AddFundsCommand` event to the Balance Authorization Topic. Then the Balance Service reads the `AddFundsCommand`, checks the State Store to see if the balance will be lower than 2000 after adding the funds. Then, since the balance will be lower than 2000 after adding the funds, publishes a `FundsAdded` event to the Balance Topic.

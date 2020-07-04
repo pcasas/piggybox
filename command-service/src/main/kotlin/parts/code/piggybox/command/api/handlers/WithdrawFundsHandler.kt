@@ -9,27 +9,26 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.LoggerFactory
 import parts.code.money.Money
 import parts.code.piggybox.command.config.KafkaConfig
-import parts.code.piggybox.schemas.BuyGameCommand
+import parts.code.piggybox.schemas.WithdrawFundsCommand
 import parts.code.piggybox.schemas.toMoneyIDL
 import ratpack.handling.Context
 import ratpack.handling.Handler
 import ratpack.http.Status
 
-class BuyGameHandler @Inject constructor(
+class WithdrawFundsHandler @Inject constructor(
     private val clock: Clock,
     private val config: KafkaConfig,
     private val producer: KafkaProducer<String, SpecificRecord>
 ) : Handler {
 
-    private val logger = LoggerFactory.getLogger(BuyGameHandler::class.java)
+    private val logger = LoggerFactory.getLogger(WithdrawFundsHandler::class.java)
 
     override fun handle(ctx: Context) {
-        ctx.parse(BuyGamePayload::class.java).then {
-            val record = BuyGameCommand(
+        ctx.parse(WithdrawFundsPayload::class.java).then {
+            val record = WithdrawFundsCommand(
                 UUID.randomUUID().toString(),
                 clock.instant(),
                 it.customerId,
-                it.gameId,
                 it.money.toMoneyIDL()
             )
 
@@ -51,5 +50,5 @@ class BuyGameHandler @Inject constructor(
         }
     }
 
-    private data class BuyGamePayload(val customerId: String, val gameId: String, val money: Money)
+    private data class WithdrawFundsPayload(val customerId: String, val money: Money)
 }

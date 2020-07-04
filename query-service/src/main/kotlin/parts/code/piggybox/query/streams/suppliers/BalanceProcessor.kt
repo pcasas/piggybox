@@ -11,7 +11,7 @@ import parts.code.money.Money
 import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.schemas.BalanceState
 import parts.code.piggybox.schemas.FundsAdded
-import parts.code.piggybox.schemas.GameBought
+import parts.code.piggybox.schemas.FundsWithdrawn
 import parts.code.piggybox.schemas.toMoney
 import parts.code.piggybox.schemas.toMoneyIDL
 
@@ -30,7 +30,7 @@ class BalanceProcessor @Inject constructor(
     override fun process(key: String, record: SpecificRecord) {
         when (record) {
             is FundsAdded -> fundsAdded(record)
-            is GameBought -> gameBought(record)
+            is FundsWithdrawn -> fundsWithdrawn(record)
         }
 
         logger.info("Processed ${record.schema.name}\n\trecord: $record")
@@ -42,7 +42,7 @@ class BalanceProcessor @Inject constructor(
         saveBalance(record.customerId, newBalance)
     }
 
-    private fun gameBought(record: GameBought) {
+    private fun fundsWithdrawn(record: FundsWithdrawn) {
         val money = record.moneyIDL.toMoney()
         val newBalance = currentBalance(record.customerId, money.currency) - money
         saveBalance(record.customerId, newBalance)
