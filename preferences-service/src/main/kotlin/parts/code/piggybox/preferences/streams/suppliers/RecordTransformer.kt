@@ -11,11 +11,11 @@ import parts.code.piggybox.preferences.config.KafkaConfig
 import parts.code.piggybox.preferences.services.BalanceService
 import parts.code.piggybox.preferences.services.PreferencesService
 import parts.code.piggybox.schemas.AddFundsCommand
-import parts.code.piggybox.schemas.BuyGameCommand
 import parts.code.piggybox.schemas.ChangeCountryCommand
 import parts.code.piggybox.schemas.CreatePreferencesCommand
 import parts.code.piggybox.schemas.PreferencesState
 import parts.code.piggybox.schemas.UnknownRecord
+import parts.code.piggybox.schemas.WithdrawFundsCommand
 
 class RecordTransformer @Inject constructor(
     private val config: KafkaConfig,
@@ -36,7 +36,7 @@ class RecordTransformer @Inject constructor(
             is CreatePreferencesCommand -> createPreferences(record)
             is ChangeCountryCommand -> changeCountry(record)
             is AddFundsCommand -> addFunds(record)
-            is BuyGameCommand -> buyGame(record)
+            is WithdrawFundsCommand -> withdrawFunds(record)
             else -> unknown()
         }
 
@@ -79,11 +79,11 @@ class RecordTransformer @Inject constructor(
         }
     }
 
-    private fun buyGame(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
+    private fun withdrawFunds(record: WithdrawFundsCommand): KeyValue<String, SpecificRecord> {
         val preferencesState = state.get(record.customerId)
 
         return if (preferencesState == null || preferencesState.currency != record.moneyIDL.currency) {
-            balanceService.denyBuyGame(record)
+            balanceService.denyWithdrawFunds(record)
         } else {
             KeyValue(record.customerId, record as SpecificRecord)
         }

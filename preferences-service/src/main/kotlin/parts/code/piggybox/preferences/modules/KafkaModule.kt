@@ -25,13 +25,13 @@ import parts.code.piggybox.preferences.streams.suppliers.RecordProcessor
 import parts.code.piggybox.preferences.streams.suppliers.RecordTransformer
 import parts.code.piggybox.schemas.AddFundsCommand
 import parts.code.piggybox.schemas.AddFundsDenied
-import parts.code.piggybox.schemas.BuyGameCommand
-import parts.code.piggybox.schemas.BuyGameDenied
 import parts.code.piggybox.schemas.ChangeCountryDenied
 import parts.code.piggybox.schemas.CountryChanged
 import parts.code.piggybox.schemas.CreatePreferencesDenied
 import parts.code.piggybox.schemas.PreferencesCreated
 import parts.code.piggybox.schemas.PreferencesState
+import parts.code.piggybox.schemas.WithdrawFundsCommand
+import parts.code.piggybox.schemas.WithdrawFundsDenied
 
 class KafkaModule : AbstractModule() {
 
@@ -66,8 +66,8 @@ class KafkaModule : AbstractModule() {
             .transform(TransformerSupplier { transformer }, config.stateStores.preferences)
             .branch(
                 Predicate { _, v -> v is PreferencesCreated || v is CountryChanged },
-                Predicate { _, v -> v is CreatePreferencesDenied || v is AddFundsDenied || v is BuyGameDenied || v is ChangeCountryDenied },
-                Predicate { _, v -> v is AddFundsCommand || v is BuyGameCommand }
+                Predicate { _, v -> v is CreatePreferencesDenied || v is AddFundsDenied || v is WithdrawFundsDenied || v is ChangeCountryDenied },
+                Predicate { _, v -> v is AddFundsCommand || v is WithdrawFundsCommand }
             )
 
         preferences

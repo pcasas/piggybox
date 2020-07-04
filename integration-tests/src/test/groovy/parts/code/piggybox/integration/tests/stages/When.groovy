@@ -14,7 +14,6 @@ class When extends Stage<When> {
 
     @ExpectedScenarioState String customerId
     @ExpectedScenarioState ApplicationsUnderTest aut
-    @ProvidedScenarioState String gameId = UUID.randomUUID().toString()
 
     When adding_$_$_worth_of_funds(BigDecimal amount, Currency currency) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
@@ -27,14 +26,14 @@ class When extends Stage<When> {
         self()
     }
 
-    When buying_a_game_worth_$_$(BigDecimal amount, Currency currency) {
+    When withdrawing_$_$_worth_of_funds(BigDecimal amount, Currency currency) {
         def httpClient = aut.commandService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(CONTENT_TYPE, APPLICATION_JSON)
-            }.body.text(toJson([customerId: customerId, gameId: gameId, money: [amount: amount, currency: currency.name()]]))
+            }.body.text(toJson([customerId: customerId, money: [amount: amount, currency: currency.name()]]))
         }
 
-        assert httpClient.post("/api/balance.buyGame").status.code == 202
+        assert httpClient.post("/api/balance.withdrawFunds").status.code == 202
         self()
     }
 

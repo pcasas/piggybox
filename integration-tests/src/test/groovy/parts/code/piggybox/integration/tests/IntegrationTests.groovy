@@ -45,7 +45,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         then().create_preferences_with_currency_$_and_country_$_is_denied(EUR, "ES")
     }
 
-    def "add funds to a customer"() {
+    def "add funds"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
@@ -54,19 +54,19 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
               .and().the_customer_balance_is_$_$(1.00, EUR)
     }
 
-    def "not add funds to a customer if no preferences exist"() {
+    def "not add funds if no preferences exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
         when().adding_$_$_worth_of_funds(1.00, EUR)
-        then().$_$_worth_of_funds_are_denied(1.00, EUR, Topics.preferencesAuthorization)
+        then().adding_$_$_worth_of_funds_is_denied(1.00, EUR, Topics.preferencesAuthorization)
     }
 
-    def "not add funds to a customer if the currency is different than the currency of the preferences"() {
+    def "not add funds if the currency is different than the currency of the preferences"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(GBP, "UK")
         when().adding_$_$_worth_of_funds(1.00, EUR)
-        then().$_$_worth_of_funds_are_denied(1.00, EUR, Topics.preferencesAuthorization)
+        then().adding_$_$_worth_of_funds_is_denied(1.00, EUR, Topics.preferencesAuthorization)
     }
 
     @Unroll
@@ -76,7 +76,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
                .and().$_$_worth_of_funds(originalFunds, EUR)
         when().adding_$_$_worth_of_funds(fundsToAdd, EUR)
-        then().$_$_worth_of_funds_are_denied(fundsToAdd, EUR, Topics.balanceAuthorization)
+        then().adding_$_$_worth_of_funds_is_denied(fundsToAdd, EUR, Topics.balanceAuthorization)
 
         where:
         originalFunds | fundsToAdd
@@ -95,37 +95,37 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
               .and().the_customer_balance_is_$_$(1.00, EUR)
     }
 
-    def "buy a game for a customer"() {
+    def "withdraw funds"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
                .and().$_$_worth_of_funds(100.00, EUR)
-        when().buying_a_game_worth_$_$(60.00, EUR)
-        then().a_game_worth_$_$_is_bought(60.00, EUR)
+        when().withdrawing_$_$_worth_of_funds(60.00, EUR)
+        then().$_$_worth_of_funds_are_withdrawn(60.00, EUR)
               .and().the_customer_balance_is_$_$(40.00, EUR)
     }
 
-    def "deny buy a game if no preferences exist"() {
+    def "deny withdraw funds if no preferences exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-        when().buying_a_game_worth_$_$(60.00, EUR)
-        then().buying_a_game_worth_$_$_is_denied(60.00, EUR, Topics.preferencesAuthorization)
+        when().withdrawing_$_$_worth_of_funds(60.00, EUR)
+        then().withdrawing_$_$_worth_of_funds_is_denied(60.00, EUR, Topics.preferencesAuthorization)
     }
 
-    def "deny buy a game if the currency of the command is different than the currency of the preferences"() {
+    def "deny withdraw funds if the currency of the command is different than the currency of the preferences"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(GBP, "UK")
-        when().buying_a_game_worth_$_$(60.00, EUR)
-        then().buying_a_game_worth_$_$_is_denied(60.00, EUR, Topics.preferencesAuthorization)
+        when().withdrawing_$_$_worth_of_funds(60.00, EUR)
+        then().withdrawing_$_$_worth_of_funds_is_denied(60.00, EUR, Topics.preferencesAuthorization)
     }
 
-    def "deny buy a game if new balance is lower than 0"() {
+    def "deny withdraw funds if new balance is lower than 0"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
-        when().buying_a_game_worth_$_$(1.00, EUR)
-        then().buying_a_game_worth_$_$_is_denied(1.00, EUR, Topics.balanceAuthorization)
+        when().withdrawing_$_$_worth_of_funds(1.00, EUR)
+        then().withdrawing_$_$_worth_of_funds_is_denied(1.00, EUR, Topics.balanceAuthorization)
     }
 
     def "change the country"() {

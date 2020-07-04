@@ -3,11 +3,10 @@ protocol PiggyBox {
 
   import idl "../MoneyIDL.avdl";
 
-  record GameBought {
+  record WithdrawFundsCommand {
     string id;
     timestamp_ms occurredOn;
     string customerId;
-    string gameId;
     MoneyIDL moneyIDL;
   }
 }

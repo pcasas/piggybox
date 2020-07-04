@@ -20,7 +20,6 @@ class Then extends Stage<Then> {
 
     @ExpectedScenarioState String customerId
     @ExpectedScenarioState ApplicationsUnderTest aut
-    @ExpectedScenarioState String gameId
 
     Then $_$_worth_of_funds_are_added(BigDecimal amount, Currency currency) {
         def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
@@ -41,7 +40,7 @@ class Then extends Stage<Then> {
         self()
     }
 
-    Then $_$_worth_of_funds_are_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
+    Then adding_$_$_worth_of_funds_is_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
         def consumer = KafkaTestUtils.instance.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
@@ -75,7 +74,7 @@ class Then extends Stage<Then> {
         self()
     }
 
-    Then a_game_worth_$_$_is_bought(BigDecimal amount, Currency currency) {
+    Then $_$_worth_of_funds_are_withdrawn(BigDecimal amount, Currency currency) {
         def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
 
         new PollingConditions(timeout: 30).eventually {
@@ -83,11 +82,10 @@ class Then extends Stage<Then> {
             assert !events.isEmpty()
 
             def event = events.last()
-            assert event instanceof GameBought
+            assert event instanceof FundsWithdrawn
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.gameId == gameId
             assert event.moneyIDL.amount == amount
             assert event.moneyIDL.currency == currency.name()
         }
@@ -95,7 +93,7 @@ class Then extends Stage<Then> {
         self()
     }
 
-    Then buying_a_game_worth_$_$_is_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
+    Then withdrawing_$_$_worth_of_funds_is_denied(BigDecimal amount, Currency currency, @Hidden String topic) {
         def consumer = KafkaTestUtils.instance.consumer(topic)
 
         new PollingConditions(timeout: 30).eventually {
@@ -103,11 +101,10 @@ class Then extends Stage<Then> {
             assert !events.isEmpty()
 
             def event = events.last()
-            assert event instanceof BuyGameDenied
+            assert event instanceof WithdrawFundsDenied
             assert UUID.fromString(event.id)
             assert event.occurredOn != null
             assert event.customerId == customerId
-            assert event.gameId == gameId
             assert event.moneyIDL.amount == amount
             assert event.moneyIDL.currency == currency.name()
         }

@@ -12,8 +12,8 @@ import parts.code.piggybox.balance.config.KafkaConfig
 import parts.code.piggybox.balance.services.BalanceService
 import parts.code.piggybox.schemas.AddFundsCommand
 import parts.code.piggybox.schemas.BalanceState
-import parts.code.piggybox.schemas.BuyGameCommand
 import parts.code.piggybox.schemas.UnknownRecord
+import parts.code.piggybox.schemas.WithdrawFundsCommand
 
 class RecordTransformer @Inject constructor(
     private val config: KafkaConfig,
@@ -31,7 +31,7 @@ class RecordTransformer @Inject constructor(
     override fun transform(key: String, record: SpecificRecord): KeyValue<String, SpecificRecord>? {
         val result: KeyValue<String, SpecificRecord> = when (record) {
             is AddFundsCommand -> addFunds(record)
-            is BuyGameCommand -> buyGame(record)
+            is WithdrawFundsCommand -> withdrawFunds(record)
             else -> unknown()
         }
 
@@ -54,13 +54,13 @@ class RecordTransformer @Inject constructor(
         }
     }
 
-    private fun buyGame(record: BuyGameCommand): KeyValue<String, SpecificRecord> {
+    private fun withdrawFunds(record: WithdrawFundsCommand): KeyValue<String, SpecificRecord> {
         val newBalance = currentBalance(record.customerId) - record.moneyIDL.amount
 
         return if (newBalance < BigDecimal.ZERO) {
-            balanceService.denyBuyGame(record)
+            balanceService.denyWithdrawFunds(record)
         } else {
-            balanceService.buyGame(record)
+            balanceService.withdrawFunds(record)
         }
     }
 

@@ -7,10 +7,10 @@ import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.KeyValue
 import parts.code.piggybox.schemas.AddFundsCommand
 import parts.code.piggybox.schemas.AddFundsDenied
-import parts.code.piggybox.schemas.BuyGameCommand
-import parts.code.piggybox.schemas.BuyGameDenied
 import parts.code.piggybox.schemas.FundsAdded
-import parts.code.piggybox.schemas.GameBought
+import parts.code.piggybox.schemas.FundsWithdrawn
+import parts.code.piggybox.schemas.WithdrawFundsCommand
+import parts.code.piggybox.schemas.WithdrawFundsDenied
 
 class BalanceService @Inject constructor(
     private val clock: Clock
@@ -38,24 +38,22 @@ class BalanceService @Inject constructor(
         return KeyValue(command.customerId, event)
     }
 
-    fun buyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord> {
-        val event = GameBought(
+    fun withdrawFunds(command: WithdrawFundsCommand): KeyValue<String, SpecificRecord> {
+        val event = FundsWithdrawn(
             UUID.randomUUID().toString(),
             clock.instant(),
             command.customerId,
-            command.gameId,
             command.moneyIDL
         )
 
         return KeyValue(command.customerId, event)
     }
 
-    fun denyBuyGame(command: BuyGameCommand): KeyValue<String, SpecificRecord> {
-        val event = BuyGameDenied(
+    fun denyWithdrawFunds(command: WithdrawFundsCommand): KeyValue<String, SpecificRecord> {
+        val event = WithdrawFundsDenied(
             UUID.randomUUID().toString(),
             clock.instant(),
             command.customerId,
-            command.gameId,
             command.moneyIDL
         )
 
