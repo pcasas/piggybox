@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Button = ({ disabled, style, children }) => {
+const Button = ({ disabled, style, children, onClick }) => {
   const classes = useStyles();
 
   return (
@@ -34,6 +34,7 @@ const Button = ({ disabled, style, children }) => {
       classes={{ disabled: classes.disabledButton }}
       disableElevation
       style={style}
+      onClick={onClick}
     >
       {children}
     </MUIButton>
