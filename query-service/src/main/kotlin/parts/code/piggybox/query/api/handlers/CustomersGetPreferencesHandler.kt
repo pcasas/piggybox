@@ -23,9 +23,13 @@ class CustomersGetPreferencesHandler @Inject constructor(
             QueryableStoreTypes.keyValueStore<String, PreferencesState>()
         )
 
-        ctx.response.status(Status.OK)
-        val preferences = store.get(customerId)
-        ctx.render(Jackson.json(PreferencesPayload(preferences.currency, preferences.country)))
+        if (store.get(customerId) == null) {
+            ctx.response.status(Status.NOT_FOUND).send()
+        } else {
+            ctx.response.status(Status.OK)
+            val preferences = store.get(customerId)
+            ctx.render(Jackson.json(PreferencesPayload(preferences.currency, preferences.country)))
+        }
     }
 
     private data class PreferencesPayload(val currency: String, val country: String)

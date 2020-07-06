@@ -21,6 +21,8 @@ import org.apache.kafka.streams.state.Stores
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.preferences.PreferencesServiceApplication
 import parts.code.piggybox.preferences.config.KafkaConfig
+import parts.code.piggybox.preferences.services.BalanceService
+import parts.code.piggybox.preferences.services.PreferencesService
 import parts.code.piggybox.preferences.streams.suppliers.RecordProcessor
 import parts.code.piggybox.preferences.streams.suppliers.RecordTransformer
 import parts.code.piggybox.schemas.AddFundsCommand
@@ -46,12 +48,12 @@ class KafkaModule : AbstractModule() {
     @Singleton
     fun provideKafkaStreams(
         config: KafkaConfig,
-        transformer: RecordTransformer,
-        processor: RecordProcessor
+        preferencesService: PreferencesService,
+        balanceService: BalanceService
     ): KafkaStreams {
         val builder = StreamsBuilder().addPreferencesStateStore(config)
-        addPreferencesAuthorizationStream(builder, config, transformer)
-        addPreferencesStream(builder, config, processor)
+        addPreferencesAuthorizationStream(builder, config, preferencesService, balanceService)
+        addPreferencesStream(builder, config)
 
         return KafkaStreams(builder.build(), properties(config))
     }
@@ -59,11 +61,12 @@ class KafkaModule : AbstractModule() {
     private fun addPreferencesAuthorizationStream(
         builder: StreamsBuilder,
         config: KafkaConfig,
-        transformer: RecordTransformer
+        preferencesService: PreferencesService,
+        balanceService: BalanceService
     ) {
         val (preferences, preferencesAuthorization, balanceAuthorization) = builder
             .stream<String, SpecificRecord>(config.topics.preferencesAuthorization)
-            .transform(TransformerSupplier { transformer }, config.stateStores.preferences)
+            .transform(TransformerSupplier { RecordTransformer(config, preferencesService, balanceService) }, config.stateStores.preferences)
             .branch(
                 Predicate { _, v -> v is PreferencesCreated || v is CountryChanged },
                 Predicate { _, v -> v is CreatePreferencesDenied || v is AddFundsDenied || v is WithdrawFundsDenied || v is ChangeCountryDenied },
@@ -83,10 +86,10 @@ class KafkaModule : AbstractModule() {
             .to(config.topics.balanceAuthorization)
     }
 
-    private fun addPreferencesStream(builder: StreamsBuilder, config: KafkaConfig, processor: RecordProcessor) {
+    private fun addPreferencesStream(builder: StreamsBuilder, config: KafkaConfig) {
         builder
             .stream<String, SpecificRecord>(config.topics.preferences)
-            .process(ProcessorSupplier { processor }, config.stateStores.preferences)
+            .process(ProcessorSupplier { RecordProcessor(config) }, config.stateStores.preferences)
     }
 
     private fun properties(config: KafkaConfig) =

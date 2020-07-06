@@ -21,6 +21,7 @@ import org.apache.kafka.streams.state.Stores
 import org.slf4j.LoggerFactory
 import parts.code.piggybox.balance.BalanceServiceApplication
 import parts.code.piggybox.balance.config.KafkaConfig
+import parts.code.piggybox.balance.services.BalanceService
 import parts.code.piggybox.balance.streams.suppliers.RecordProcessor
 import parts.code.piggybox.balance.streams.suppliers.RecordTransformer
 import parts.code.piggybox.schemas.AddFundsDenied
@@ -42,12 +43,11 @@ class KafkaModule : AbstractModule() {
     @Singleton
     fun provideKafkaStreams(
         config: KafkaConfig,
-        transformer: RecordTransformer,
-        processor: RecordProcessor
+        balanceService: BalanceService
     ): KafkaStreams {
         val builder = StreamsBuilder().addBalanceStateStore(config)
-        addBalanceAuthorizationStream(builder, config, transformer)
-        addBalanceStream(builder, config, processor)
+        addBalanceAuthorizationStream(builder, config, balanceService)
+        addBalanceStream(builder, config)
 
         return KafkaStreams(builder.build(), properties(config))
     }
@@ -55,11 +55,11 @@ class KafkaModule : AbstractModule() {
     private fun addBalanceAuthorizationStream(
         builder: StreamsBuilder,
         config: KafkaConfig,
-        transformer: RecordTransformer
+        balanceService: BalanceService
     ) {
         val (balance, balanceAuthorization) = builder
             .stream<String, SpecificRecord>(config.topics.balanceAuthorization)
-            .transform(TransformerSupplier { transformer }, config.stateStores.balance)
+            .transform(TransformerSupplier { RecordTransformer(config, balanceService) }, config.stateStores.balance)
             .branch(
                 Predicate { _, v -> v is FundsAdded || v is FundsWithdrawn },
                 Predicate { _, v -> v is AddFundsDenied || v is WithdrawFundsDenied }
@@ -74,10 +74,10 @@ class KafkaModule : AbstractModule() {
             .to(config.topics.balanceAuthorization)
     }
 
-    private fun addBalanceStream(builder: StreamsBuilder, config: KafkaConfig, processor: RecordProcessor) {
+    private fun addBalanceStream(builder: StreamsBuilder, config: KafkaConfig) {
         builder
             .stream<String, SpecificRecord>(config.topics.balance)
-            .process(ProcessorSupplier { processor }, config.stateStores.balance)
+            .process(ProcessorSupplier { RecordProcessor(config) }, config.stateStores.balance)
     }
 
     private fun properties(config: KafkaConfig) =

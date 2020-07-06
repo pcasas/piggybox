@@ -68,7 +68,21 @@ class Then extends Stage<Then> {
 
         def response = httpClient.get("/api/customers.getBalance")
         assert response.status.code == 200
-        assert response.body.text == toJson([amount: amount])
+        assert response.body.text == toJson([amount: amount, min: 0, max: 500])
+        self()
+    }
+
+    Then the_customer_balance_is_not_found() {
+        def httpClient = aut.queryService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            }
+        }.params {
+            it.put("customerId", customerId)
+        }
+
+        def response = httpClient.get("/api/customers.getBalance")
+        assert response.status.code == 404
         self()
     }
 
@@ -175,6 +189,20 @@ class Then extends Stage<Then> {
         def response = httpClient.get("/api/customers.getPreferences")
         assert response.status.code == 200
         assert response.body.text == toJson([currency: currency.name(), country: country])
+        self()
+    }
+
+    Then the_customer_preferences_are_not_found() {
+        def httpClient = aut.queryService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            }
+        }.params {
+            it.put("customerId", customerId)
+        }
+
+        def response = httpClient.get("/api/customers.getPreferences")
+        assert response.status.code == 404
         self()
     }
 
