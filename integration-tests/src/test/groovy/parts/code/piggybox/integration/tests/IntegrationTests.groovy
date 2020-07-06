@@ -11,7 +11,6 @@ import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 
 import static parts.code.money.Currency.EUR
-import static parts.code.money.Currency.GBP
 
 class IntegrationTests extends ScenarioSpec<Given, When, Then> {
 
@@ -62,7 +61,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
     }
 
     @Unroll
-    def "deny add #fundsToAdd funds if new balance is greater than 2000"() {
+    def "deny add #fundsToAdd funds if new balance is greater than 500"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
@@ -72,9 +71,9 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
 
         where:
         originalFunds | fundsToAdd
-        0.00          | 2000.01
-        1000.00       | 1000.01
-        2000.00       | 0.01
+        0.00          | 500.01
+        250.00        | 250.01
+        500.00        | 0.01
     }
 
     def "ignore an unknown record adding funds"() {
@@ -134,5 +133,17 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
                .and().an_unknown_record_in_the_topic_$(Topics.preferences)
         when().changing_the_country_to_$("UK")
         then().the_country_is_changed_to_$("UK")
+    }
+
+    def "return get balance not found if no balance exist"() {
+        expect:
+        given().applicationsUnderTest(applicationsUnderTest)
+        then().the_customer_balance_is_not_found()
+    }
+
+    def "return get preferences not found if no preferences exist"() {
+        expect:
+        given().applicationsUnderTest(applicationsUnderTest)
+        then().the_customer_preferences_are_not_found()
     }
 }

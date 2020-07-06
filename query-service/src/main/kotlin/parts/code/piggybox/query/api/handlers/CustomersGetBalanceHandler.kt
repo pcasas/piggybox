@@ -1,6 +1,7 @@
 package parts.code.piggybox.query.api.handlers
 
 import java.math.BigDecimal
+import java.math.RoundingMode.HALF_EVEN
 import javax.inject.Inject
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.QueryableStoreTypes
@@ -24,9 +25,13 @@ class CustomersGetBalanceHandler @Inject constructor(
             QueryableStoreTypes.keyValueStore<String, BalanceState>()
         )
 
-        ctx.response.status(Status.OK)
-        ctx.render(Jackson.json(BalancePayload(store.get(customerId).amount)))
+        if (store.get(customerId) == null) {
+            ctx.response.status(Status.NOT_FOUND).send()
+        } else {
+            ctx.response.status(Status.OK)
+            ctx.render(Jackson.json(BalancePayload(store.get(customerId).amount.setScale(2, HALF_EVEN))))
+        }
     }
 
-    private data class BalancePayload(val amount: BigDecimal)
+    private data class BalancePayload(val amount: BigDecimal, val min: Int = 0, val max: Int = 500)
 }

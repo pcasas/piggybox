@@ -33,21 +33,19 @@ class KafkaModule : AbstractModule() {
     @Provides
     @Singleton
     fun provideKafkaStreams(
-        config: KafkaConfig,
-        preferencesProcessor: PreferencesProcessor,
-        balanceProcessor: BalanceProcessor
+        config: KafkaConfig
     ): KafkaStreams {
         val builder = StreamsBuilder()
 
         builder
             .addPreferencesStateStore(config)
             .stream<String, SpecificRecord>(config.topics.preferences)
-            .process(ProcessorSupplier { preferencesProcessor }, config.stateStores.preferencesReadModel)
+            .process(ProcessorSupplier { PreferencesProcessor(config) }, config.stateStores.preferencesReadModel)
 
         builder
             .addBalanceStateStore(config)
             .stream<String, SpecificRecord>(config.topics.balance)
-            .process(ProcessorSupplier { balanceProcessor }, config.stateStores.balanceReadModel)
+            .process(ProcessorSupplier { BalanceProcessor(config) }, config.stateStores.balanceReadModel)
 
         return KafkaStreams(builder.build(), properties(config))
     }

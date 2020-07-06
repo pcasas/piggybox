@@ -47,7 +47,7 @@ class RecordTransformer @Inject constructor(
     private fun addFunds(record: AddFundsCommand): KeyValue<String, SpecificRecord> {
         val newBalance = currentBalance(record.customerId) + record.amount
 
-        return if (newBalance > BigDecimal.valueOf(2000)) {
+        return if (newBalance > BigDecimal.valueOf(500)) {
             balanceService.denyAddFunds(record)
         } else {
             balanceService.addFunds(record)
