@@ -11,6 +11,7 @@ import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 
 import static parts.code.money.Currency.EUR
+import static parts.code.money.Currency.GBP
 
 class IntegrationTests extends ScenarioSpec<Given, When, Then> {
 
@@ -36,6 +37,12 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
               .and().the_customer_preferences_are_currency_$_and_country_$(EUR, "ES")
     }
 
+    def "return get preferences not found if no preferences exist"() {
+        expect:
+        given().applicationsUnderTest(applicationsUnderTest)
+        then().the_customer_preferences_are_not_found()
+    }
+
     def "deny create preferences if preferences already exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
@@ -51,6 +58,12 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         when().adding_$_worth_of_funds(1.00)
         then().$_worth_of_funds_are_added(1.00)
               .and().the_customer_balance_is_$(1.00)
+    }
+
+    def "return get balance not found if no balance exist"() {
+        expect:
+        given().applicationsUnderTest(applicationsUnderTest)
+        then().the_customer_balance_is_not_found()
     }
 
     def "deny add funds if no preferences exist"() {
@@ -135,15 +148,24 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         then().the_country_is_changed_to_$("UK")
     }
 
-    def "return get balance not found if no balance exist"() {
+    def "get history"() {
+        given:
+        def expectedTransactions = [
+                [description: "Funds Added", date: "8 Jul 2020", type: "FUNDS_ADDED", amount: "1.00"],
+                [description: "Funds Withdrawn", date: "8 Jul 2020", type: "FUNDS_WITHDRAWN", amount: "-1.00"]
+        ]
+
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-        then().the_customer_balance_is_not_found()
+               .customer_preferences_with_currency_$_and_country_$(GBP, "UK")
+               .and().$_worth_of_funds(1.00)
+        when().withdrawing_$_worth_of_funds(1.00)
+        then().the_customer_history_is_$(expectedTransactions)
     }
 
-    def "return get preferences not found if no preferences exist"() {
+    def "return get history not found if no history exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-        then().the_customer_preferences_are_not_found()
+        then().the_customer_history_is_not_found()
     }
 }

@@ -1,0 +1,15 @@
+@namespace("parts.code.piggybox.schemas")
+protocol PiggyBox {
+
+  enum TransactionType{
+    FUNDS_ADDED,
+    FUNDS_WITHDRAWN
+  }
+
+  record Transaction {
+    string description;
+    date `date`;
+    TransactionType type;
+    decimal(4,2) amount;
+  }
+}

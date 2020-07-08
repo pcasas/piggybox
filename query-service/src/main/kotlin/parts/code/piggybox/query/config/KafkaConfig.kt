@@ -14,6 +14,7 @@ data class KafkaConfig(
 
     data class StateStores(
         val preferencesReadModel: String,
-        val balanceReadModel: String
+        val balanceReadModel: String,
+        val historyReadModel: String
     )
 }

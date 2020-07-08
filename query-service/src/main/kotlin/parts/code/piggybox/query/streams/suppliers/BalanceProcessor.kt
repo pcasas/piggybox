@@ -1,6 +1,8 @@
 package parts.code.piggybox.query.streams.suppliers
 
 import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.processor.Processor
@@ -11,17 +13,22 @@ import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.schemas.BalanceState
 import parts.code.piggybox.schemas.FundsAdded
 import parts.code.piggybox.schemas.FundsWithdrawn
+import parts.code.piggybox.schemas.HistoryState
+import parts.code.piggybox.schemas.Transaction
+import parts.code.piggybox.schemas.TransactionType
 
 class BalanceProcessor @Inject constructor(
     private val config: KafkaConfig
 ) : Processor<String, SpecificRecord> {
 
     private val logger = LoggerFactory.getLogger(BalanceProcessor::class.java)
-    private lateinit var stateStore: KeyValueStore<String, BalanceState>
+    private lateinit var balanceStateStore: KeyValueStore<String, BalanceState>
+    private lateinit var historyStateStore: KeyValueStore<String, HistoryState>
 
     @Suppress("UNCHECKED_CAST")
     override fun init(context: ProcessorContext) {
-        stateStore = context.getStateStore(config.stateStores.balanceReadModel) as KeyValueStore<String, BalanceState>
+        balanceStateStore = context.getStateStore(config.stateStores.balanceReadModel) as KeyValueStore<String, BalanceState>
+        historyStateStore = context.getStateStore(config.stateStores.historyReadModel) as KeyValueStore<String, HistoryState>
     }
 
     override fun process(key: String, record: SpecificRecord) {
@@ -36,20 +43,49 @@ class BalanceProcessor @Inject constructor(
     private fun fundsAdded(record: FundsAdded) {
         val newBalance = currentBalance(record.customerId) + record.amount
         saveBalance(record.customerId, newBalance)
+
+        val transaction = Transaction(
+            "Funds Added",
+            LocalDateTime.ofInstant(record.occurredOn, ZoneOffset.UTC).toLocalDate(),
+            TransactionType.FUNDS_ADDED,
+            record.amount
+        )
+        saveHistory(record.customerId, transaction)
     }
 
     private fun fundsWithdrawn(record: FundsWithdrawn) {
         val newBalance = currentBalance(record.customerId) - record.amount
         saveBalance(record.customerId, newBalance)
+
+        val transaction = Transaction(
+            "Funds Withdrawn",
+            LocalDateTime.ofInstant(record.occurredOn, ZoneOffset.UTC).toLocalDate(),
+            TransactionType.FUNDS_WITHDRAWN,
+            record.amount
+        )
+        saveHistory(record.customerId, transaction)
     }
 
     private fun currentBalance(customerId: String): BigDecimal {
-        val balanceState = stateStore.get(customerId)
+        val balanceState = balanceStateStore.get(customerId)
         return if (balanceState != null) balanceState.amount else BigDecimal.ZERO
     }
 
     private fun saveBalance(customerId: String, balance: BigDecimal) {
-        stateStore.put(customerId, BalanceState(customerId, balance))
+        balanceStateStore.put(customerId, BalanceState(customerId, balance))
+    }
+
+    private fun currentHistory(customerId: String): HistoryState {
+        val historyState = historyStateStore.get(customerId)
+        return if (historyState != null) historyState else HistoryState(customerId, mutableListOf())
+    }
+
+    private fun saveHistory(customerId: String, transaction: Transaction) {
+        val newHistory = HistoryState(
+            customerId,
+            currentHistory(customerId).transactions + transaction
+        )
+        historyStateStore.put(customerId, newHistory)
     }
 
     override fun close() {}

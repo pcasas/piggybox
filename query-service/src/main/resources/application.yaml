@@ -12,3 +12,4 @@ kafka:
   stateStores:
     preferencesReadModel: 'preferences-read-model-state'
     balanceReadModel: 'balance-read-model-state'
+    historyReadModel: 'history-read-model-state'
