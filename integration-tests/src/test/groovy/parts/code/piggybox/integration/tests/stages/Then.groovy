@@ -224,4 +224,36 @@ class Then extends Stage<Then> {
 
         self()
     }
+
+    Then the_customer_history_is_$(List<Map<String, String>> transactions) {
+        new PollingConditions(timeout: 30).eventually {
+            def httpClient = aut.queryService.httpClient.requestSpec { request ->
+                request.headers {
+                    it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                }
+            }.params {
+                it.put("customerId", customerId)
+            }
+
+            def response = httpClient.get("/api/customers.getHistory")
+            assert response.status.code == 200
+            assert response.body.text == toJson([transactions: transactions])
+        }
+
+        self()
+    }
+
+    Then the_customer_history_is_not_found() {
+        def httpClient = aut.queryService.httpClient.requestSpec { request ->
+            request.headers {
+                it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            }
+        }.params {
+            it.put("customerId", customerId)
+        }
+
+        def response = httpClient.get("/api/customers.getHistory")
+        assert response.status.code == 404
+        self()
+    }
 }

@@ -21,6 +21,7 @@ import parts.code.piggybox.query.config.KafkaConfig
 import parts.code.piggybox.query.streams.suppliers.BalanceProcessor
 import parts.code.piggybox.query.streams.suppliers.PreferencesProcessor
 import parts.code.piggybox.schemas.BalanceState
+import parts.code.piggybox.schemas.HistoryState
 import parts.code.piggybox.schemas.PreferencesState
 
 class KafkaModule : AbstractModule() {
@@ -44,8 +45,13 @@ class KafkaModule : AbstractModule() {
 
         builder
             .addBalanceStateStore(config)
+            .addHistoryStateStore(config)
             .stream<String, SpecificRecord>(config.topics.balance)
-            .process(ProcessorSupplier { BalanceProcessor(config) }, config.stateStores.balanceReadModel)
+            .process(
+                ProcessorSupplier { BalanceProcessor(config) },
+                config.stateStores.balanceReadModel,
+                config.stateStores.historyReadModel
+            )
 
         return KafkaStreams(builder.build(), properties(config))
     }
@@ -80,6 +86,17 @@ fun StreamsBuilder.addBalanceStateStore(config: KafkaConfig): StreamsBuilder =
             Stores.persistentKeyValueStore(config.stateStores.balanceReadModel),
             Serdes.String(),
             SpecificAvroSerde<BalanceState>().apply {
+                configure(mapOf(SCHEMA_REGISTRY_URL_CONFIG to config.schemaRegistryUrlConfig), false)
+            }
+        )
+    )
+
+fun StreamsBuilder.addHistoryStateStore(config: KafkaConfig): StreamsBuilder =
+    addStateStore(
+        Stores.keyValueStoreBuilder(
+            Stores.persistentKeyValueStore(config.stateStores.historyReadModel),
+            Serdes.String(),
+            SpecificAvroSerde<HistoryState>().apply {
                 configure(mapOf(SCHEMA_REGISTRY_URL_CONFIG to config.schemaRegistryUrlConfig), false)
             }
         )

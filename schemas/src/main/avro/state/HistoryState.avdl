@@ -1,0 +1,10 @@
+@namespace("parts.code.piggybox.schemas")
+protocol PiggyBox {
+
+  import idl "Transaction.avdl";
+
+  record HistoryState {
+    string customerId;
+    array<Transaction> transactions;
+  }
+}
