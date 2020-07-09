@@ -10,6 +10,9 @@ import spock.lang.Shared
 import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import static parts.code.money.Currency.EUR
 import static parts.code.money.Currency.GBP
 
@@ -60,10 +63,10 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
               .and().the_customer_balance_is_$(1.00)
     }
 
-    def "return get balance not found if no balance exist"() {
+    def "return get balance 0.00 if no balance exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-        then().the_customer_balance_is_not_found()
+        then().the_customer_balance_is_$(0.00)
     }
 
     def "deny add funds if no preferences exist"() {
@@ -150,9 +153,10 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
 
     def "get history"() {
         given:
+        def date = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMM yyyy"))
         def expectedTransactions = [
-                [description: "Funds Added", date: "8 Jul 2020", type: "FUNDS_ADDED", amount: "1.00"],
-                [description: "Funds Withdrawn", date: "8 Jul 2020", type: "FUNDS_WITHDRAWN", amount: "-1.00"]
+                [description: "Funds Added", date: "$date", type: "FUNDS_ADDED", amount: "1.00"],
+                [description: "Funds Withdrawn", date: "$date", type: "FUNDS_WITHDRAWN", amount: "-1.00"]
         ]
 
         expect:

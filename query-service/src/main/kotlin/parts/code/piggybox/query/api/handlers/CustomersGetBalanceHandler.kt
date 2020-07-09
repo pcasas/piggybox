@@ -25,12 +25,14 @@ class CustomersGetBalanceHandler @Inject constructor(
             QueryableStoreTypes.keyValueStore<String, BalanceState>()
         )
 
-        if (store.get(customerId) == null) {
-            ctx.response.status(Status.NOT_FOUND).send()
+        val balance = if (store.get(customerId) == null) {
+            BigDecimal.ZERO.setScale(2)
         } else {
-            ctx.response.status(Status.OK)
-            ctx.render(Jackson.json(BalancePayload(store.get(customerId).amount.setScale(2, HALF_EVEN))))
+            store.get(customerId).amount.setScale(2, HALF_EVEN)
         }
+
+        ctx.response.status(Status.OK)
+        ctx.render(Jackson.json(BalancePayload(balance)))
     }
 
     private data class BalancePayload(val amount: BigDecimal, val min: Int = 0, val max: Int = 500)

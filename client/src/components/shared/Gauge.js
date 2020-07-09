@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Gauge = ({ amount, angle, currency }) => {
+const Gauge = ({ amount, angle, currency, min, max }) => {
   const classes = useStyles();
 
   return (
@@ -77,8 +77,8 @@ const Gauge = ({ amount, angle, currency }) => {
           ></div>
           <div className={classes.scmask}></div>
         </div>
-        <span className={classes.scmin}>0</span>
-        <span className={classes.scmax}>100</span>
+        <span className={classes.scmin}>{min}</span>
+        <span className={classes.scmax}>{max}</span>
       </div>
       <div className={classes.amount}>{amount}</div>
       <div className={classes.currency}>{currency}</div>
