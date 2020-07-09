@@ -20,6 +20,13 @@ const theme = createMuiTheme({
     fontWeightRegular: 400,
     fontWeightMedium: 500,
   },
+  overrides: {
+    MuiAlert: {
+      filledInfo: {
+        backgroundColor: "#f88c8a",
+      },
+    },
+  },
 });
 
 function App() {

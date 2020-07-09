@@ -72,20 +72,6 @@ class Then extends Stage<Then> {
         self()
     }
 
-    Then the_customer_balance_is_not_found() {
-        def httpClient = aut.queryService.httpClient.requestSpec { request ->
-            request.headers {
-                it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            }
-        }.params {
-            it.put("customerId", customerId)
-        }
-
-        def response = httpClient.get("/api/customers.getBalance")
-        assert response.status.code == 404
-        self()
-    }
-
     Then $_worth_of_funds_are_withdrawn(BigDecimal amount) {
         def consumer = KafkaTestUtils.instance.consumer(Topics.balance)
 
