@@ -37,7 +37,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
         given().applicationsUnderTest(applicationsUnderTest)
         when().creating_preferences_with_currency_$_and_country_$(EUR, "ES")
         then().the_preferences_are_created_with_currency_$_and_country_$(EUR, "ES")
-              .and().the_customer_preferences_are_currency_$_and_country_$(EUR, "ES")
+              .and().the_customer_preferences_are_currency_$_and_country_$(EUR, "ES", 1)
     }
 
     def "return get preferences not found if no preferences exist"() {
@@ -60,13 +60,13 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
         when().adding_$_worth_of_funds(1.00)
         then().$_worth_of_funds_are_added(1.00)
-              .and().the_customer_balance_is_$(1.00)
+              .and().the_customer_balance_is_$(1.00, 1)
     }
 
     def "return get balance 0.00 if no balance exist"() {
         expect:
         given().applicationsUnderTest(applicationsUnderTest)
-        then().the_customer_balance_is_$(0.00)
+        then().the_customer_balance_is_$(0.00, 0)
     }
 
     def "deny add funds if no preferences exist"() {
@@ -99,7 +99,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
                .and().an_unknown_record_in_the_topic_$(Topics.balance)
         when().adding_$_worth_of_funds(1.00)
         then().$_worth_of_funds_are_added(1.00)
-              .and().the_customer_balance_is_$(1.00)
+              .and().the_customer_balance_is_$(1.00, 1)
     }
 
     def "withdraw funds"() {
@@ -109,7 +109,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
                .and().$_worth_of_funds(100.00)
         when().withdrawing_$_worth_of_funds(60.00)
         then().$_worth_of_funds_are_withdrawn(60.00)
-              .and().the_customer_balance_is_$(40.00)
+              .and().the_customer_balance_is_$(40.00, 2)
     }
 
     def "deny withdraw funds if no preferences exist"() {
@@ -133,6 +133,7 @@ class IntegrationTests extends ScenarioSpec<Given, When, Then> {
                .customer_preferences_with_currency_$_and_country_$(EUR, "ES")
         when().changing_the_country_to_$("UK")
         then().the_country_is_changed_to_$("UK")
+              .and().the_customer_preferences_are_currency_$_and_country_$(EUR, "UK", 2)
     }
 
     def "deny change the country if no preferences exist"() {

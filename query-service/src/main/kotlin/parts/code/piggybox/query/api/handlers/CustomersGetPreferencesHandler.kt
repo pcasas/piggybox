@@ -28,9 +28,9 @@ class CustomersGetPreferencesHandler @Inject constructor(
         } else {
             ctx.response.status(Status.OK)
             val preferences = store.get(customerId)
-            ctx.render(Jackson.json(PreferencesPayload(preferences.currency, preferences.country)))
+            ctx.render(Jackson.json(PreferencesPayload(preferences.currency, preferences.country, preferences.version)))
         }
     }
 
-    private data class PreferencesPayload(val currency: String, val country: String)
+    private data class PreferencesPayload(val currency: String, val country: String, val version: Long)
 }
