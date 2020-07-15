@@ -1,6 +1,6 @@
 package parts.code.piggybox.balance.streams.suppliers
 
-import java.math.BigDecimal
+import java.math.BigDecimal.ZERO
 import javax.inject.Inject
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.streams.processor.Processor
@@ -35,23 +35,29 @@ class RecordProcessor @Inject constructor(
     }
 
     private fun fundsAdded(record: FundsAdded) {
-        val newBalance = currentBalance(record.customerId) + record.amount
-        saveBalance(record.customerId, newBalance)
+        val balanceState = currentBalance(record.customerId)
+        val newBalanceState = BalanceState(
+            balanceState.customerId,
+            balanceState.amount + record.amount,
+            balanceState.version + 1
+        )
+        state.put(record.customerId, newBalanceState)
     }
 
     private fun fundsWithdrawn(record: FundsWithdrawn) {
-        val newBalance = currentBalance(record.customerId) - record.amount
-        saveBalance(record.customerId, newBalance)
+        val balanceState = currentBalance(record.customerId)
+        val newBalanceState = BalanceState(
+            balanceState.customerId,
+            balanceState.amount - record.amount,
+            balanceState.version + 1
+        )
+        state.put(record.customerId, newBalanceState)
+    }
+
+    private fun currentBalance(customerId: String): BalanceState {
+        val balanceState = state.get(customerId)
+        return if (balanceState != null) balanceState else BalanceState(customerId, ZERO, 0)
     }
 
     override fun close() {}
-
-    private fun currentBalance(customerId: String): BigDecimal {
-        val balanceState = state.get(customerId)
-        return if (balanceState != null) balanceState.amount else BigDecimal.ZERO
-    }
-
-    private fun saveBalance(customerId: String, balance: BigDecimal) {
-        state.put(customerId, BalanceState(customerId, balance))
-    }
 }

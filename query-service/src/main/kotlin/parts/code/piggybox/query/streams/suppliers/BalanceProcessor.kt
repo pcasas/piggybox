@@ -41,8 +41,13 @@ class BalanceProcessor @Inject constructor(
     }
 
     private fun fundsAdded(record: FundsAdded) {
-        val newBalance = currentBalance(record.customerId) + record.amount
-        saveBalance(record.customerId, newBalance)
+        val balanceState = currentBalance(record.customerId)
+        val newBalanceState = BalanceState(
+            balanceState.customerId,
+            balanceState.amount + record.amount,
+            balanceState.version + 1
+        )
+        balanceStateStore.put(record.customerId, newBalanceState)
 
         val transaction = Transaction(
             "Funds Added",
@@ -54,8 +59,13 @@ class BalanceProcessor @Inject constructor(
     }
 
     private fun fundsWithdrawn(record: FundsWithdrawn) {
-        val newBalance = currentBalance(record.customerId) - record.amount
-        saveBalance(record.customerId, newBalance)
+        val balanceState = currentBalance(record.customerId)
+        val newBalanceState = BalanceState(
+            balanceState.customerId,
+            balanceState.amount - record.amount,
+            balanceState.version + 1
+        )
+        balanceStateStore.put(record.customerId, newBalanceState)
 
         val transaction = Transaction(
             "Funds Withdrawn",
@@ -66,13 +76,9 @@ class BalanceProcessor @Inject constructor(
         saveHistory(record.customerId, transaction)
     }
 
-    private fun currentBalance(customerId: String): BigDecimal {
+    private fun currentBalance(customerId: String): BalanceState {
         val balanceState = balanceStateStore.get(customerId)
-        return if (balanceState != null) balanceState.amount else BigDecimal.ZERO
-    }
-
-    private fun saveBalance(customerId: String, balance: BigDecimal) {
-        balanceStateStore.put(customerId, BalanceState(customerId, balance))
+        return if (balanceState != null) balanceState else BalanceState(customerId, BigDecimal.ZERO, 0)
     }
 
     private fun currentHistory(customerId: String): HistoryState {

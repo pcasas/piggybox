@@ -57,7 +57,7 @@ class Then extends Stage<Then> {
         self()
     }
 
-    Then the_customer_balance_is_$(BigDecimal amount) {
+    Then the_customer_balance_is_$(BigDecimal amount, Long version) {
         def httpClient = aut.queryService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ class Then extends Stage<Then> {
 
         def response = httpClient.get("/api/customers.getBalance")
         assert response.status.code == 200
-        assert response.body.text == toJson([amount: amount, min: 0, max: 500])
+        assert response.body.text == toJson([amount: amount, version: version, min: 0, max: 500])
         self()
     }
 
@@ -163,7 +163,7 @@ class Then extends Stage<Then> {
         self()
     }
 
-    Then the_customer_preferences_are_currency_$_and_country_$(Currency currency, String country) {
+    Then the_customer_preferences_are_currency_$_and_country_$(Currency currency, String country, Long version) {
         def httpClient = aut.queryService.httpClient.requestSpec { request ->
             request.headers {
                 it.set(HttpHeaderConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -174,7 +174,7 @@ class Then extends Stage<Then> {
 
         def response = httpClient.get("/api/customers.getPreferences")
         assert response.status.code == 200
-        assert response.body.text == toJson([currency: currency.name(), country: country])
+        assert response.body.text == toJson([currency: currency.name(), country: country, version: version])
         self()
     }
 

@@ -36,7 +36,7 @@ class PreferencesProcessor @Inject constructor(
     private fun preferencesCreated(record: PreferencesCreated) {
         stateStore.put(
             record.customerId,
-            PreferencesState(record.customerId, record.currency, record.country)
+            PreferencesState(record.customerId, record.currency, record.country, 1)
         )
     }
 
@@ -45,7 +45,7 @@ class PreferencesProcessor @Inject constructor(
 
         stateStore.put(
             record.customerId,
-            PreferencesState(record.customerId, preferencesState.currency, record.country)
+            PreferencesState(record.customerId, preferencesState.currency, record.country, preferencesState.version + 1)
         )
     }
 
