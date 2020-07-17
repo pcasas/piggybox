@@ -4,6 +4,7 @@ import Dialog from "./shared/Dialog";
 import Button from "./shared/Button";
 import CurrencySelect from "./shared/CurrencySelect";
 import CountrySelect from "./shared/CountrySelect";
+import CommandService from "./services/CommandService";
 
 const Preferences = ({ open, onClose }) => {
   const [currency, setCurrency] = useState("GBP");
@@ -29,7 +30,7 @@ const Preferences = ({ open, onClose }) => {
     }
   }, [open]);
 
-  const onSubmit = (event) => {
+  const onSubmitForm = (event) => {
     event.preventDefault();
 
     if (exists) {
@@ -39,8 +40,7 @@ const Preferences = ({ open, onClose }) => {
       };
       console.log(data);
 
-      axios
-        .post("http://localhost:5051/api/preferences.changeCountry", data)
+      CommandService.changeCountry(data)
         .then((response) => {
           console.log(response);
           onClose();
@@ -57,8 +57,7 @@ const Preferences = ({ open, onClose }) => {
       };
       console.log(data);
 
-      axios
-        .post("http://localhost:5051/api/preferences.create", data)
+      CommandService.createPreferences(data)
         .then((response) => {
           console.log(response);
           onClose();
@@ -72,7 +71,7 @@ const Preferences = ({ open, onClose }) => {
 
   return (
     <Dialog onClose={onClose} open={open} title="Preferences">
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmitForm}>
         <CurrencySelect
           currency={currency}
           setCurrency={setCurrency}

@@ -4,9 +4,9 @@
 
 # What is Piggybox?
 
-Piggybox is a tutorial project to show how to create [Microservices](http://martinfowler.com/microservices/) using Ratpack, Kafka and Docker.   
-Piggybox implements the Backend of an Online Wallet [Bounded Context](https://martinfowler.com/bliki/BoundedContext.html). 
-If you are familiar with video game platforms like [Steam](https://store.steampowered.com/) you'll know they have an Online Wallet where you can add funds and later buy games with those funds. Those are the types of functionalities that are implemented in this project.
+Piggybox is a tutorial project to show how to create an Online Wallet application using [Microservices](http://martinfowler.com/microservices/) architecture on the Backend with Ratpack, Kafka and Docker, and using React with Material UI on the Frontend.
+
+<img width="880" alt="Kafka Microservices Architecture" src="/diagrams/demo.gif">
 
 ## Microservice Architecture
 
@@ -122,10 +122,17 @@ docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml up
 curl --header "Content-Type: application/json" --request POST --data '{"customerId":"ebbcf888-f83e-4055-9266-61b51dbf765c","currency":"EUR","country":"ES"}' http://localhost:5051/api/preferences.create
 ```
 
-Allow CORS on chrome for testing
+Allow CORS on chrome for testing:
 
 ```
 open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+```
+
+Run the frontend:
+
+```
+cd client
+npm run-script start
 ```
 
 ## Stopping the apps
