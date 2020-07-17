@@ -1,11 +1,12 @@
 import React from "react";
-import axios from "axios";
 import Dialog from "./shared/Dialog";
 import Button from "./shared/Button";
 import Input from "./shared/Input";
 import { useForm } from "react-hook-form";
+import QueryService from "./services/QueryService";
+import CommandService from "./services/CommandService";
 
-const WithdrawFunds = ({ open, onClose }) => {
+const WithdrawFunds = ({ onSubmit, onClose, onFinish, open, version }) => {
   const { register, setValue, handleSubmit, errors } = useForm({
     reValidateMode: "onChange",
     defaultValues: {
@@ -13,32 +14,32 @@ const WithdrawFunds = ({ open, onClose }) => {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmitForm = (data) => {
+    onSubmit();
     data.customerId = localStorage.getItem("customerId");
     console.log(data);
 
-    axios
-      .post("http://localhost:5051/api/balance.withdrawFunds", data)
+    CommandService.withdrawFunds(data)
       .then((response) => {
         console.log(response);
-        onClose();
+        QueryService.getUpdatedBalance(data.customerId, 10, version, onFinish);
       })
       .catch((error) => {
         console.log(error);
-        onClose();
+        onFinish();
       });
   };
 
   return (
     <Dialog onClose={onClose} open={open} title="Withdraw Funds">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmitForm)}>
         <Input
           label="Amount"
           name="amount"
           error={!!errors.amount}
           register={register}
           setValue={setValue}
-          rules={{ required: true, pattern: /^\d+(\.\d{1,2})?$/i }}
+          rules={{ required: true, pattern: /^\d+\.\d{2}$/i }}
         />
         <Button disabled={!!errors.amount}>Save</Button>
       </form>

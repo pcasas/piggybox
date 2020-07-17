@@ -35,13 +35,13 @@ const HistoryEntry = ({ divider, type, description, date, amount }) => {
     <ListItem divider={divider}>
       <ListItemAvatar>
         <Avatar className={classes.avatar}>
-          {type === "withdrawn" ? <ArrowDownwardIcon /> : <ArrowUpwardIcon />}
+          {type === "FUNDS_ADDED" ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />}
         </Avatar>
       </ListItemAvatar>
       <ListItemText primary={description} secondary={date} />
       <ListItemText
         primary={amount}
-        className={type === "withdrawn" ? classes.withdrawn : classes.added}
+        className={type === "FUNDS_ADDED" ? classes.added : classes.withdrawn}
       />
     </ListItem>
   );
