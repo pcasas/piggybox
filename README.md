@@ -16,7 +16,7 @@ Piggy Box is divided into 4 microservices, grouped together in a Monorepo but in
 
 #### Command Service
 
-The Command Service exposes a Web API that accepts requests over HTTP. The requests take the form of commands that can cause changes on the State Stores owned by our microservices.
+The Command Service exposes a Web API that accepts requests over HTTP. The requests take the form of commands that can cause changes on the State Stores owned by the microservices.
 
 <img width="880" alt="CQRS Architecture Kafka Command Service" src="/diagrams/cqrs-architecture-kafka-command-service.png">
 
@@ -42,7 +42,9 @@ For every API call the Query Service queries the Read Model, which is a persiste
 
 Method | URL | Description
 ------------- | ------------------------- | ------------- |
+GET | /api/customers.getPreferences | Get the customer's preferences
 GET | /api/customers.getBalance | Get the current customer's balance
+GET | /api/customers.getHistory | Get the customer's transaction history
 
 #### Preferences Service
 
@@ -59,10 +61,10 @@ As a last step, the Preferences Service reads the `PreferencesCreated` event fro
 
 #### Balance Service
 
-The Balance Service updates the customer's balance based on transactions like `AddFundsCommand` or `WithdrawFundsCommand`. It also performs validations not allowing a balance lower than 0 or higher than 2000. 
+The Balance Service updates the customer's balance based on transactions like `AddFundsCommand` or `WithdrawFundsCommand`. It also performs validations not allowing a balance lower than 0 or higher than 500. 
 The balance transactions are stored in the Balance topic which is used as an Event Store. The Balance Authorization topic in the other hand is only used to exchange messages between microservices.
 
-In the following diagram we can see an example of how funds can be added to a customer's balance. First the client calls the `/balance.addFunds` endpoint from the Command Service, then the Command Service publishes a command `AddFundsCommand` to the Preferences Authorization Topic. Then the Preferences Service reads the `AddFundsCommand`, checks the State Store to see if preferences exist. Then, since preferences already exist, publishes an `AddFundsCommand` event to the Balance Authorization Topic. Then the Balance Service reads the `AddFundsCommand`, checks the State Store to see if the balance will be lower than 2000 after adding the funds. Then, since the balance will be lower than 2000 after adding the funds, publishes a `FundsAdded` event to the Balance Topic.
+In the following diagram we can see an example of how funds can be added to a customer's balance. First the client calls the `/balance.addFunds` endpoint from the Command Service, then the Command Service publishes a command `AddFundsCommand` to the Preferences Authorization Topic. Then the Preferences Service reads the `AddFundsCommand`, checks the State Store to see if preferences exist. Then, since preferences already exist, publishes an `AddFundsCommand` event to the Balance Authorization Topic. Then the Balance Service reads the `AddFundsCommand`, checks the State Store to see if the balance will be lower than 500 after adding the funds. Then, since the balance will be lower than 500 after adding the funds, publishes a `FundsAdded` event to the Balance Topic.
 
 <img width="880" alt="Kafka Event Store Balance Service" src="/diagrams/kafka-event-store-balance-service.png">
 
@@ -118,17 +120,13 @@ After building and running the tests you can run the apps with:
 docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml up -d --build
 ```
 
-```
-curl --header "Content-Type: application/json" --request POST --data '{"customerId":"ebbcf888-f83e-4055-9266-61b51dbf765c","currency":"EUR","country":"ES"}' http://localhost:5051/api/preferences.create
-```
-
-Allow CORS on chrome for testing:
+To test on local you need to open a chrome instance with CORS allowed for testing:
 
 ```
 open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
 ```
 
-Run the frontend:
+Then you can run the client with:
 
 ```
 cd client
@@ -137,6 +135,8 @@ npm run-script start
 
 ## Stopping the apps
 
+You can stop the apps and clean docker volumes with:
+
 ```
 docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml down
 docker system prune
@@ -144,6 +144,8 @@ docker volume prune
 ```
 
 ## Running a bash on a docker container
+
+You can run bash on a docker container with:
 
 ```
 docker exec -it zookeeper bash
@@ -156,3 +158,5 @@ docker exec -it schema-registry bash
 * [Ratpack](https://ratpack.io/) - A set of Java libraries for building scalable HTTP applications.
 * [Kafka](https://kafka.apache.org/) - A distributed streaming platform.
 * [Docker](https://www.docker.com/) - The container platform.
+* [React](https://reactjs.org/) - A JavaScript library for building user interfaces.
+* [Material UI](https://material-ui.com/) - A React UI framework for faster web development.
