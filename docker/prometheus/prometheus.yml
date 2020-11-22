@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+  external_labels:
+    monitor: 'piggybox'
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['host.docker.internal:9090']
+  - job_name: command-service
+    static_configs:
+      - targets: ['host.docker.internal:5051']
+        labels:
+          domain: 'piggybox'
+  - job_name: query-service
+    static_configs:
+      - targets: ['host.docker.internal:5052']
+        labels:
+          domain: 'piggybox'
+  - job_name: preferences-service
+    static_configs:
+      - targets: ['host.docker.internal:5053']
+        labels:
+          domain: 'piggybox'
+  - job_name: balance-service
+    static_configs:
+      - targets: ['host.docker.internal:5054']
+        labels:
+          domain: 'piggybox'

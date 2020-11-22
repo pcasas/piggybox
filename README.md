@@ -117,10 +117,20 @@ docker-compose -f docker/docker-compose.yml down -v
 After building and running the tests you can run the apps with:
 
 ```
-docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml up -d --build
+docker-compose -f docker/docker-compose.yml -f docker/docker-compose.apps.yml -f docker/docker-compose.monitoring.yml -f docker/docker-compose.logging.yml up -d --build
 ```
 
-To test on local you need to open a chrome instance with CORS allowed for testing:
+You can test different endpoints with this postman collection:
+```
+piggybox.postman_collection.json
+```
+
+You can run performance tests with:
+```
+sh ./performance-tests/tests.sh
+```
+
+To test it on localhost with chrome you need to open a chrome instance with CORS allowed:
 
 ```
 open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
@@ -131,6 +141,27 @@ Then you can run the client with:
 ```
 cd client
 npm run-script start
+```
+
+You can check the metrics on prometheus with:
+
+```
+http://localhost:9090/graph
+```
+
+You can check the dashboards on grafana with:
+
+```
+http://localhost:3000/
+
+username: admin
+password: admin
+```
+
+You can check the logs on splunk with:
+
+```
+http://localhost:8000/
 ```
 
 ## Stopping the apps

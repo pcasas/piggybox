@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "533c513e-1314-4d28-8d28-aa313ddec3cb",
+		"name": "piggybox",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create preferences",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "989650be-d7af-4554-8bca-510576ff358f",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([202]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\":\"{{customerId}}\",\n\t\"currency\":\"EUR\",\n\t\"country\":\"ES\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{COMMAND_SERVICE}}api/preferences.create",
+					"host": [
+						"{{COMMAND_SERVICE}}api"
+					],
+					"path": [
+						"preferences.create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change country",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "989650be-d7af-4554-8bca-510576ff358f",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([202]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\":\"{{customerId}}\",\n\t\"country\":\"UK\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{COMMAND_SERVICE}}api/preferences.changeCountry",
+					"host": [
+						"{{COMMAND_SERVICE}}api"
+					],
+					"path": [
+						"preferences.changeCountry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add funds",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "989650be-d7af-4554-8bca-510576ff358f",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([202]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\":\"{{customerId}}\",\n\t\"amount\":\"1.00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{COMMAND_SERVICE}}api/balance.addFunds",
+					"host": [
+						"{{COMMAND_SERVICE}}api"
+					],
+					"path": [
+						"balance.addFunds"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "withdraw funds",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "989650be-d7af-4554-8bca-510576ff358f",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([202]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\":\"{{customerId}}\",\n\t\"amount\":\"0.50\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{COMMAND_SERVICE}}api/balance.withdrawFunds",
+					"host": [
+						"{{COMMAND_SERVICE}}api"
+					],
+					"path": [
+						"balance.withdrawFunds"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get preferences",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ea2f32a1-5145-4ea5-9322-b561d82b7272",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{QUERY_SERVICE}}api/customers.getPreferences?customerId={{customerId}}",
+					"host": [
+						"{{QUERY_SERVICE}}api"
+					],
+					"path": [
+						"customers.getPreferences"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customerId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ea2f32a1-5145-4ea5-9322-b561d82b7272",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{QUERY_SERVICE}}api/customers.getBalance?customerId={{customerId}}",
+					"host": [
+						"{{QUERY_SERVICE}}api"
+					],
+					"path": [
+						"customers.getBalance"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customerId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get history",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ea2f32a1-5145-4ea5-9322-b561d82b7272",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{QUERY_SERVICE}}api/customers.getHistory?customerId={{customerId}}",
+					"host": [
+						"{{QUERY_SERVICE}}api"
+					],
+					"path": [
+						"customers.getHistory"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "{{customerId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e02fe237-c8d4-4097-99a3-2b5e44d08b14",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b20bc7e8-05b0-44b5-bbdd-c20370b69b96",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d57223a4-e507-4474-b82a-2582d0eb67e0",
+			"key": "COMMAND_SERVICE",
+			"value": "http://localhost:5051/",
+			"type": "string"
+		},
+		{
+			"id": "09ee00b0-c683-400c-a992-a7a151ad9513",
+			"key": "QUERY_SERVICE",
+			"value": "http://localhost:5052/",
+			"type": "string"
+		},
+		{
+			"id": "0c9bd44b-a43e-4b6a-a881-8a913f256cf6",
+			"key": "customerId",
+			"value": "ebbcf888-f83e-4055-9266-61b51dbf765c",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

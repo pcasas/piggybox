@@ -5,7 +5,21 @@
         </encoder>
     </appender>
 
+    <appender name="SPLUNK" class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+        <url>https://host.docker.internal:8088</url>
+        <token>abcd1234</token>
+        <host>${HOSTNAME}</host>
+        <source>${HOSTNAME}</source>
+        <sourcetype>${HOSTNAME}-logs</sourcetype>
+        <disableCertificateValidation>true</disableCertificateValidation>
+        <batch_size_count>1</batch_size_count>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg</pattern>
+        </layout>
+    </appender>
+
     <root level="info">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SPLUNK"/>
     </root>
 </configuration>

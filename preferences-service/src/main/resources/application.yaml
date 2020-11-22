@@ -1,6 +1,12 @@
 server:
   port: 5053
 
+metrics:
+  jvmMetrics: true
+  jmx:
+    enabled: true
+  prometheusCollection: true
+
 kafka:
   bootstrapServersConfig: 'broker:29092'
   schemaRegistryUrlConfig: 'http://schema-registry:8081'
